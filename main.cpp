@@ -46,7 +46,7 @@
 #if defined(Q_WS_X11)
 #include <X11/Xlib.h>
 #endif
-//#include <qjson/qjson.h>
+#include "qmozcontext.h"
 
 #ifdef HAS_BOOSTER
 Q_DECL_EXPORT
@@ -77,7 +77,8 @@ int main(int argc, char *argv[])
 #endif
     application->setQuitOnLastWindowClosed(true);
 
-//    qmlRegisterType<QJson>("QJson", 1, 0, "QJson");
+    QMozContext::GetInstance()->addComponentManifest("/usr/lib/mozembedlite/components/EmbedLiteBinComponents.manifest");
+    QMozContext::GetInstance()->addComponentManifest("/usr/lib/mozembedlite/components/EmbedLiteJSComponents.manifest");
 
     QString path;
     QString urlstring;
@@ -130,6 +131,7 @@ int main(int argc, char *argv[])
     if (!path.isEmpty())
         QDir::setCurrent(path);
 
+    qmlRegisterType<QMozContext>("QtMozilla", 1, 0, "QMozContext");
     qmlRegisterType<QGraphicsMozView>("QtMozilla", 1, 0, "QGraphicsMozView");
     qmlRegisterType<QDeclarativeMozView>("QtMozilla", 1, 0, "QDeclarativeMozView");
 
