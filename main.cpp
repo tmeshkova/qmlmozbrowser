@@ -77,8 +77,8 @@ int main(int argc, char *argv[])
 #endif
     application->setQuitOnLastWindowClosed(true);
 
-    QMozContext::GetInstance()->addComponentManifest("/usr/lib/mozembedlite/components/EmbedLiteBinComponents.manifest");
-    QMozContext::GetInstance()->addComponentManifest("/usr/lib/mozembedlite/components/EmbedLiteJSComponents.manifest");
+    // QMozContext::GetInstance()->addComponentManifest("/usr/lib/mozembedlite/components/EmbedLiteBinComponents.manifest");
+    // QMozContext::GetInstance()->addComponentManifest("/usr/lib/mozembedlite/components/EmbedLiteJSComponents.manifest");
 
     QString path;
     QString urlstring;
