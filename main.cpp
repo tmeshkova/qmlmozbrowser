@@ -77,8 +77,8 @@ int main(int argc, char *argv[])
 #endif
     application->setQuitOnLastWindowClosed(true);
 
-    // QMozContext::GetInstance()->addComponentManifest("/usr/lib/mozembedlite/components/EmbedLiteBinComponents.manifest");
-    // QMozContext::GetInstance()->addComponentManifest("/usr/lib/mozembedlite/components/EmbedLiteJSComponents.manifest");
+    // FIXME uncommenting this will make UI not loaded
+    // QMozContext::GetInstance();
 
     QString path;
     QString urlstring;
@@ -181,6 +181,9 @@ int main(int argc, char *argv[])
         view->show();
 
     qDebug() << "Starting Application!!!";
+
+    QMozContext::GetInstance()->addComponentManifest("/usr/lib/mozembedlite/components/EmbedLiteBinComponents.manifest");
+    QMozContext::GetInstance()->addComponentManifest("/usr/lib/mozembedlite/components/EmbedLiteJSComponents.manifest");
 
     int retval = application->exec();
     qDebug() << "Exiting from Application!!!";
