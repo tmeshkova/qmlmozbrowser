@@ -36,26 +36,28 @@ ifneq (,$(findstring parallel,$(DEB_BUILD_OPTIONS)))
 endif
 
 MAKEFLAGS += $(NJOBS)
+DEST_OBJ_DIR=objdir-$(DEB_HOST_ARCH)
 
-configure: configure-stamp
-configure-stamp:
+configure: configure-$(DEST_OBJ_DIR)-stamp
+configure-$(DEST_OBJ_DIR)-stamp:
 	dh_testdir
-	qmake
+	echo "$(DEST_OBJ_DIR)" > $(CURDIR)/objdir-name
+	qmake OBJ_DEB_DIR=$(DEST_OBJ_DIR)
 
-	touch configure-stamp
+	touch configure-$(DEST_OBJ_DIR)-stamp
 
-build: build-stamp
-build-stamp: configure-stamp
+build: build-$(DEST_OBJ_DIR)-stamp
+build-$(DEST_OBJ_DIR)-stamp: configure-$(DEST_OBJ_DIR)-stamp
 	dh_testdir
 	$(MAKE)
-	touch build-stamp
+	touch build-$(DEST_OBJ_DIR)-stamp
 
 clean:
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp
-	rm -f configure-stamp
-	rm -rf ./release
+	rm -f build-$(DEST_OBJ_DIR)-stamp
+	rm -f configure-$(DEST_OBJ_DIR)-stamp
+	rm -rf $(CURDIR)/$(DEST_OBJ_DIR)
 #	$(MAKE) distclean
 	dh_clean
 

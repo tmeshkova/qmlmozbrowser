@@ -6,10 +6,17 @@ if [ "$TARGET_DIR" = "" ]; then
   TARGET_DIR=/usr/bin
 fi
 
+OBJDIR="obj--dir"
+
+if [ -f $(pwd)/objdir-name ]; then
+  OBJDIR=`cat $(pwd)/objdir-name`;
+  echo "objdir-stamp detected: $OBJDIR"
+fi
+
 mkdir -p $TARGET_DIR
 
 FILES_LIST="
-release/qmlMozEmbedTest
+$OBJDIR/qmlMozEmbedTest
 "
 for str in $FILES_LIST; do
     fname="${str##*/}"
