@@ -182,8 +182,11 @@ int main(int argc, char *argv[])
 
     qDebug() << "Starting Application!!!";
 
-    QMozContext::GetInstance()->addComponentManifest("/usr/lib/mozembedlite/components/EmbedLiteBinComponents.manifest");
-    QMozContext::GetInstance()->addComponentManifest("/usr/lib/mozembedlite/components/EmbedLiteJSComponents.manifest");
+    QString componentPath(DEFAULT_COMPONENTS_PATH);
+    qDebug() << "Load components from:" << componentPath + QString("/EmbedLiteBinComponents.manifest");
+    QMozContext::GetInstance()->addComponentManifest(componentPath + QString("/EmbedLiteBinComponents.manifest"));
+    qDebug() << "Load components from:" << componentPath + QString("/EmbedLiteJSComponents.manifest");
+    QMozContext::GetInstance()->addComponentManifest(componentPath + QString("/EmbedLiteJSComponents.manifest"));
 
     int retval = application->exec();
     qDebug() << "Exiting from Application!!!";

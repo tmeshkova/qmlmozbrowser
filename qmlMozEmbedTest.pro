@@ -10,7 +10,17 @@ CONFIG -= app_bundle
 CONFIG += link_pkgconfig
 TARGET = $$PROJECT_NAME
 
+isEmpty(QTEMBED_LIB) {
 PKGCONFIG += qtembedwidget
+} else {
+LIBS+=$$QTEMBED_LIB
+}
+
+isEmpty(DEFAULT_COMPONENT_PATH) {
+DEFINES += DEFAULT_COMPONENTS_PATH=\"\\\"/usr/lib/mozembedlite/components/\\\"\"
+} else {
+DEFINES += DEFAULT_COMPONENTS_PATH=\"\\\"$$DEFAULT_COMPONENT_PATH\\\"\"
+}
 
 PREFIX = /usr
 
