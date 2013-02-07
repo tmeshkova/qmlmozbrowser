@@ -6,12 +6,8 @@ if [ "$TARGET_DIR" = "" ]; then
   TARGET_DIR=/usr/bin
 fi
 
-OBJDIR="obj--dir"
-
-if [ -f $(pwd)/objdir-name ]; then
-  OBJDIR=`cat $(pwd)/objdir-name`;
-  echo "objdir-stamp detected: $OBJDIR"
-fi
+BARCH=`uname -m`
+OBJDIR="obj-$BARCH-dir"
 
 mkdir -p $TARGET_DIR
 
