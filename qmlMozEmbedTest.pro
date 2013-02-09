@@ -11,7 +11,7 @@ CONFIG += link_pkgconfig
 TARGET = $$PROJECT_NAME
 
 isEmpty(QTEMBED_LIB) {
-PKGCONFIG += qtembedwidget
+PKGCONFIG += qtembedwidget x11
 } else {
 LIBS+=$$QTEMBED_LIB
 }
