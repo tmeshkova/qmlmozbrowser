@@ -151,8 +151,8 @@ int main(int argc, char *argv[])
     else
         qDebug() << "Not using QGLWidget viewport";
 
-    view->setSource(qml);
     view->rootContext()->setContextProperty("startURL", QVariant(urlstring));
+    view->setSource(qml);
     QObject* item = view->rootObject()->findChild<QObject*>("mainScope");
     if (item) {
         QObject::connect(item, SIGNAL(pageTitleChanged(QString)), view, SLOT(setWindowTitle(QString)));
