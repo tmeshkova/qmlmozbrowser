@@ -187,6 +187,8 @@ int main(int argc, char *argv[])
     QMozContext::GetInstance()->addComponentManifest(componentPath + QString("/EmbedLiteBinComponents.manifest"));
     qDebug() << "Load components from:" << componentPath + QString("/EmbedLiteJSComponents.manifest");
     QMozContext::GetInstance()->addComponentManifest(componentPath + QString("/EmbedLiteJSComponents.manifest"));
+//    QMozContext::GetInstance()->addObserver("history:checkurivisited");
+//    QMozContext::GetInstance()->addObserver("history:markurivisited");
 
     int retval = application->exec();
     qDebug() << "Exiting from Application!!!";
