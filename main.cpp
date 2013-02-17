@@ -88,11 +88,7 @@ int main(int argc, char *argv[])
 #else
     bool isFullscreen = false;
 #endif
-#if !defined(Q_WS_MAEMO_5)
     bool glwidget = true;
-#else
-    bool glwidget = false;
-#endif
     QStringList arguments = application->arguments();
     for (int i = 0; i < arguments.count(); ++i) {
         QString parameter = arguments.at(i);
@@ -115,8 +111,6 @@ int main(int argc, char *argv[])
             isFullscreen = true;
         } else if (parameter == "-no-glwidget") {
             glwidget = false;
-        } else if (parameter == "-glwidget") {
-            glwidget = true;
         } else if (parameter == "-help") {
             qDebug() << "EMail application";
             qDebug() << "-fullscreen   - show QML fullscreen";
