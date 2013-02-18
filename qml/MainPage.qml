@@ -185,6 +185,25 @@ FocusScope {
         id: webViewport
         visible: true
         focus: true
+        property bool movingHorizontally : false
+        property bool movingVertically : true
+        property variant visibleArea : QtObject {
+            property real yPosition : 0
+            property real xPosition : 0
+            property real widthRatio : 0
+            property real heightRatio : 0
+        }
+
+        function scrollTimeout() {
+            webViewport.movingHorizontally = false;
+            webViewport.movingVertically = false;
+        }
+        Timer {
+            id: scrollTimer
+            interval: 500; running: false; repeat: false;
+            onTriggered: webViewport.scrollTimeout()
+        }
+
         anchors {
             top: navigationBar.bottom
             left: parent.left
@@ -198,6 +217,18 @@ FocusScope {
                 if (startURL.length != 0) {
                     load(startURL);
                 }
+            }
+            onViewAreaChanged: {
+                var r = webViewport.child().contentRect;
+                var offset = webViewport.child().scrollableOffset;
+                var s = webViewport.child().scrollableSize;
+                webViewport.visibleArea.widthRatio = r.width / s.width;
+                webViewport.visibleArea.heightRatio = r.height / s.height;
+                webViewport.visibleArea.xPosition = offset.x * webViewport.visibleArea.widthRatio * webViewport.child().resolution;
+                webViewport.visibleArea.yPosition = offset.y * webViewport.visibleArea.heightRatio * webViewport.child().resolution;
+                webViewport.movingHorizontally = true;
+                webViewport.movingVertically = true;
+                scrollTimer.restart();
             }
             onTitleChanged: {
                 pageTitleChanged(webViewport.child().title);
@@ -274,6 +305,10 @@ FocusScope {
                     "password" : authDlg.password
                 });
             }
+        }
+        ScrollIndicator {
+            id: scrollIndicator
+            flickableItem: webViewport
         }
     }
 
