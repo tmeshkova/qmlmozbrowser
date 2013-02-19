@@ -8,7 +8,7 @@ RESOURCES += qmlMozEmbedTest.qrc
 TEMPLATE = app
 CONFIG -= app_bundle
 CONFIG += link_pkgconfig
-TARGET = $$PROJECT_NAME
+TARGET = qmlMozEmbedTest
 
 isEmpty(QTEMBED_LIB) {
 PKGCONFIG += qtembedwidget x11
@@ -24,7 +24,9 @@ DEFINES += DEFAULT_COMPONENTS_PATH=\"\\\"$$DEFAULT_COMPONENT_PATH\\\"\"
 
 PREFIX = /usr
 
-PKGCONFIG += QJson
+contains(QT_MAJOR_VERSION, 4) {
+  PKGCONFIG += QJson
+}
 
 isEmpty(OBJ_DEB_DIR) {
   OBJ_DEB_DIR=obj-$$OBJ_ARCH-dir

@@ -15,7 +15,8 @@
 #include <QtDeclarative/QDeclarativeComponent>
 #include <QtDeclarative/QDeclarativeEngine>
 #include <QtDeclarative/QDeclarativeContext>
-#include <QtGui/QApplication>
+#include <QApplication>
+
 #include <QGraphicsObject>
 #include <QWindowStateChangeEvent>
 
@@ -116,7 +117,7 @@ QString QmlApplicationViewerPrivate::adjustPath(const QString &path)
 #else
     QString pathInInstallDir;
     const QString applicationDirPath = QCoreApplication::applicationDirPath();
-    pathInInstallDir = QString::fromAscii("%1/../%2").arg(applicationDirPath, path);
+    pathInInstallDir = QString::fromUtf8("%1/../%2").arg(applicationDirPath, path);
 
     if (QFileInfo(pathInInstallDir).exists())
         return pathInInstallDir;
@@ -221,6 +222,7 @@ void QmlApplicationViewer::setOrientation(ScreenOrientation orientation)
         attribute = static_cast<Qt::WidgetAttribute>(130);
         break;
 #else // QT_VERSION < 0x040702
+#if (QT_VERSION <= QT_VERSION_CHECK(5, 0, 0))
     case ScreenOrientationLockPortrait:
         attribute = Qt::WA_LockPortraitOrientation;
         break;
@@ -231,6 +233,7 @@ void QmlApplicationViewer::setOrientation(ScreenOrientation orientation)
     case ScreenOrientationAuto:
         attribute = Qt::WA_AutoOrientation;
         break;
+#endif
 #endif // QT_VERSION < 0x040702
     };
     setAttribute(attribute, true);
