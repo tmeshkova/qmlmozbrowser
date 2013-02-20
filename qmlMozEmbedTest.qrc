@@ -7,6 +7,7 @@
         <file>qml/main.qml</file>
         <file>qml/MainPage.qml</file>
         <file>qml/main_meego.qml</file>
+        <file>qml/MainPageQuick.qml</file>
         <file>qml/ScrollIndicator.qml</file>
         <file>qml/dialogs/Dialog.qml</file>
         <file>qml/dialogs/AlertDialog.qml</file>

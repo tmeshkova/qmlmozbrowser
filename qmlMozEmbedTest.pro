@@ -1,32 +1,35 @@
-QT += opengl declarative
-SOURCES += main.cpp qmlapplicationviewer.cpp
-HEADERS += qmlapplicationviewer.h 
+CONFIG += link_pkgconfig
+TARGET = qmlMozEmbedTest
+contains(QT_MAJOR_VERSION, 4) {
+  QT += opengl declarative
+  SOURCES += main.cpp qmlapplicationviewer.cpp
+  HEADERS += qmlapplicationviewer.h 
+  PKGCONFIG += QJson
+
+} else {
+  QT += qml quick widgets
+  SOURCES += mainqt5.cpp
+}
 
 QML_FILES = qml/*.qml
 RESOURCES += qmlMozEmbedTest.qrc
 
 TEMPLATE = app
 CONFIG -= app_bundle
-CONFIG += link_pkgconfig
-TARGET = qmlMozEmbedTest
 
 isEmpty(QTEMBED_LIB) {
-PKGCONFIG += qtembedwidget x11
+  PKGCONFIG += qtembedwidget x11
 } else {
-LIBS+=$$QTEMBED_LIB
+  LIBS+=$$QTEMBED_LIB
 }
 
 isEmpty(DEFAULT_COMPONENT_PATH) {
-DEFINES += DEFAULT_COMPONENTS_PATH=\"\\\"/usr/lib/mozembedlite/components/\\\"\"
+  DEFINES += DEFAULT_COMPONENTS_PATH=\"\\\"/usr/lib/mozembedlite/components/\\\"\"
 } else {
-DEFINES += DEFAULT_COMPONENTS_PATH=\"\\\"$$DEFAULT_COMPONENT_PATH\\\"\"
+  DEFINES += DEFAULT_COMPONENTS_PATH=\"\\\"$$DEFAULT_COMPONENT_PATH\\\"\"
 }
 
 PREFIX = /usr
-
-contains(QT_MAJOR_VERSION, 4) {
-  PKGCONFIG += QJson
-}
 
 isEmpty(OBJ_DEB_DIR) {
   OBJ_DEB_DIR=obj-$$OBJ_ARCH-dir
