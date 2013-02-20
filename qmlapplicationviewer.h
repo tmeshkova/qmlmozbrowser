@@ -38,6 +38,9 @@ public:
     void showExpanded();
     QDeclarativeView* getView();
 
+public Q_SLOTS:
+    void setClipboard(QString text);
+
 Q_SIGNALS:
     void displayEntered();
     void displayExited();
