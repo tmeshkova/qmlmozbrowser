@@ -126,6 +126,12 @@ QString QmlApplicationViewerPrivate::adjustPath(const QString &path)
     return path;
 }
 
+void QmlApplicationViewer::setClipboard(QString text)
+{
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(text);
+}
+
 QmlApplicationViewer::QmlApplicationViewer(QWidget *parent)
     : QDeclarativeView(parent)
     , d(new QmlApplicationViewerPrivate(this))
