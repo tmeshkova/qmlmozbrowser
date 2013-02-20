@@ -150,6 +150,7 @@ int main(int argc, char *argv[])
     QObject* item = view->rootObject()->findChild<QObject*>("mainScope");
     if (item) {
         QObject::connect(item, SIGNAL(pageTitleChanged(QString)), view, SLOT(setWindowTitle(QString)));
+        QObject::connect(item, SIGNAL(setClipboard(QString)), view, SLOT(setClipboard(QString)));
     }
 
     // Important - simplify qml and resize, make it works good..
