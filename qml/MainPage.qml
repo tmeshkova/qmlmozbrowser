@@ -119,6 +119,26 @@ FocusScope {
                     }
                 }
             }
+
+            Rectangle {
+                id: newWinButton
+                height: navigationBar.height - 2
+                width: height
+                color: "#efefef"
+
+                Image {
+                    anchors.fill: parent
+                    anchors.centerIn: parent
+                    source: "../icons/plus.png"
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        viewport.child().newWindow();
+                    }
+                }
+            }
         }
         Rectangle {
             color: "white"

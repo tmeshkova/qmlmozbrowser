@@ -48,6 +48,64 @@
 #endif
 #include "qmozcontext.h"
 
+static QString qmlstring;
+static bool glwidget = true;
+
+QDeclarativeView* CreateNewWindow(const QString& url = QString("about:blank"))
+{
+    QDeclarativeView *view;
+#ifdef HARMATTAN_BOOSTER
+    view = MDeclarativeCache::qDeclarativeView();
+#else
+    qWarning() << Q_FUNC_INFO << "Warning! Running without booster. This may be a bit slower.";
+    QmlApplicationViewer* stackView = new QmlApplicationViewer();
+    view = stackView;
+    stackView->setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
+#endif
+
+    QUrl qml;
+    if (qmlstring.isEmpty())
+#if defined(__arm__) && !defined(Q_WS_MAEMO_5) && (QT_VERSION <= QT_VERSION_CHECK(5, 0, 0))
+        qml = QUrl("qrc:/qml/main_meego.qml");
+#else
+        qml = QUrl("qrc:/qml/main.qml");
+#endif
+    else
+        qml = QUrl::fromUserInput(qmlstring);
+
+    // See NEMO#415 for an explanation of why this may be necessary.
+    if (glwidget && !getenv("SWRENDER"))
+        view->setViewport(new QGLWidget);
+    else
+        qDebug() << "Not using QGLWidget viewport";
+
+    view->rootContext()->setContextProperty("startURL", QVariant(url));
+    view->setSource(qml);
+    QObject* item = view->rootObject()->findChild<QObject*>("mainScope");
+    if (item) {
+        QObject::connect(item, SIGNAL(pageTitleChanged(QString)), view, SLOT(setWindowTitle(QString)));
+    }
+
+    // Important - simplify qml and resize, make it works good..
+    view->setResizeMode(QDeclarativeView::SizeRootObjectToView);
+    view->setAttribute(Qt::WA_OpaquePaintEvent);
+    view->setAttribute(Qt::WA_NoSystemBackground);
+#if defined(Q_WS_MAEMO_5)
+    view->setAttribute(Qt::WA_Maemo5NonComposited);
+#endif
+    view->viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
+    view->viewport()->setAttribute(Qt::WA_NoSystemBackground);
+#if defined(Q_WS_MAEMO_5)
+    view->viewport()->setAttribute(Qt::WA_Maemo5NonComposited);
+#endif
+    view->setWindowTitle("QtMozEmbedBrowser");
+    view->setWindowFlags(Qt::Window | Qt::WindowTitleHint |
+                         Qt::WindowMinMaxButtonsHint |
+                         Qt::WindowCloseButtonHint);
+
+    return view;
+}
+
 #ifdef HAS_BOOSTER
 Q_DECL_EXPORT
 #endif
@@ -63,32 +121,24 @@ int main(int argc, char *argv[])
 #endif
 
     QApplication *application;
-    QDeclarativeView *view;
 #ifdef HARMATTAN_BOOSTER
     application = MDeclarativeCache::qApplication(argc, argv);
-    view = MDeclarativeCache::qDeclarativeView();
 #else
     qWarning() << Q_FUNC_INFO << "Warning! Running without booster. This may be a bit slower.";
     QApplication stackApp(argc, argv);
-    QmlApplicationViewer stackView;
     application = &stackApp;
-    view = &stackView;
-    stackView.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
 #endif
-    application->setQuitOnLastWindowClosed(true);
 
-    // FIXME uncommenting this will make UI not loaded
-    // QMozContext::GetInstance();
+    application->setQuitOnLastWindowClosed(true);
 
     QString path;
     QString urlstring;
-    QString qmlstring;
 #ifdef __arm__
     bool isFullscreen = true;
 #else
     bool isFullscreen = false;
 #endif
-    bool glwidget = true;
+
     QStringList arguments = application->arguments();
     for (int i = 0; i < arguments.count(); ++i) {
         QString parameter = arguments.at(i);
@@ -129,45 +179,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<QGraphicsMozView>("QtMozilla", 1, 0, "QGraphicsMozView");
     qmlRegisterType<QDeclarativeMozView>("QtMozilla", 1, 0, "QDeclarativeMozView");
 
-    QUrl qml;
-    if (qmlstring.isEmpty())
-#if defined(__arm__) && !defined(Q_WS_MAEMO_5) && (QT_VERSION <= QT_VERSION_CHECK(5, 0, 0))
-        qml = QUrl("qrc:/qml/main_meego.qml");
-#else
-        qml = QUrl("qrc:/qml/main.qml");
-#endif
-    else
-        qml = QUrl::fromUserInput(qmlstring);
-
-    // See NEMO#415 for an explanation of why this may be necessary.
-    if (glwidget && !getenv("SWRENDER"))
-        view->setViewport(new QGLWidget);
-    else
-        qDebug() << "Not using QGLWidget viewport";
-
-    view->rootContext()->setContextProperty("startURL", QVariant(urlstring));
-    view->setSource(qml);
-    QObject* item = view->rootObject()->findChild<QObject*>("mainScope");
-    if (item) {
-        QObject::connect(item, SIGNAL(pageTitleChanged(QString)), view, SLOT(setWindowTitle(QString)));
-    }
-
-    // Important - simplify qml and resize, make it works good..
-    view->setResizeMode(QDeclarativeView::SizeRootObjectToView);
-    view->setAttribute(Qt::WA_OpaquePaintEvent);
-    view->setAttribute(Qt::WA_NoSystemBackground);
-#if defined(Q_WS_MAEMO_5)
-    view->setAttribute(Qt::WA_Maemo5NonComposited);
-#endif
-    view->viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
-    view->viewport()->setAttribute(Qt::WA_NoSystemBackground);
-#if defined(Q_WS_MAEMO_5)
-    view->viewport()->setAttribute(Qt::WA_Maemo5NonComposited);
-#endif
-    view->setWindowTitle("QtMozEmbedBrowser");
-    view->setWindowFlags(Qt::Window | Qt::WindowTitleHint |
-                         Qt::WindowMinMaxButtonsHint |
-                         Qt::WindowCloseButtonHint);
+    QDeclarativeView *view = CreateNewWindow(urlstring);
 
     if (isFullscreen)
         view->showFullScreen();
