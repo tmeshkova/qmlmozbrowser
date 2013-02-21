@@ -2,8 +2,8 @@ CONFIG += link_pkgconfig
 TARGET = qmlMozEmbedTest
 contains(QT_MAJOR_VERSION, 4) {
   QT += opengl declarative
-  SOURCES += main.cpp qmlapplicationviewer.cpp
-  HEADERS += qmlapplicationviewer.h 
+  SOURCES += main.cpp qmlapplicationviewer.cpp WindowCreator.cpp
+  HEADERS += qmlapplicationviewer.h WindowCreator.h
   PKGCONFIG += QJson
 
 } else {

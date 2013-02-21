@@ -30,15 +30,10 @@
  */
 
 #include <QApplication>
-#include <QDeclarativeView>
 #include <QGLWidget>
 #include <QDebug>
-#include <QUrl>
+#include <QStringList>
 #include <QDir>
-#include <QDeclarativeEngine>
-#ifdef HAS_BOOSTER
-#include <applauncherd/MDeclarativeCache>
-#endif
 #include "qmlapplicationviewer.h"
 #include "qdeclarativemozview.h"
 #include "qgraphicsmozview.h"
@@ -47,64 +42,7 @@
 #include <X11/Xlib.h>
 #endif
 #include "qmozcontext.h"
-
-static QString qmlstring;
-static bool glwidget = true;
-
-QDeclarativeView* CreateNewWindow(const QString& url = QString("about:blank"))
-{
-    QDeclarativeView *view;
-#ifdef HARMATTAN_BOOSTER
-    view = MDeclarativeCache::qDeclarativeView();
-#else
-    qWarning() << Q_FUNC_INFO << "Warning! Running without booster. This may be a bit slower.";
-    QmlApplicationViewer* stackView = new QmlApplicationViewer();
-    view = stackView;
-    stackView->setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
-#endif
-
-    QUrl qml;
-    if (qmlstring.isEmpty())
-#if defined(__arm__) && !defined(Q_WS_MAEMO_5) && (QT_VERSION <= QT_VERSION_CHECK(5, 0, 0))
-        qml = QUrl("qrc:/qml/main_meego.qml");
-#else
-        qml = QUrl("qrc:/qml/main.qml");
-#endif
-    else
-        qml = QUrl::fromUserInput(qmlstring);
-
-    // See NEMO#415 for an explanation of why this may be necessary.
-    if (glwidget && !getenv("SWRENDER"))
-        view->setViewport(new QGLWidget);
-    else
-        qDebug() << "Not using QGLWidget viewport";
-
-    view->rootContext()->setContextProperty("startURL", QVariant(url));
-    view->setSource(qml);
-    QObject* item = view->rootObject()->findChild<QObject*>("mainScope");
-    if (item) {
-        QObject::connect(item, SIGNAL(pageTitleChanged(QString)), view, SLOT(setWindowTitle(QString)));
-    }
-
-    // Important - simplify qml and resize, make it works good..
-    view->setResizeMode(QDeclarativeView::SizeRootObjectToView);
-    view->setAttribute(Qt::WA_OpaquePaintEvent);
-    view->setAttribute(Qt::WA_NoSystemBackground);
-#if defined(Q_WS_MAEMO_5)
-    view->setAttribute(Qt::WA_Maemo5NonComposited);
-#endif
-    view->viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
-    view->viewport()->setAttribute(Qt::WA_NoSystemBackground);
-#if defined(Q_WS_MAEMO_5)
-    view->viewport()->setAttribute(Qt::WA_Maemo5NonComposited);
-#endif
-    view->setWindowTitle("QtMozEmbedBrowser");
-    view->setWindowFlags(Qt::Window | Qt::WindowTitleHint |
-                         Qt::WindowMinMaxButtonsHint |
-                         Qt::WindowCloseButtonHint);
-
-    return view;
-}
+#include "WindowCreator.h"
 
 #ifdef HAS_BOOSTER
 Q_DECL_EXPORT
@@ -133,6 +71,8 @@ int main(int argc, char *argv[])
 
     QString path;
     QString urlstring;
+    QString qmlstring;
+    bool glwidget = true;
 #ifdef __arm__
     bool isFullscreen = true;
 #else
@@ -175,11 +115,14 @@ int main(int argc, char *argv[])
     if (!path.isEmpty())
         QDir::setCurrent(path);
 
+    qmlRegisterType<QmlMozContext>("QtMozilla", 1, 0, "QmlMozContext");
     qmlRegisterType<QMozContext>("QtMozilla", 1, 0, "QMozContext");
     qmlRegisterType<QGraphicsMozView>("QtMozilla", 1, 0, "QGraphicsMozView");
-    qmlRegisterType<QDeclarativeMozView>("QtMozilla", 1, 0, "QDeclarativeMozView");
+    qmlRegisterType<QDeclarativeMozView>("QtMozilla", 1, 0, "QmlMozView");
 
-    QDeclarativeView *view = CreateNewWindow(urlstring);
+    MozWindowCreator winCreator(qmlstring, glwidget, isFullscreen);
+    QDeclarativeView *view = winCreator.CreateNewWindow(urlstring);
+    winCreator.mWindowStack.append(view);
 
     if (isFullscreen)
         view->showFullScreen();
@@ -187,6 +130,8 @@ int main(int argc, char *argv[])
         view->show();
 
     qDebug() << "Starting Application!!!";
+
+    QObject::connect(QMozContext::GetInstance(), SIGNAL(newWindowRequested(const QString&)), &winCreator, SLOT(newWindowRequested(const QString&)));
 
     QString componentPath(DEFAULT_COMPONENTS_PATH);
     qDebug() << "Load components from:" << componentPath + QString("/EmbedLiteBinComponents.manifest");

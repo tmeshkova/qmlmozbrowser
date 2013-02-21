@@ -11,11 +11,6 @@ FocusScope {
 
     signal pageTitleChanged(string title)
 
-    x: 0
-    y: 0
-    width: 800
-    height: 600
-
     function load(address) {
         addressLine.text = address
         viewport.child().load(address)
@@ -25,6 +20,8 @@ FocusScope {
         addressLine.forceActiveFocus()
         addressLine.selectAll()
     }
+
+    QmlMozContext { id: qMozContext }
 
     Rectangle {
         id: navigationBar
@@ -135,7 +132,7 @@ FocusScope {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        viewport.child().newWindow();
+                        qMozContext.newWindow();
                     }
                 }
             }
@@ -199,7 +196,7 @@ FocusScope {
         }
     }
 
-    QDeclarativeMozView {
+    QmlMozView {
         id: webViewport
         visible: true
         focus: true
