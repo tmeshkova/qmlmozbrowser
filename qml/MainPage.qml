@@ -1,8 +1,3 @@
-/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-
 import Qt 4.7
 import QtMozilla 1.0
 import QtQuick 1.0
@@ -16,11 +11,13 @@ FocusScope {
 
     signal pageTitleChanged(string title)
 
-    x: 0; y: 0
-    width: 800; height: 600
+    x: 0
+    y: 0
+    width: 800
+    height: 600
 
     function load(address) {
-        addressLine.text = address;
+        addressLine.text = address
         viewport.child().load(address)
     }
 
@@ -111,7 +108,7 @@ FocusScope {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        viewport.child();
+                        viewport.child()
                         if (viewport.canStop) {
                             console.log("stop loading")
                             viewport.stop()
@@ -160,13 +157,14 @@ FocusScope {
                     margins: 2
                 }
 
-                Keys.onReturnPressed:{
+                Keys.onReturnPressed: {
                     console.log("going to: ", addressLine.text)
-                    load(addressLine.text);
+                    load(addressLine.text)
                 }
 
                 Keys.onPressed: {
-                    if (((event.modifiers & Qt.ControlModifier) && event.key == Qt.Key_L) || event.key == Qt.key_F6) {
+                    if (((event.modifiers & Qt.ControlModifier)
+                         && event.key == Qt.Key_L) || event.key == Qt.key_F6) {
                         focusAddressBar()
                         event.accepted = true
                     }
@@ -174,10 +172,10 @@ FocusScope {
             }
         }
         Component.onCompleted: {
-            print("QML On Completed>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            print("QML On Completed>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         }
         Component.onDestruction: {
-            print("QML On Destroyed>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            print("QML On Destroyed>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         }
     }
 
@@ -185,22 +183,24 @@ FocusScope {
         id: webViewport
         visible: true
         focus: true
-        property bool movingHorizontally : false
-        property bool movingVertically : true
-        property variant visibleArea : QtObject {
-            property real yPosition : 0
-            property real xPosition : 0
-            property real widthRatio : 0
-            property real heightRatio : 0
+        property bool movingHorizontally: false
+        property bool movingVertically: true
+        property variant visibleArea: QtObject {
+            property real yPosition: 0
+            property real xPosition: 0
+            property real widthRatio: 0
+            property real heightRatio: 0
         }
 
         function scrollTimeout() {
-            webViewport.movingHorizontally = false;
-            webViewport.movingVertically = false;
+            webViewport.movingHorizontally = false
+            webViewport.movingVertically = false
         }
         Timer {
             id: scrollTimer
-            interval: 500; running: false; repeat: false;
+            interval: 500
+            running: false
+            repeat: false
             onTriggered: webViewport.scrollTimeout()
         }
 
@@ -213,97 +213,107 @@ FocusScope {
         Connections {
             target: webViewport.child()
             onViewInitialized: {
-                print("QML View Initialized");
+                print("QML View Initialized")
                 if (startURL.length != 0) {
-                    load(startURL);
+                    load(startURL)
                 }
             }
             onViewAreaChanged: {
-                var r = webViewport.child().contentRect;
-                var offset = webViewport.child().scrollableOffset;
-                var s = webViewport.child().scrollableSize;
-                webViewport.visibleArea.widthRatio = r.width / s.width;
-                webViewport.visibleArea.heightRatio = r.height / s.height;
-                webViewport.visibleArea.xPosition = offset.x * webViewport.visibleArea.widthRatio * webViewport.child().resolution;
-                webViewport.visibleArea.yPosition = offset.y * webViewport.visibleArea.heightRatio * webViewport.child().resolution;
-                webViewport.movingHorizontally = true;
-                webViewport.movingVertically = true;
-                scrollTimer.restart();
+                var r = webViewport.child().contentRect
+                var offset = webViewport.child().scrollableOffset
+                var s = webViewport.child().scrollableSize
+                webViewport.visibleArea.widthRatio = r.width / s.width
+                webViewport.visibleArea.heightRatio = r.height / s.height
+                webViewport.visibleArea.xPosition = offset.x
+                        * webViewport.visibleArea.widthRatio
+                        * webViewport.child().resolution
+                webViewport.visibleArea.yPosition = offset.y
+                        * webViewport.visibleArea.heightRatio
+                        * webViewport.child().resolution
+                webViewport.movingHorizontally = true
+                webViewport.movingVertically = true
+                scrollTimer.restart()
             }
             onTitleChanged: {
-                pageTitleChanged(webViewport.child().title);
+                pageTitleChanged(webViewport.child().title)
             }
             onUrlChanged: {
-                addressLine.text = webViewport.child().url;
+                addressLine.text = webViewport.child().url
             }
             onRecvAsyncMessage: {
-                print("onRecvAsyncMessage:" + message + ", data:" + data);
+                print("onRecvAsyncMessage:" + message + ", data:" + data)
             }
             onRecvSyncMessage: {
-                print("onRecvSyncMessage:" + message + ", data:" + data);
+                print("onRecvSyncMessage:" + message + ", data:" + data)
                 if (message == "embed:testsyncresponse") {
-                    response.message = { "val" : "response", "numval" : 0.04 };
+                    response.message = {
+                        val: "response",
+                        numval: 0.04
+                    }
                 }
             }
             onAlert: {
-                print("onAlert: title:" + data.title + ", msg:" + data.text + " winid:" + data.winid);
-                alertDlg.show(data.title, data.text, data.winid);
+                print("onAlert: title:" + data.title + ", msg:" + data.text
+                      + " winid:" + data.winid)
+                alertDlg.show(data.title, data.text, data.winid)
             }
             onConfirm: {
-                print("onConfirm: title:" + data.title + ", data.text:" + data.text);
-                confirmDlg.show(data.title, data.text, data.winid);
+                print("onConfirm: title:" + data.title + ", data.text:" + data.text)
+                confirmDlg.show(data.title, data.text, data.winid)
             }
             onPrompt: {
-                print("onPrompt: title:" + data.title + ", msg:" + data.text);
-                promptDlg.show(data.title, data.text, data.defaultValue, data.winid);
+                print("onPrompt: title:" + data.title + ", msg:" + data.text)
+                promptDlg.show(data.title, data.text, data.defaultValue,
+                               data.winid)
             }
             onAuthRequired: {
-                print("onAuthRequired: title:" + data.title + ", msg:" + data.text + ", winid:" + data.winid);
-                authDlg.show(data.title, data.text, data.defaultValue, data.winid);
+                print("onAuthRequired: title:" + data.title + ", msg:"
+                      + data.text + ", winid:" + data.winid)
+                authDlg.show(data.title, data.text, data.defaultValue,
+                             data.winid)
             }
-
         }
         AlertDialog {
             id: alertDlg
             onHandled: {
                 webViewport.child().sendAsyncMessage("alertresponse", {
-                    "winid" : winid,
-                    "checkval" : alertDlg.checkval,
-                    "accepted" : alertDlg.accepted
-                });
+                                                         winid: winid,
+                                                         checkval: alertDlg.checkval,
+                                                         accepted: alertDlg.accepted
+                                                     })
             }
         }
         ConfirmDialog {
             id: confirmDlg
             onHandled: {
                 webViewport.child().sendAsyncMessage("confirmresponse", {
-                    "winid" : winid,
-                    "checkval" : confirmDlg.checkval,
-                    "accepted" : confirmDlg.accepted
-                });
+                                                         winid: winid,
+                                                         checkval: confirmDlg.checkval,
+                                                         accepted: confirmDlg.accepted
+                                                     })
             }
         }
         PromptDialog {
             id: promptDlg
             onHandled: {
                 webViewport.child().sendAsyncMessage("promptresponse", {
-                    "winid" : winid,
-                    "checkval" : promptDlg.checkval,
-                    "accepted" : promptDlg.accepted,
-                    "promptvalue" : promptDlg.prompttext
-                });
+                                                         winid: winid,
+                                                         checkval: promptDlg.checkval,
+                                                         accepted: promptDlg.accepted,
+                                                         promptvalue: promptDlg.prompttext
+                                                     })
             }
         }
         AuthenticationDialog {
             id: authDlg
             onHandled: {
                 webViewport.child().sendAsyncMessage("authresponse", {
-                    "winid" : winid,
-                    "checkval" : authDlg.checkval,
-                    "accepted" : authDlg.accepted,
-                    "username" : authDlg.username,
-                    "password" : authDlg.password
-                });
+                                                         winid: winid,
+                                                         checkval: authDlg.checkval,
+                                                         accepted: authDlg.accepted,
+                                                         username: authDlg.username,
+                                                         password: authDlg.password
+                                                     })
             }
         }
         ScrollIndicator {
@@ -313,7 +323,8 @@ FocusScope {
     }
 
     Keys.onPressed: {
-        if (((event.modifiers & Qt.ControlModifier) && event.key == Qt.Key_L) || event.key == Qt.key_F6) {
+        if (((event.modifiers & Qt.ControlModifier) && event.key == Qt.Key_L)
+                || event.key == Qt.key_F6) {
             console.log("Focus address bar")
             focusAddressBar()
             event.accepted = true
