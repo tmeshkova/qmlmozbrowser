@@ -15,7 +15,7 @@ MozWindowCreator::MozWindowCreator(const QString& aQmlstring, const bool& aGlwid
     mIsFullScreen = aIsFullScreen;
 }
 
-unsigned int
+quint32
 MozWindowCreator::newWindowRequested(const QString& url, const unsigned& aParentID)
 {
     uint32_t uniqueID = 0;
@@ -29,7 +29,7 @@ MozWindowCreator::newWindowRequested(const QString& url, const unsigned& aParent
 }
 
 QDeclarativeView*
-MozWindowCreator::CreateNewWindow(const QString& url, unsigned int *aUniqueID, unsigned int aParentID)
+MozWindowCreator::CreateNewWindow(const QString& url, quint32 *aUniqueID, quint32 aParentID)
 {
     QDeclarativeView *view;
 #ifdef HARMATTAN_BOOSTER
