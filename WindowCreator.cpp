@@ -5,6 +5,7 @@
 #include <QGLWidget>
 #include <QDeclarativeContext>
 #include <QDebug>
+#include <qdeclarativemozview.h>
 #include "qmlapplicationviewer.h"
 
 MozWindowCreator::MozWindowCreator(const QString& aQmlstring, const bool& aGlwidget, const bool& aIsFullScreen)
@@ -14,18 +15,21 @@ MozWindowCreator::MozWindowCreator(const QString& aQmlstring, const bool& aGlwid
     mIsFullScreen = aIsFullScreen;
 }
 
-void MozWindowCreator::newWindowRequested(const QString& url)
+unsigned int
+MozWindowCreator::newWindowRequested(const QString& url, const unsigned& aParentID)
 {
-    QDeclarativeView* view = CreateNewWindow(url);
+    uint32_t uniqueID = 0;
+    QDeclarativeView* view = CreateNewWindow(url, &uniqueID, aParentID);
     mWindowStack.append(view);
     if (mIsFullScreen)
         view->showFullScreen();
     else
         view->show();
+    return uniqueID;
 }
 
 QDeclarativeView*
-MozWindowCreator::CreateNewWindow(const QString& url)
+MozWindowCreator::CreateNewWindow(const QString& url, unsigned int *aUniqueID, unsigned int aParentID)
 {
     QDeclarativeView *view;
 #ifdef HARMATTAN_BOOSTER
@@ -54,10 +58,17 @@ MozWindowCreator::CreateNewWindow(const QString& url)
         qDebug() << "Not using QGLWidget viewport";
 
     view->rootContext()->setContextProperty("startURL", QVariant(url));
+    view->rootContext()->setContextProperty("createParentID", QVariant(aParentID));
     view->setSource(qml);
     QObject* item = view->rootObject()->findChild<QObject*>("mainScope");
     if (item) {
         QObject::connect(item, SIGNAL(pageTitleChanged(QString)), view, SLOT(setWindowTitle(QString)));
+    }
+
+    if (aUniqueID) {
+        QDeclarativeMozView* mozview = item->findChild<QDeclarativeMozView*>("webViewport");
+        if (mozview)
+            *aUniqueID = mozview->uniqueID();
     }
 
     // Important - simplify qml and resize, make it works good..

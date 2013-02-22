@@ -198,6 +198,8 @@ FocusScope {
 
     QmlMozView {
         id: webViewport
+        parentid: createParentID
+        objectName: "webViewport"
         visible: true
         focus: true
         property bool movingHorizontally: false
@@ -231,7 +233,7 @@ FocusScope {
             target: webViewport.child()
             onViewInitialized: {
                 print("QML View Initialized")
-                if (startURL.length != 0) {
+                if (startURL.length != 0 && createParentID == 0) {
                     load(startURL)
                 }
             }

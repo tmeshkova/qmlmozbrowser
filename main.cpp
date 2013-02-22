@@ -131,7 +131,9 @@ int main(int argc, char *argv[])
 
     qDebug() << "Starting Application!!!";
 
-    QObject::connect(QMozContext::GetInstance(), SIGNAL(newWindowRequested(const QString&)), &winCreator, SLOT(newWindowRequested(const QString&)));
+    QObject::connect(QMozContext::GetInstance(),
+                     SIGNAL(newWindowRequested(const QString&, const unsigned&)),
+                     &winCreator, SLOT(newWindowRequested(const QString&, const unsigned&)));
 
     QString componentPath(DEFAULT_COMPONENTS_PATH);
     qDebug() << "Load components from:" << componentPath + QString("/EmbedLiteBinComponents.manifest");
