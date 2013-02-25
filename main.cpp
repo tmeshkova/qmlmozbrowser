@@ -116,7 +116,6 @@ int main(int argc, char *argv[])
         QDir::setCurrent(path);
 
     qmlRegisterType<QmlMozContext>("QtMozilla", 1, 0, "QmlMozContext");
-    qmlRegisterType<QMozContext>("QtMozilla", 1, 0, "QMozContext");
     qmlRegisterType<QGraphicsMozView>("QtMozilla", 1, 0, "QGraphicsMozView");
     qmlRegisterType<QDeclarativeMozView>("QtMozilla", 1, 0, "QmlMozView");
 
