@@ -8,6 +8,7 @@ FocusScope {
 
     anchors.fill: parent
     property alias viewport: webViewport
+    property alias context: qMozContext
 
     signal pageTitleChanged(string title)
 
@@ -21,7 +22,9 @@ FocusScope {
         addressLine.selectAll()
     }
 
-    QmlMozContext { id: qMozContext }
+    QmlMozContext {
+        id: qMozContext
+    }
 
     Rectangle {
         id: navigationBar
@@ -233,6 +236,16 @@ FocusScope {
             target: webViewport.child()
             onViewInitialized: {
                 print("QML View Initialized")
+                context.setPref("browser.ui.touch.left", 32);
+                context.setPref("browser.ui.touch.right", 32);
+                context.setPref("browser.ui.touch.top", 48);
+                context.setPref("browser.ui.touch.bottom", 16);
+                context.setPref("browser.ui.touch.weight.visited", 120);
+                webViewport.child().loadFrameScript("chrome://embedlite/content/embedhelper.js");
+                webViewport.child().addMessageListener("embed:alert");
+                webViewport.child().addMessageListener("embed:prompt");
+                webViewport.child().addMessageListener("embed:confirm");
+                webViewport.child().addMessageListener("embed:auth");
                 if (startURL.length != 0 && createParentID == 0) {
                     load(startURL)
                 }

@@ -135,10 +135,13 @@ int main(int argc, char *argv[])
                      &winCreator, SLOT(newWindowRequested(const QString&, const unsigned&)));
 
     QString componentPath(DEFAULT_COMPONENTS_PATH);
-    qDebug() << "Load components from:" << componentPath + QString("/EmbedLiteBinComponents.manifest");
+    qDebug() << "Load components from:" << componentPath + QString("/components") + QString("/EmbedLiteBinComponents.manifest");
     QMozContext::GetInstance()->addComponentManifest(componentPath + QString("/EmbedLiteBinComponents.manifest"));
-    qDebug() << "Load components from:" << componentPath + QString("/EmbedLiteJSComponents.manifest");
+    qDebug() << "Load components from:" << componentPath + QString("/components") + QString("/EmbedLiteJSComponents.manifest");
     QMozContext::GetInstance()->addComponentManifest(componentPath + QString("/EmbedLiteJSComponents.manifest"));
+    qDebug() << "Load components from:" << componentPath + QString("/chrome") + QString("/EmbedLiteJSScripts.manifest");
+    QMozContext::GetInstance()->addComponentManifest(componentPath + QString("/chrome") + QString("/EmbedLiteJSScripts.manifest"));
+
 //    QMozContext::GetInstance()->addObserver("history:checkurivisited");
 //    QMozContext::GetInstance()->addObserver("history:markurivisited");
 
