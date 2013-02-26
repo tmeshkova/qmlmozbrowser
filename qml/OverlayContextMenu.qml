@@ -36,8 +36,6 @@ ListView {
         visible: height > 0
         fixedHeight: 30
         onClicked: {
-            console.log("index clicked: " + model.index)
-
             switch (model.index) {
                 case 0: context.newWindow(contextLinkHref)
                     break
