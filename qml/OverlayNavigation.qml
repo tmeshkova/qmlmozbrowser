@@ -31,7 +31,6 @@ Item {
             console.log("back")
             viewport.child().goBack()
             root.visible = false
-            viewport.enabled = true
         }
     }
     
@@ -52,7 +51,6 @@ Item {
             console.log("forward")
             viewport.child().goForward()
             root.visible = false
-            viewport.enabled = true
         }
     }
     
@@ -78,7 +76,6 @@ Item {
             }
             
             root.visible = false
-            viewport.enabled = true
         }
     }
     

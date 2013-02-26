@@ -83,7 +83,6 @@ Item {
             anchors.right: parent.right
             
             onActiveFocusChanged: {
-                //viewport.enabled = !addressLine.focus
                 addressLine.focus ? textInputOverlay.visible = true : textInputOverlay.visible = false
             }
             

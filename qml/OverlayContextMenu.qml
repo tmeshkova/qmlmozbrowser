@@ -7,7 +7,6 @@ ListView {
     property string contextImageSrc: ""
     property string contextLinkHref: ""
     property variant context
-    property variant viewport
     
     visible: false
     
@@ -50,7 +49,6 @@ ListView {
                     break
             }
             
-            viewport.enabled = true
             root.visible = false
         }
     }
