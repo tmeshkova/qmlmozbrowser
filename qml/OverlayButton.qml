@@ -1,5 +1,5 @@
 import Qt 4.7
-import QtQuick 1.1
+import QtQuick 1.0
 
 Item {
     id: root
@@ -65,7 +65,6 @@ Item {
             mouse.accepted = true
         }
         onReleased: {
-            root.clicked()
             root.clicked()
             mouse.accepted = true
         }
