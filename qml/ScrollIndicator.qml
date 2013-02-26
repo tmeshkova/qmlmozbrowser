@@ -4,7 +4,7 @@ import QtMozilla 1.0
 Item {
     id: root
 
-    property QmlMozView flickableItem
+    property variant flickableItem
 
     anchors {
         fill: flickableItem

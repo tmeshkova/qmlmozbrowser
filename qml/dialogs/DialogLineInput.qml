@@ -34,7 +34,7 @@ Rectangle {
     property alias echoMode: input.echoMode
     signal accepted()
 
-    height: 20
+    height: 28
     color: "#fefefe"
 
     border {
@@ -49,6 +49,7 @@ Rectangle {
     TextInput {
         id: input
         focus: true
+        selectByMouse: true
         anchors.fill: parent
 
         onAccepted: dialogLineInput.accepted()

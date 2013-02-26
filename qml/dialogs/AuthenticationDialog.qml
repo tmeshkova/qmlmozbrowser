@@ -78,7 +78,7 @@ Dialog {
         onAccepted: topdialog.handle(true)
     }
 
-    Row {
+    Column {
         id: buttonRow
         spacing: 5
         anchors.horizontalCenter: parent.horizontalCenter

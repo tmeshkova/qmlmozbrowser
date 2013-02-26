@@ -7,195 +7,24 @@ FocusScope {
     objectName: "mainScope"
 
     anchors.fill: parent
-    property alias viewport: webViewport
-    property alias context: qMozContext
 
     signal pageTitleChanged(string title)
 
     function load(address) {
         addressLine.text = address
-        viewport.child().load(address)
+        webViewport.child().load(address)
     }
 
-    function focusAddressBar() {
-        addressLine.forceActiveFocus()
-        addressLine.selectAll()
-    }
+    QmlMozContext { id: context }
 
-    QmlMozContext {
-        id: qMozContext
-    }
-
-    Rectangle {
-        id: navigationBar
-        color: "#efefef"
-        height: 45
+    AddressField {
+        id: addressLine
+        viewport: webViewport
         anchors {
             top: parent.top
             left: parent.left
             right: parent.right
-        }
-
-        Row {
-            id: controlsRow
-            spacing: 4
-            Rectangle {
-                id: backButton
-                height: navigationBar.height - 2
-                width: height
-                color: "#efefef"
-
-                Image {
-                    anchors.fill: parent
-                    anchors.centerIn: parent
-                    source: "../icons/backward.png"
-                }
-
-                Rectangle {
-                    anchors.fill: parent
-                    color: reloadButton.color
-                    opacity: 0.8
-                    visible: !webViewport.child().canGoBack
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        console.log("going back")
-                        viewport.child().goBack()
-                    }
-                }
-            }
-            Rectangle {
-                id: forwardButton
-                height: navigationBar.height - 2
-                width: height
-                color: "#efefef"
-
-                Image {
-                    anchors.fill: parent
-                    anchors.centerIn: parent
-                    source: "../icons/forward.png"
-                }
-
-                Rectangle {
-                    anchors.fill: parent
-                    color: forwardButton.color
-                    opacity: 0.8
-                    visible: !webViewport.child().canGoForward
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        console.log("going forward")
-                        viewport.child().goForward()
-                    }
-                }
-            }
-            Rectangle {
-                id: reloadButton
-                height: navigationBar.height - 2
-                width: height
-                color: "#efefef"
-
-                Image {
-                    anchors.fill: parent
-                    anchors.centerIn: parent
-                    source: viewport.child().loading ? "../icons/stop.png" : "../icons/refresh.png"
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        viewport.child()
-                        if (viewport.canStop) {
-                            console.log("stop loading")
-                            viewport.stop()
-                        } else {
-                            console.log("reloading")
-                            viewport.child().reload()
-                        }
-                    }
-                }
-            }
-
-            Rectangle {
-                id: newWinButton
-                height: navigationBar.height - 2
-                width: height
-                color: "#efefef"
-
-                Image {
-                    anchors.fill: parent
-                    anchors.centerIn: parent
-                    source: "../icons/plus.png"
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        qMozContext.newWindow();
-                    }
-                }
-            }
-        }
-        Rectangle {
-            color: "white"
-            height: navigationBar.height - 4
-            border.width: 1
-            anchors {
-                left: controlsRow.right
-                right: parent.right
-                margins: 2
-                verticalCenter: parent.verticalCenter
-            }
-            Rectangle {
-                anchors {
-                    top: parent.top
-                    bottom: parent.bottom
-                    left: parent.left
-                }
-                width: parent.width / 100 * viewport.child().loadProgress
-                color: "blue"
-                opacity: 0.3
-                visible: viewport.child().loadProgress != 100
-            }
-
-            TextInput {
-                id: addressLine
-                clip: true
-                selectByMouse: true
-                font {
-                    pointSize: 18
-                    family: "Nokia Pure Text"
-                }
-                anchors {
-                    verticalCenter: parent.verticalCenter
-                    left: parent.left
-                    right: parent.right
-                    margins: 2
-                }
-
-                Keys.onReturnPressed: {
-                    console.log("going to: ", addressLine.text)
-                    load(addressLine.text)
-                }
-
-                Keys.onPressed: {
-                    if (((event.modifiers & Qt.ControlModifier)
-                         && event.key == Qt.Key_L) || event.key == Qt.key_F6) {
-                        focusAddressBar()
-                        event.accepted = true
-                    }
-                }
-            }
-        }
-        Component.onCompleted: {
-            print("QML On Completed>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-        }
-        Component.onDestruction: {
-            print("QML On Destroyed>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+            topMargin: 0
         }
     }
 
@@ -227,7 +56,7 @@ FocusScope {
         }
 
         anchors {
-            top: navigationBar.bottom
+            top: addressLine.bottom
             left: parent.left
             right: parent.right
             bottom: parent.bottom
@@ -235,7 +64,6 @@ FocusScope {
         Connections {
             target: webViewport.child()
             onViewInitialized: {
-                print("QML View Initialized")
                 context.setPref("browser.ui.touch.left", 32);
                 context.setPref("browser.ui.touch.right", 32);
                 context.setPref("browser.ui.touch.top", 48);
@@ -246,6 +74,9 @@ FocusScope {
                 webViewport.child().addMessageListener("embed:prompt");
                 webViewport.child().addMessageListener("embed:confirm");
                 webViewport.child().addMessageListener("embed:auth");
+                webViewport.child().addMessageListener("chrome:title")
+                webViewport.child().addMessageListener("context:info")
+                print("QML View Initialized")
                 if (startURL.length != 0 && createParentID == 0) {
                     load(startURL)
                 }
@@ -269,11 +100,14 @@ FocusScope {
             onTitleChanged: {
                 pageTitleChanged(webViewport.child().title)
             }
-            onUrlChanged: {
-                addressLine.text = webViewport.child().url
-            }
             onRecvAsyncMessage: {
                 print("onRecvAsyncMessage:" + message + ", data:" + data)
+                if (message == "context:info") {
+                    contextMenu.contextLinkHref = data.LinkHref
+                    contextMenu.contextImageSrc = data.ImageSrc
+                    navigation.contextInfoAvialable = (contextMenu.contextLinkHref.length > 0 || contextMenu.contextImageSrc.length > 0)
+
+                }
             }
             onRecvSyncMessage: {
                 print("onRecvSyncMessage:" + message + ", data:" + data)
@@ -285,26 +119,27 @@ FocusScope {
                 }
             }
             onAlert: {
-                print("onAlert: title:" + data.title + ", msg:" + data.text
-                      + " winid:" + data.winid)
+                print("onAlert: title:" + data.title + ", msg:" + data.text + " winid:" + data.winid)
+                webViewport.enabled = false
                 alertDlg.show(data.title, data.text, data.winid)
             }
             onConfirm: {
                 print("onConfirm: title:" + data.title + ", data.text:" + data.text)
+                webViewport.enabled = false
                 confirmDlg.show(data.title, data.text, data.winid)
             }
             onPrompt: {
                 print("onPrompt: title:" + data.title + ", msg:" + data.text)
-                promptDlg.show(data.title, data.text, data.defaultValue,
-                               data.winid)
+                webViewport.enabled = false
+                promptDlg.show(data.title, data.text, data.defaultValue, data.winid)
             }
             onAuthRequired: {
-                print("onAuthRequired: title:" + data.title + ", msg:"
-                      + data.text + ", winid:" + data.winid)
-                authDlg.show(data.title, data.text, data.defaultValue,
-                             data.winid)
+                print("onAuthRequired: title:" + data.title + ", msg:" + data.text + ", winid:" + data.winid)
+                webViewport.enabled = false
+                authDlg.show(data.title, data.text, data.defaultValue, data.winid)
             }
         }
+
         AlertDialog {
             id: alertDlg
             onHandled: {
@@ -313,8 +148,10 @@ FocusScope {
                                                          checkval: alertDlg.checkval,
                                                          accepted: alertDlg.accepted
                                                      })
+                webViewport.enabled = true
             }
         }
+
         ConfirmDialog {
             id: confirmDlg
             onHandled: {
@@ -323,8 +160,10 @@ FocusScope {
                                                          checkval: confirmDlg.checkval,
                                                          accepted: confirmDlg.accepted
                                                      })
+                webViewport.enabled = true
             }
         }
+
         PromptDialog {
             id: promptDlg
             onHandled: {
@@ -334,8 +173,10 @@ FocusScope {
                                                          accepted: promptDlg.accepted,
                                                          promptvalue: promptDlg.prompttext
                                                      })
+                webViewport.enabled = true
             }
         }
+
         AuthenticationDialog {
             id: authDlg
             onHandled: {
@@ -346,11 +187,139 @@ FocusScope {
                                                          username: authDlg.username,
                                                          password: authDlg.password
                                                      })
+                webViewport.enabled = true
             }
         }
+
         ScrollIndicator {
             id: scrollIndicator
             flickableItem: webViewport
+        }
+    }
+
+    MouseArea {
+        anchors.fill: webViewport
+        
+        property int mX: 0
+        property int mY: 0
+        property int edgeY: 0
+        property int deltaY: 0
+        property bool longPressed: false
+        property bool longLocked: false
+
+        onPressed: {
+            addressLine.unfocusAddressBar()
+            var mapped = mapToItem(mainScope, mouse.x, mouse.y);
+            mY = mapped.y
+            mX = mapped.x
+
+            navigation.contextInfoAvialable = false
+            navigation.visible = false
+            contextMenu.visible = false
+
+            webViewport.focus = true
+        }
+        
+        onReleased: {
+            if (!navigation.visible) {
+                webViewport.enabled = true
+                webViewport.focus = true;
+
+                if (webViewport.child().contentRect.y == 0 && deltaY < - 20) {
+                        addressLine.anchors.topMargin = 0;
+                }
+                else  {
+                    addressLine.anchors.topMargin = -addressLine.height
+                }
+            }
+
+            longPressed = false;
+            longLocked = false
+            edgeY = 0
+        }
+
+        onPressAndHold: {
+            longPressed = true
+
+            var mapped = mapToItem(mainScope, mouse.x, mouse.y)
+            navigation.y = mapped.y - 150
+            if (navigation.y < 0)
+                navigation.y = 0
+            else if (navigation.y + navigation.height > parent.height)
+                navigation.y = parent.height - navigation.height
+
+            if (!longLocked && !contextMenu.visible) {
+                navigation.visible = true
+                webViewport.enabled = false
+            }
+        }
+
+        onPositionChanged: {
+            var mapped = mapToItem(mainScope, mouse.x, mouse.y)
+            deltaY = mY - mapped.y
+            if (!longPressed && Math.abs(deltaY) > 20) {
+                longLocked = true
+            }
+
+            if (webViewport.child().contentRect.y == 0) {
+                if (deltaY < 0) {
+                    webViewport.enabled = false
+                    if (edgeY == 0)
+                        edgeY = mapped.y
+
+                    var topDelta = mapped.y - edgeY;
+                    if (topDelta > addressLine.height)
+                        topDelta = addressLine.height;
+                    addressLine.anchors.topMargin = topDelta - addressLine.height;
+                }
+                else if (!longPressed && !navigation.visible) {
+                    webViewport.enabled = true
+                }
+            }
+        }
+    }
+
+    OverlayContextMenu {
+        id: contextMenu
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 5
+        width: Math.min(parent.width, parent.height) - 10
+        context: context
+        viewport: webViewport
+    }
+
+    OverlayNavigation {
+        id: navigation
+        anchors.horizontalCenter: parent.horizontalCenter
+        viewport: webViewport
+
+        onContextMenuRequested: {
+            console.log("context menu")
+            contextMenu.visible = true
+            webViewport.enabled = false
+            navigation.visible = false
+        }
+    }
+
+    OverlayButton {
+        id: newPage
+
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        anchors.bottomMargin: 10
+
+        width: 100
+        height: 100
+
+        visible: navigation.visible
+
+        iconSource: "../icons/plus.png"
+
+        onClicked: {
+            context.newWindow()
+            navigation.visible = false
         }
     }
 
@@ -358,7 +327,7 @@ FocusScope {
         if (((event.modifiers & Qt.ControlModifier) && event.key == Qt.Key_L)
                 || event.key == Qt.key_F6) {
             console.log("Focus address bar")
-            focusAddressBar()
+            addressLine.focusAddressBar()
             event.accepted = true
         }
     }

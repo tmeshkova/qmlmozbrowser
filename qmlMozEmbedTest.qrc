@@ -17,6 +17,11 @@
         <file>qml/dialogs/AuthenticationDialog.qml</file>
         <file>qml/dialogs/DialogButton.qml</file>
         <file>qml/dialogs/DialogLineInput.qml</file>
+        <file>qmlqml/AddressField.qml</file>
+        <file>qmlqml/OverlayButton.qml</file>
+        <file>qmlqml/OverlayContextMenu.qml</file>
+        <file>qmlqml/OverlayNavigation.qml</file>
+
 
         <file alias="qml/Dialog.qml">qml/dialogs/Dialog.qml</file>
         <file alias="qml/AlertDialog.qml">qml/dialogs/AlertDialog.qml</file>

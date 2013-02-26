@@ -36,8 +36,8 @@ Rectangle {
 
     color: mouseArea.pressed ? "#eaeaea" : "#fbfbfb"
 
-    width: 60
-    height: 20
+    width: 200
+    height: 40
 
     border {
         width: 1
@@ -49,6 +49,7 @@ Rectangle {
 
     Text {
         id: buttonText
+        font.pixelSize: 20
         anchors.centerIn: parent
     }
 
