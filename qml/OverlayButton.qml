@@ -1,5 +1,5 @@
 import Qt 4.7
-import QtQuick 1.1
+import QtQuick 1.0
 
 Item {
     id: root
@@ -36,7 +36,6 @@ Item {
         width: height
         fillMode: Image.PreserveAspectFit
         smooth: true
-        cache: true
         asynchronous: true
         visible: source != ""
         opacity: root.enabled ? 1.0 : 0.2

@@ -16,7 +16,7 @@ Item {
     }
     
     function unfocusAddressBar() {
-        addressLine.activeFocus = false
+        addressLine.focus = false
     }
     
     Connections {
