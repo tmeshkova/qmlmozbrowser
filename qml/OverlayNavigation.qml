@@ -28,10 +28,8 @@ Item {
         enabled: viewport.child().canGoBack
 
         onClicked: {
-            console.log("back")
             viewport.child().goBack()
             root.visible = false
-            viewport.enabled = true
         }
     }
 
@@ -49,10 +47,8 @@ Item {
         enabled: viewport.child().canGoForward
 
         onClicked: {
-            console.log("forward")
             viewport.child().goForward()
             root.visible = false
-            viewport.enabled = true
         }
     }
 
@@ -70,15 +66,12 @@ Item {
 
         onClicked: {
             if (viewport.child().loading) {
-                console.log("stop loading")
                 viewport.child().stop()
             } else {
-                console.log("reloading")
                 viewport.child().reload()
             }
 
             root.visible = false
-            viewport.enabled = true
         }
     }
 

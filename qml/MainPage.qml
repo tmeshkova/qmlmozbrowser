@@ -34,6 +34,7 @@ FocusScope {
         objectName: "webViewport"
         visible: true
         focus: true
+        enabled: !(alertDlg.visible || confirmDlg.visible || promptDlg.visible || authDlg.visible || navigation.visible || contextMenu.visible)
         property bool movingHorizontally: false
         property bool movingVertically: true
         property variant visibleArea: QtObject {
@@ -120,22 +121,18 @@ FocusScope {
             }
             onAlert: {
                 print("onAlert: title:" + data.title + ", msg:" + data.text + " winid:" + data.winid)
-                webViewport.enabled = false
                 alertDlg.show(data.title, data.text, data.winid)
             }
             onConfirm: {
                 print("onConfirm: title:" + data.title + ", data.text:" + data.text)
-                webViewport.enabled = false
                 confirmDlg.show(data.title, data.text, data.winid)
             }
             onPrompt: {
                 print("onPrompt: title:" + data.title + ", msg:" + data.text)
-                webViewport.enabled = false
                 promptDlg.show(data.title, data.text, data.defaultValue, data.winid)
             }
             onAuthRequired: {
                 print("onAuthRequired: title:" + data.title + ", msg:" + data.text + ", winid:" + data.winid)
-                webViewport.enabled = false
                 authDlg.show(data.title, data.text, data.defaultValue, data.winid)
             }
         }
@@ -148,7 +145,6 @@ FocusScope {
                                                          checkval: alertDlg.checkval,
                                                          accepted: alertDlg.accepted
                                                      })
-                webViewport.enabled = true
             }
         }
 
@@ -160,7 +156,6 @@ FocusScope {
                                                          checkval: confirmDlg.checkval,
                                                          accepted: confirmDlg.accepted
                                                      })
-                webViewport.enabled = true
             }
         }
 
@@ -173,7 +168,6 @@ FocusScope {
                                                          accepted: promptDlg.accepted,
                                                          promptvalue: promptDlg.prompttext
                                                      })
-                webViewport.enabled = true
             }
         }
 
@@ -187,7 +181,6 @@ FocusScope {
                                                          username: authDlg.username,
                                                          password: authDlg.password
                                                      })
-                webViewport.enabled = true
             }
         }
 
@@ -222,7 +215,6 @@ FocusScope {
 
         onReleased: {
             if (!navigation.visible) {
-                webViewport.enabled = true
                 webViewport.focus = true;
 
                 if (webViewport.child().contentRect.y == 0 && deltaY < - 20) {
@@ -241,16 +233,14 @@ FocusScope {
         onPressAndHold: {
             longPressed = true
 
-            var mapped = mapToItem(mainScope, mouse.x, mouse.y)
-            navigation.y = mapped.y - 150
-            if (navigation.y < 0)
-                navigation.y = 0
-            else if (navigation.y + navigation.height > parent.height)
-                navigation.y = parent.height - navigation.height
-
             if (!longLocked && !contextMenu.visible) {
+                var mapped = mapToItem(mainScope, mouse.x, mouse.y)
+                navigation.y = mapped.y - 150
+                if (navigation.y < 0)
+                    navigation.y = 0
+                else if (navigation.y + navigation.height > parent.height)
+                    navigation.y = parent.height - navigation.height
                 navigation.visible = true
-                webViewport.enabled = false
             }
         }
 
@@ -263,7 +253,6 @@ FocusScope {
 
             if (webViewport.child().contentRect.y == 0) {
                 if (deltaY < 0) {
-                    webViewport.enabled = false
                     if (edgeY == 0)
                         edgeY = mapped.y
 
@@ -271,9 +260,6 @@ FocusScope {
                     if (topDelta > addressLine.height)
                         topDelta = addressLine.height;
                     addressLine.anchors.topMargin = topDelta - addressLine.height;
-                }
-                else if (!longPressed && !navigation.visible) {
-                    webViewport.enabled = true
                 }
             }
         }
@@ -286,7 +272,6 @@ FocusScope {
         anchors.bottomMargin: 5
         width: Math.min(parent.width, parent.height) - 10
         context: context
-        viewport: webViewport
     }
 
     OverlayNavigation {
@@ -295,9 +280,7 @@ FocusScope {
         viewport: webViewport
 
         onContextMenuRequested: {
-            console.log("context menu")
             contextMenu.visible = true
-            webViewport.enabled = false
             navigation.visible = false
         }
     }
@@ -326,7 +309,6 @@ FocusScope {
     Keys.onPressed: {
         if (((event.modifiers & Qt.ControlModifier) && event.key == Qt.Key_L)
                 || event.key == Qt.key_F6) {
-            console.log("Focus address bar")
             addressLine.focusAddressBar()
             event.accepted = true
         }

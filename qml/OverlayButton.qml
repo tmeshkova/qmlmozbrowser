@@ -59,21 +59,17 @@ Item {
         id: mouseArea
 
         anchors.fill: parent
-        hoverEnabled: true
-        preventStealing: true
 
         onPressed: {
-            console.log("overlayButton pressed")
-        root.pressed()
-        mouse.accepted = true
+            root.pressed()
+            mouse.accepted = true
         }
         onReleased: {
-            console.log("overlayButton released")
-        root.clicked()
-        mouse.accepted = true
+            root.clicked()
+            root.clicked()
+            mouse.accepted = true
         }
         onPressAndHold: {
-            console.log("overlayButton hold")
             root.pressAndHold()
             mouse.accepted = true
         }

@@ -7,7 +7,6 @@ ListView {
     property string contextImageSrc: ""
     property string contextLinkHref: ""
     property variant context
-    property variant viewport
 
     visible: false
 
@@ -37,8 +36,6 @@ ListView {
         visible: height > 0
         fixedHeight: 30
         onClicked: {
-            console.log("index clicked: " + model.index)
-
             switch (model.index) {
                 case 0: context.newWindow(contextLinkHref)
                     break
@@ -50,7 +47,6 @@ ListView {
                     break
             }
 
-            viewport.enabled = true
             root.visible = false
         }
     }
