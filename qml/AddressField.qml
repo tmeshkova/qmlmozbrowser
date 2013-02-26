@@ -88,7 +88,7 @@ Item {
 
             Keys.onReturnPressed:{
                 viewport.child().load(addressLine.text);
-                mainScope.viewport.focus = true
+                viewport.focus = true
             }
 
             Keys.onPressed: {
