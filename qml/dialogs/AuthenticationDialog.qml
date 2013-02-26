@@ -30,7 +30,7 @@ import QtQuick 1.1
 Dialog {
     id: topdialog
 
-    title: "Authentication required." 
+    title: "Authentication required."
     message: "Page" + " requires authentication."
     property alias username: input.text
     property alias password: passwordInput.text
@@ -71,7 +71,7 @@ Dialog {
 
     DialogLineInput {
         id: passwordInput
-        text: "" 
+        text: ""
         width: 300 - 30
         echoMode: TextInput.PasswordEchoOnEdit
 

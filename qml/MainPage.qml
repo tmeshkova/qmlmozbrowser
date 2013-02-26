@@ -199,7 +199,7 @@ FocusScope {
 
     MouseArea {
         anchors.fill: webViewport
-        
+
         property int mX: 0
         property int mY: 0
         property int edgeY: 0
@@ -219,7 +219,7 @@ FocusScope {
 
             webViewport.focus = true
         }
-        
+
         onReleased: {
             if (!navigation.visible) {
                 webViewport.enabled = true

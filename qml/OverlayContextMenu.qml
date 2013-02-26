@@ -2,19 +2,19 @@ import Qt 4.7
 import QtQuick 1.0
 
 ListView {
-    id: root 
-    
+    id: root
+
     property string contextImageSrc: ""
     property string contextLinkHref: ""
     property variant context
     property variant viewport
-    
+
     visible: false
-    
+
     height: (contextLinkHref.length > 0 ? 160 : 0) + (contextImageSrc.length > 0 ? 160 : 0)
-    
+
     clip: true
-    
+
     model: ListModel {
         ListElement {
             name: "Open link url in a new window"
@@ -29,7 +29,7 @@ ListView {
             name: "Copy image url to clipboard"
         }
     }
-    
+
     delegate: OverlayButton {
         text: model.name
         height: (model.index < 2) ? (contextLinkHref.length > 0 ? 80 : 0) : (contextImageSrc.length > 0 ? 80 : 0)
@@ -38,7 +38,7 @@ ListView {
         fixedHeight: 30
         onClicked: {
             console.log("index clicked: " + model.index)
-            
+
             switch (model.index) {
                 case 0: context.newWindow(contextLinkHref)
                     break
@@ -49,7 +49,7 @@ ListView {
                 case 3: context.setClipboard(contextImageSrc)
                     break
             }
-            
+
             viewport.enabled = true
             root.visible = false
         }
