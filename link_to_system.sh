@@ -6,13 +6,16 @@ if [ "$TARGET_DIR" = "" ]; then
   TARGET_DIR=/usr/bin
 fi
 
-BARCH=`uname -m`
-OBJDIR="obj-$BARCH-dir"
+OBJPREFIX=$2
+if [ "$OBJPREFIX" = "" ]; then
+  BARCH=`uname -m`
+  OBJPREFIX=objdir-$BARCH
+fi
 
 mkdir -p $TARGET_DIR
 
 FILES_LIST="
-$OBJDIR/qmlMozEmbedTest
+$OBJPREFIX/qmlMozEmbedTest
 "
 for str in $FILES_LIST; do
     fname="${str##*/}"
