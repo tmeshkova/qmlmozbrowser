@@ -2,17 +2,17 @@ import Qt 4.7
 import QtQuick 1.0
 
 ListView {
-    id: root
+    id: root 
 
     property string contextImageSrc: ""
     property string contextLinkHref: ""
     property variant context
 
     visible: false
-
     height: (contextLinkHref.length > 0 ? 160 : 0) + (contextImageSrc.length > 0 ? 160 : 0)
-
     clip: true
+
+    signal selected()
 
     model: ListModel {
         ListElement {
@@ -46,8 +46,7 @@ ListView {
                 case 3: context.setClipboard(contextImageSrc)
                     break
             }
-
-            root.visible = false
+            root.selected()
         }
     }
 }
