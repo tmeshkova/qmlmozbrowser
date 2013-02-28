@@ -31,6 +31,20 @@ Item {
         }
     }
 
+    Rectangle {
+        anchors.fill: root
+        color: "white"
+        opacity: 0.6
+    }
+
+    Rectangle {
+        anchors.left: root.left
+        anchors.right: root.right
+        anchors.bottom: root.bottom
+        height: 1
+        color: "black"
+    }
+
     Text {
         id: pageTitle
 
