@@ -17,6 +17,7 @@ Item {
 
     function unfocusAddressBar() {
         addressLine.focus = false
+        viewport.focus = true
     }
 
     Connections {
@@ -66,7 +67,7 @@ Item {
         anchors.right: root.right
         anchors.margins: 10
 
-        color: "white"
+        color: "transparent"
         border.width: 1
         height: 40
         radius: 10
@@ -78,9 +79,10 @@ Item {
             anchors.left: parent.left
             width: parent.width / 100 * viewport.child().loadProgress
             radius: 10
-            color: "blue"
+            color: "cyan"
             opacity: 0.3
             visible: viewport.child().loadProgress != 100
+            smooth: true
         }
 
         TextInput {
@@ -102,7 +104,7 @@ Item {
 
             Keys.onReturnPressed:{
                 viewport.child().load(addressLine.text);
-                viewport.focus = true
+                unfocusAddressBar()
             }
 
             Keys.onPressed: {

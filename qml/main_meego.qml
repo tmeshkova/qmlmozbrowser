@@ -6,6 +6,9 @@ import QtMozilla 1.0
 PageStackWindow {
     id: appWindow
     showStatusBar: false
-    initialPage: MainPage {
+    initialPage: MainPage {}
+
+    Component.onCompleted: {
+        screen.allowedOrientation = Screen.All
     }
 }

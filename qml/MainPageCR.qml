@@ -67,6 +67,15 @@ FocusScope {
                     load(startURL)
                 }
             }
+            onLoadingChanged: {
+                var isLoading = webViewport.child().loading
+                if (isLoading && !overlay.visible) {
+                    overlay.showAddressBar()
+                }
+                else if (!isLoading && overlay.visible && !navigation.visible && !contextMenu.visible) {
+                    overlay.hide()
+                }
+            }
             onHandleLongTap: {
                 if ((point.y - navigation.height / 2) < addressLine.height)
                     overlay.show(addressLine.height + navigation.height / 2)
@@ -193,6 +202,12 @@ FocusScope {
             overlay.visible = true
             contextMenu.visible = false
             navigation.visible = true
+        }
+
+        function showAddressBar() {
+            navigation.visible = false
+            contextMenu.visible = false
+            overlay.visible = true
         }
 
         function hide() {
