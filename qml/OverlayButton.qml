@@ -66,7 +66,6 @@ Item {
         }
         onReleased: {
             root.clicked()
-            root.clicked()
             mouse.accepted = true
         }
         onPressAndHold: {
