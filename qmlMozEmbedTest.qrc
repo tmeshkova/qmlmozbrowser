@@ -7,8 +7,11 @@
         <file>icons/plus.png</file>
         <file>icons/menu.png</file>
         <file>qml/main.qml</file>
+        <file>qml/main_ref.qml</file>
         <file>qml/MainPage.qml</file>
+        <file>qml/MainPageRef.qml</file>
         <file>qml/main_meego.qml</file>
+        <file>qml/main_ref_meego.qml</file>
         <file>qml/MainPageQuick.qml</file>
         <file>qml/ScrollIndicator.qml</file>
         <file>qml/dialogs/Dialog.qml</file>
@@ -22,7 +25,6 @@
         <file>qml/OverlayButton.qml</file>
         <file>qml/OverlayContextMenu.qml</file>
         <file>qml/OverlayNavigation.qml</file>
-
 
         <file alias="qml/Dialog.qml">qml/dialogs/Dialog.qml</file>
         <file alias="qml/AlertDialog.qml">qml/dialogs/AlertDialog.qml</file>

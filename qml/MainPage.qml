@@ -15,174 +15,7 @@ FocusScope {
         webViewport.child().load(address)
     }
 
-    QmlMozContext { id: context }
-
-    Rectangle {
-        id: navigationBar
-        color: "#efefef"
-        height: 45
-        anchors {
-            top: parent.top
-            left: parent.left
-            right: parent.right
-        }
-
-        Row {
-            id: controlsRow
-            spacing: 4
-            Rectangle {
-                id: backButton
-                height: navigationBar.height - 2
-                width: height
-                color: "#efefef"
-
-                Image {
-                    anchors.fill: parent
-                    anchors.centerIn: parent
-                    source: "../icons/backward.png"
-                }
-
-                Rectangle {
-                    anchors.fill: parent
-                    color: reloadButton.color
-                    opacity: 0.8
-                    visible: !webViewport.child().canGoBack
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        console.log("going back")
-                        webViewport.child().goBack()
-                    }
-                }
-            }
-            Rectangle {
-                id: forwardButton
-                height: navigationBar.height - 2
-                width: height
-                color: "#efefef"
-
-                Image {
-                    anchors.fill: parent
-                    anchors.centerIn: parent
-                    source: "../icons/forward.png"
-                }
-
-                Rectangle {
-                    anchors.fill: parent
-                    color: forwardButton.color
-                    opacity: 0.8
-                    visible: !webViewport.child().canGoForward
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        console.log("going forward")
-                        webViewport.child().goForward()
-                    }
-                }
-            }
-            Rectangle {
-                id: reloadButton
-                height: navigationBar.height - 2
-                width: height
-                color: "#efefef"
-
-                Image {
-                    anchors.fill: parent
-                    anchors.centerIn: parent
-                    source: webViewport.child().loading ? "../icons/stop.png" : "../icons/refresh.png"
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        webViewport.child()
-                        if (webViewport.canStop) {
-                            console.log("stop loading")
-                            webViewport.stop()
-                        } else {
-                            console.log("reloading")
-                            webViewport.child().reload()
-                        }
-                    }
-                }
-            }
-
-            Rectangle {
-                id: newWinButton
-                height: navigationBar.height - 2
-                width: height
-                color: "#efefef"
-
-                Image {
-                    anchors.fill: parent
-                    anchors.centerIn: parent
-                    source: "../icons/plus.png"
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        context.newWindow();
-                    }
-                }
-            }
-        }
-        Rectangle {
-            color: "white"
-            height: navigationBar.height - 4
-            border.width: 1
-            anchors {
-                left: controlsRow.right
-                right: parent.right
-                margins: 2
-                verticalCenter: parent.verticalCenter
-            }
-            Rectangle {
-                anchors {
-                    top: parent.top
-                    bottom: parent.bottom
-                    left: parent.left
-                }
-                width: parent.width / 100 * webViewport.child().loadProgress
-                color: "blue"
-                opacity: 0.3
-                visible: webViewport.child().loadProgress != 100
-            }
-
-            TextInput {
-                id: addressLine
-                clip: true
-                selectByMouse: true
-                font {
-                    pointSize: 18
-                    family: "Nokia Pure Text"
-                }
-                anchors {
-                    verticalCenter: parent.verticalCenter
-                    left: parent.left
-                    right: parent.right
-                    margins: 2
-                }
-
-                Keys.onReturnPressed: {
-                    console.log("going to: ", addressLine.text)
-                    load(addressLine.text)
-                }
-
-                Keys.onPressed: {
-                    if (((event.modifiers & Qt.ControlModifier)
-                         && event.key == Qt.Key_L) || event.key == Qt.key_F6) {
-                        focusAddressBar()
-                        event.accepted = true
-                    }
-                }
-            }
-        }
-    }
+    QmlMozContext { id: mozContext }
 
     QmlMozView {
         id: webViewport
@@ -190,6 +23,7 @@ FocusScope {
         objectName: "webViewport"
         visible: true
         focus: true
+        enabled: !(alertDlg.visible || confirmDlg.visible || promptDlg.visible || authDlg.visible || overlay.visible)
         property bool movingHorizontally: false
         property bool movingVertically: true
         property variant visibleArea: QtObject {
@@ -211,20 +45,16 @@ FocusScope {
             onTriggered: webViewport.scrollTimeout()
         }
 
-        anchors {
-            top: navigationBar.bottom
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-        }
+        anchors.fill: parent
+
         Connections {
             target: webViewport.child()
             onViewInitialized: {
-                context.setPref("browser.ui.touch.left", 32);
-                context.setPref("browser.ui.touch.right", 32);
-                context.setPref("browser.ui.touch.top", 48);
-                context.setPref("browser.ui.touch.bottom", 16);
-                context.setPref("browser.ui.touch.weight.visited", 120);
+                mozContext.setPref("browser.ui.touch.left", 32);
+                mozContext.setPref("browser.ui.touch.right", 32);
+                mozContext.setPref("browser.ui.touch.top", 48);
+                mozContext.setPref("browser.ui.touch.bottom", 16);
+                mozContext.setPref("browser.ui.touch.weight.visited", 120);
                 webViewport.child().loadFrameScript("chrome://embedlite/content/embedhelper.js");
                 webViewport.child().addMessageListener("embed:alert");
                 webViewport.child().addMessageListener("embed:prompt");
@@ -236,6 +66,23 @@ FocusScope {
                 if (startURL.length != 0 && createParentID == 0) {
                     load(startURL)
                 }
+            }
+            onLoadingChanged: {
+                var isLoading = webViewport.child().loading
+                if (isLoading && !overlay.visible) {
+                    overlay.showAddressBar()
+                }
+                else if (!isLoading && overlay.visible && !navigation.visible && !contextMenu.visible) {
+                    overlay.hide()
+                }
+            }
+            onHandleLongTap: {
+                if ((point.y - navigation.height / 2) < addressLine.height)
+                    overlay.show(addressLine.height + navigation.height / 2)
+                else if ((point.y + navigation.height / 2) > mainScope.height)
+                    overlay.show(mainScope.height - navigation.height)
+                else
+                    overlay.show(point.y - navigation.height / 2)
             }
             onViewAreaChanged: {
                 var r = webViewport.child().contentRect
@@ -256,11 +103,14 @@ FocusScope {
             onTitleChanged: {
                 pageTitleChanged(webViewport.child().title)
             }
-            onUrlChanged: {
-                addressLine.text = webViewport.child().url
-            }
             onRecvAsyncMessage: {
                 print("onRecvAsyncMessage:" + message + ", data:" + data)
+                if (message == "context:info") {
+                    contextMenu.contextLinkHref = data.LinkHref
+                    contextMenu.contextImageSrc = data.ImageSrc
+                    navigation.contextInfoAvialable = (contextMenu.contextLinkHref.length > 0 || contextMenu.contextImageSrc.length > 0)
+
+                }
             }
             onRecvSyncMessage: {
                 print("onRecvSyncMessage:" + message + ", data:" + data)
@@ -284,10 +134,8 @@ FocusScope {
                 promptDlg.show(data.title, data.text, data.defaultValue, data.winid)
             }
             onAuthRequired: {
-                print("onAuthRequired: title:" + data.title + ", msg:"
-                      + data.text + ", winid:" + data.winid)
-                authDlg.show(data.title, data.text, data.defaultValue,
-                             data.winid)
+                print("onAuthRequired: title:" + data.title + ", msg:" + data.text + ", winid:" + data.winid)
+                authDlg.show(data.title, data.text, data.defaultValue, data.winid)
             }
         }
 
@@ -344,12 +192,98 @@ FocusScope {
         }
     }
 
+    Item {
+        id: overlay
+        anchors.fill: mainScope
+        visible: false
+
+        function show(posY) {
+            navigation.anchors.topMargin = posY
+            overlay.visible = true
+            contextMenu.visible = false
+            navigation.visible = true
+        }
+
+        function showAddressBar() {
+            navigation.visible = false
+            contextMenu.visible = false
+            overlay.visible = true
+        }
+
+        function hide() {
+            overlay.visible = false
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onPressed: {
+                overlay.visible = false
+            }
+        }
+
+        AddressField {
+            id: addressLine
+            viewport: webViewport
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+        }
+
+        OverlayContextMenu {
+            id: contextMenu
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 5
+            width: Math.min(parent.width, parent.height) - 10
+            context: mozContext
+
+            onSelected: {
+                overlay.hide()
+            }
+        }
+
+        OverlayNavigation {
+            id: navigation
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            viewport: webViewport
+
+            onContextMenuRequested: {
+                contextMenu.visible = true
+                navigation.visible = false
+            }
+
+            onSelected: {
+                overlay.hide()
+            }
+        }
+
+        OverlayButton {
+            id: newPage
+
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            anchors.bottomMargin: 10
+
+            width: 100
+            height: 100
+
+            visible: navigation.visible
+
+            iconSource: "../icons/plus.png"
+
+            onClicked: {
+                mozContext.newWindow()
+                overlay.hide()
+            }
+        }
+    }
+
     Keys.onPressed: {
         if (((event.modifiers & Qt.ControlModifier) && event.key == Qt.Key_L)
                 || event.key == Qt.key_F6) {
-            console.log("Focus address bar")
-            addressLine.forceActiveFocus()
-            addressLine.selectAll()
+            addressLine.focusAddressBar()
             event.accepted = true
         }
     }
