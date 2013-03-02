@@ -6,8 +6,9 @@ Item {
 
     property alias text: addressLine.text
     property variant viewport
+    signal accepted()
 
-    height: 80 + (textInputOverlay.visible ? textInputOverlay.height : 0)
+    height: 40 + addressLine.height
     width: parent.width
 
     function focusAddressBar() {
@@ -60,93 +61,17 @@ Item {
         horizontalAlignment: (paintedWidth > parent.width) ? Text.AlignLeft : Text.AlignHCenter
     }
 
-    Rectangle {
+    InputArea {
+        id: addressLine
         anchors.top: root.top
         anchors.topMargin: 30
         anchors.left: root.left
         anchors.right: root.right
         anchors.margins: 10
-
-        color: "transparent"
-        border.width: 1
-        height: 40
-        radius: 10
-        smooth: true
-
-        Rectangle {
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            width: parent.width / 100 * viewport.child().loadProgress
-            radius: 10
-            color: "cyan"
-            opacity: 0.3
-            visible: viewport.child().loadProgress != 100
-            smooth: true
-        }
-
-        TextInput {
-            id: addressLine
-
-            selectByMouse: true
-            font {
-                pixelSize: 25
-                family: "Nokia Pure Text"
-            }
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.left: parent.left
-            anchors.leftMargin: 10
-            anchors.right: parent.right
-
-            onActiveFocusChanged: {
-                addressLine.focus ? textInputOverlay.visible = true : textInputOverlay.visible = false
-            }
-
-            Keys.onReturnPressed:{
-                viewport.child().load(addressLine.text);
-                unfocusAddressBar()
-            }
-
-            Keys.onPressed: {
-                if (((event.modifiers & Qt.ControlModifier) && event.key == Qt.Key_L) || event.key == Qt.key_F6) {
-                    focusAddressBar()
-                    event.accepted = true
-                }
-            }
-        }
-    }
-
-    Row {
-        id: textInputOverlay
-        visible: false
-        spacing: 3
-        height: 40
-
-        anchors.left: root.left
-        anchors.right: root.right
-        anchors.bottom: root.bottom
-        anchors.margins: 3
-
-        OverlayButton {
-            height: parent.height-3
-            width: parent.width/3-3
-            text: "Copy"
-            onClicked: addressLine.copy()
-        }
-
-        OverlayButton {
-            height: parent.height-3
-            width: parent.width/3-3
-            text: "Paste"
-            enabled: addressLine.canPaste
-            onClicked: addressLine.paste()
-        }
-
-        OverlayButton {
-            height: parent.height-3
-            width: parent.width/3-3
-            text: "Select all"
-            onClicked: addressLine.selectAll()
+        loadProgress: viewport.child().loadProgress
+        onAccepted: {
+            viewport.child().load(text);
+            root.accepted()
         }
     }
 }

@@ -10,7 +10,6 @@ Item {
 
     property alias iconSource: icon.source
     property alias text: label.text
-    property bool itemPressed: false
     property int fixedHeight: 0
 
     Rectangle {
@@ -22,8 +21,8 @@ Item {
         border.color: "black"
         border.width: 1
         smooth: true
-        color: root.enabled ? ((mouseArea.pressed || root.itemPressed)? "blue" : "white") : "transparent"
-        opacity: (mouseArea.pressed || root.itemPressed)? 0.3 : 0.6
+        color: root.enabled ? (mouseArea.pressed ? "cyan" : "white") : "transparent"
+        opacity: mouseArea.pressed ? 0.3 : 0.6
     }
 
     Image {
@@ -45,10 +44,8 @@ Item {
         id: label
         anchors.verticalCenter: root.verticalCenter
         anchors.left: icon.visible ? icon.right : root.left
-        font.pixelSize: root.fixedHeight ? root.fixedHeight : root.height - root.radius*2
-
+        font.pixelSize: root.fixedHeight ? root.fixedHeight : (root.height - background.radius * 2)
         anchors.right: parent.right
-
         horizontalAlignment: icon.visible ? Text.AlignLeft : Text.AlignHCenter
         elide: Text.ElideRight
 

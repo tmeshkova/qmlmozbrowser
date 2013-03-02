@@ -23,7 +23,7 @@ FocusScope {
         objectName: "webViewport"
         visible: true
         focus: true
-        enabled: !(alertDlg.visible || confirmDlg.visible || promptDlg.visible || authDlg.visible || overlay.visible)
+        enabled: !(alertDlg.visible || confirmDlg.visible || promptDlg.visible || authDlg.visible || overlay.visible || settingsPage.visible)
         property bool movingHorizontally: false
         property bool movingVertically: true
         property variant visibleArea: QtObject {
@@ -227,6 +227,10 @@ FocusScope {
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.right: parent.right
+
+            onAccepted: {
+                overlay.hide()
+            }
         }
 
         OverlayContextMenu {
@@ -261,10 +265,10 @@ FocusScope {
         OverlayButton {
             id: newPage
 
-            anchors.bottom: parent.bottom
+            anchors.top: parent.top
             anchors.left: parent.left
             anchors.leftMargin: 10
-            anchors.bottomMargin: 10
+            anchors.topMargin: addressLine.height + 10
 
             width: 100
             height: 100
@@ -278,6 +282,33 @@ FocusScope {
                 overlay.hide()
             }
         }
+
+        OverlayButton {
+            id: settings
+
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.rightMargin: 10
+            anchors.topMargin: addressLine.height + 10
+
+            width: 100
+            height: 100
+
+            visible: navigation.visible
+
+            iconSource: "../icons/settings.png"
+
+            onClicked: {
+                overlay.hide()
+                settingsPage.show()
+            }
+        }
+    }
+
+    Settings {
+        id: settingsPage
+        anchors.fill: parent
+        context: mozContext
     }
 
     Keys.onPressed: {
