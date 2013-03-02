@@ -6,6 +6,9 @@
         <file>icons/stop.png</file>
         <file>icons/plus.png</file>
         <file>icons/menu.png</file>
+        <file>icons/settings.png</file>
+        <file>icons/button.png</file>
+        <file>icons/button-checked.png</file>
         <file>qml/main.qml</file>
         <file>qml/main_ref.qml</file>
         <file>qml/MainPage.qml</file>
@@ -25,6 +28,9 @@
         <file>qml/OverlayButton.qml</file>
         <file>qml/OverlayContextMenu.qml</file>
         <file>qml/OverlayNavigation.qml</file>
+        <file>qml/Settings.qml</file>
+        <file>qml/InputArea.qml</file>
+        <file>qml/Checkbox.qml</file>
 
         <file alias="qml/Dialog.qml">qml/dialogs/Dialog.qml</file>
         <file alias="qml/AlertDialog.qml">qml/dialogs/AlertDialog.qml</file>
