@@ -7,8 +7,4 @@ PageStackWindow {
     id: appWindow
     showStatusBar: false
     initialPage: MainPage {}
-
-    Component.onCompleted: {
-        screen.allowedOrientation = Screen.All
-    }
 }
