@@ -8,12 +8,16 @@ Item {
     signal accepted()
     height: inputArea.height + textInputOverlay.height
     property alias cursorPosition: inputLine.cursorPosition
+    property alias inputFocus: inputLine.focus
 
     function setFocus(op) {
         if (op)
             inputLine.forceActiveFocus()
-        else
-            inputArea.forceActiveFocus()
+        else {
+            inputLine.closeSoftwareInputPanel()
+            inputLine.focus = false
+            root.parent.forceActiveFocus()
+        }
     }
 
     Rectangle {
