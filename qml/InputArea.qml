@@ -12,8 +12,10 @@ Item {
     function setFocus(op) {
         if (op)
             inputLine.forceActiveFocus()
-        else
-            inputArea.forceActiveFocus()
+        else {
+            inputLine.focus = false
+            root.parent.forceActiveFocus()
+        }
     }
 
     Rectangle {
