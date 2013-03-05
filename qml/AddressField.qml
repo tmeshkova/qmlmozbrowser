@@ -5,6 +5,7 @@ Item {
     id: root
 
     property alias text: addressLine.text
+    property alias inputFocus: addressLine.inputFocus
     property variant viewport
     signal accepted()
 
@@ -12,13 +13,11 @@ Item {
     width: parent.width
 
     function focusAddressBar() {
-        addressLine.forceActiveFocus()
-        addressLine.selectAll()
+        addressLine.setFocus(true)
     }
 
     function unfocusAddressBar() {
-        addressLine.focus = false
-        viewport.focus = true
+        addressLine.setFocus(false)
     }
 
     Connections {

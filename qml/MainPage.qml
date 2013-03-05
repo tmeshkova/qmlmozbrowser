@@ -72,7 +72,7 @@ FocusScope {
                 if (isLoading && !overlay.visible) {
                     overlay.showAddressBar()
                 }
-                else if (!isLoading && overlay.visible && !navigation.visible && !contextMenu.visible) {
+                else if (!isLoading && overlay.visible && !navigation.visible && !contextMenu.visible &&!addressLine.inputFocus) {
                     overlay.hide()
                 }
             }
@@ -217,6 +217,7 @@ FocusScope {
         MouseArea {
             anchors.fill: parent
             onPressed: {
+                addressLine.unfocusAddressBar()
                 overlay.visible = false
             }
         }
