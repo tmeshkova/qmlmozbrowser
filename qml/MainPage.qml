@@ -72,7 +72,7 @@ FocusScope {
                 if (isLoading && !overlay.visible) {
                     overlay.showAddressBar()
                 }
-                else if (!isLoading && overlay.visible && !navigation.visible && !contextMenu.visible &&!addressLine.inputFocus) {
+                else if (!isLoading && overlay.visible && !navigation.visible && !contextMenu.visible && !addressLine.inputFocus) {
                     overlay.hide()
                 }
             }
