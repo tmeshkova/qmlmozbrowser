@@ -77,12 +77,15 @@ FocusScope {
                 }
             }
             onHandleLongTap: {
-                if ((point.y - navigation.height / 2) < addressLine.height)
-                    overlay.show(addressLine.height + navigation.height / 2)
-                else if ((point.y + navigation.height / 2) > mainScope.height)
-                    overlay.show(mainScope.height - navigation.height)
-                else
-                    overlay.show(point.y - navigation.height / 2)
+                navigation.anchors.topMargin = 0
+                var posY = mapToItem(navigation, point.x, point.y).y - navigation.height/2
+                if (posY < 0) {
+                    posY = 10
+                }
+                else if (point.y + navigation.height/2 > mainScope.height) {
+                    posY -= (point.y + navigation.height/2) - mainScope.height + 10
+                }
+                overlay.show(posY)
             }
             onViewAreaChanged: {
                 var r = webViewport.child().contentRect
@@ -294,7 +297,7 @@ FocusScope {
         OverlayNavigation {
             id: navigation
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
+            anchors.top: addressLine.bottom
             viewport: webViewport
 
             onContextMenuRequested: {
