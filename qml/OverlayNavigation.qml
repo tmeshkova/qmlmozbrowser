@@ -65,7 +65,7 @@ Item {
         iconSource: viewport.child().loading ? "../icons/stop.png" : "../icons/refresh.png"
 
         onClicked: {
-            root.selected()
+            //root.selected()
             if (viewport.child().loading) {
                 viewport.child().stop()
             } else {
