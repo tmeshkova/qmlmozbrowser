@@ -35,7 +35,7 @@ Item {
     Rectangle {
         anchors.fill: root
         color: "white"
-        opacity: 0.6
+        opacity: 0.8
     }
 
     Rectangle {
