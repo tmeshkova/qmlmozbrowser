@@ -8,14 +8,13 @@ Rectangle {
     property variant context
 
     function show() {
-        //anchors.leftMargin = 0
         animShow.running = true
         //GET SETTINGS NOT IMPLEMENTED
     }
 
     function hide() {
+        uaString.setFocus(false)
         animHide.running = true
-        //anchors.leftMargin = root.parent.width
     }
 
     ParallelAnimation {
