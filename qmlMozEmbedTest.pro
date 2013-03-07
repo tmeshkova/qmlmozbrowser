@@ -20,7 +20,7 @@ CONFIG -= app_bundle
 isEmpty(QTEMBED_LIB) {
   PKGCONFIG += qtembedwidget x11
 } else {
-  LIBS+=$$QTEMBED_LIB
+  LIBS+=$$QTEMBED_LIB -lX11
 }
 
 isEmpty(DEFAULT_COMPONENT_PATH) {
