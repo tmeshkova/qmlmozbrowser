@@ -65,7 +65,6 @@ Item {
 
             Keys.onReturnPressed:{
                 root.accepted()
-                closeSoftwareInputPanel()
                 root.setFocus(false)
             }
 
