@@ -199,34 +199,34 @@ FocusScope {
         opacity: 0.01
 
         function show(posY) {
-            animHide.running = false
+            buttonsHide.running = false
             navigation.anchors.topMargin = posY
             contextMenu.visible = false
             navigation.visible = true
-            animShow.running = true
+            buttonsShow.running = true
         }
 
         function showAddressBar() {
             addressLine.visible = true
             navigation.visible = false
             contextMenu.visible = false
-            animShow.running = true
+            buttonsShow.running = true
         }
 
         function hide() {
-            animShow.running = false
-            animHide.running = true
+            buttonsShow.running = false
+            buttonsHide.running = true
         }
 
         function hideExceptBar() {
-            animHide.running = false
-            animShow.running = false
+            buttonsHide.running = false
+            buttonsShow.running = false
             navigation.visible = false
             contextMenu.visible = false
         }
 
         PropertyAnimation {
-            id: animHide
+            id: buttonsHide
             target: overlay
             properties: "opacity"
             from: 1.0; to: 0.01; duration: 300;
@@ -234,7 +234,7 @@ FocusScope {
         }
 
         PropertyAnimation {
-            id: animShow
+            id: buttonsShow
             target: overlay
             properties: "opacity"
             from: 0.01; to: 1.0; duration: 300;
@@ -298,7 +298,6 @@ FocusScope {
             viewport: webViewport
 
             onContextMenuRequested: {
-                //contextMenu.visible = true
                 navigation.visible = false
                 menuShow.running = true
                 contextMenu.visible = true
