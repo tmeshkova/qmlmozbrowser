@@ -18,20 +18,32 @@ Rectangle {
         //anchors.leftMargin = root.parent.width
     }
 
-    PropertyAnimation {
+    ParallelAnimation {
         id: animHide
-        target: root
-        properties: "x"
-        from: 0; to: -root.parent.width; duration: 300;
-        running: false
+        PropertyAnimation {
+            target: root
+            properties: "x"
+            from: 0; to: -root.parent.width; duration: 300;
+        }
+        PropertyAnimation {
+            target: root
+            properties: "opacity"
+            from: 1.0; to: 0.01; duration: 300;
+        }
     }
 
-    PropertyAnimation {
+    ParallelAnimation {
         id: animShow
-        target: root
-        properties: "x"
-        from: root.parent.width; to: 0; duration: 300;
-        running: false
+        PropertyAnimation {
+            target: root
+            properties: "x"
+            from: root.parent.width; to: 0; duration: 300;
+        }
+        PropertyAnimation {
+            target: root
+            properties: "opacity"
+            from: 0.01; to: 1.0; duration: 300;
+        }
     }
 
     Rectangle {
