@@ -273,7 +273,7 @@ FocusScope {
             anchors.right: parent.right
 
             onAccepted: {
-                overlay.hide()
+                overlay.hideExceptBar()
             }
         }
 
