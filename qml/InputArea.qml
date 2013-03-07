@@ -20,17 +20,22 @@ Item {
         }
     }
 
-    Rectangle {
+    Item {
         id: inputArea
         anchors.top: root.top
         anchors.left: root.left
         anchors.right: root.right
-
-        color: "transparent"
-        border.width: 1
         height: 40
-        radius: 10
-        smooth: true
+
+        Rectangle {
+            anchors.fill: parent
+
+            color: "white"
+            border.width: 1
+            radius: 10
+            smooth: true
+            opacity: 0.6
+        }
 
         Rectangle {
             anchors.top: parent.top
@@ -39,7 +44,7 @@ Item {
             width: parent.width / 100 * root.loadProgress
             radius: 10
             color: "cyan"
-            opacity: 0.3
+            opacity: 0.6
             visible: (root.loadProgress > 0) ? (root.loadProgress < 100 ? true : false) : false
             smooth: true
         }
@@ -78,7 +83,6 @@ Item {
         spacing: 3
         anchors.left: root.left
         anchors.right: root.right
-        anchors.rightMargin: 3
         anchors.top: inputArea.bottom
         anchors.topMargin: 5
         visible: inputLine.focus
@@ -86,14 +90,14 @@ Item {
 
         OverlayButton {
             height: parent.height-3
-            width: parent.width/3
+            width: parent.width/3-2
             text: "Copy"
             onClicked: inputLine.copy()
         }
 
         OverlayButton {
             height: parent.height-3
-            width: parent.width/3
+            width: parent.width/3-2
             text: "Paste"
             enabled: inputLine.canPaste
             onClicked: inputLine.paste()
@@ -101,7 +105,7 @@ Item {
 
         OverlayButton {
             height: parent.height-3
-            width: parent.width/3
+            width: parent.width/3-2
             text: "Select all"
             onClicked: inputLine.selectAll()
         }
