@@ -23,7 +23,7 @@ FocusScope {
         objectName: "webViewport"
         visible: true
         focus: true
-        enabled: !(alertDlg.visible || confirmDlg.visible || promptDlg.visible || authDlg.visible || overlay.visible || settingsPage.visible)
+        enabled: !(alertDlg.visible || confirmDlg.visible || promptDlg.visible || authDlg.visible || overlay.visible || settingsPage.x==0)
         property bool movingHorizontally: false
         property bool movingVertically: true
         property variant visibleArea: QtObject {
@@ -195,30 +195,73 @@ FocusScope {
     Item {
         id: overlay
         anchors.fill: mainScope
-        visible: false
+        visible: opacity > 0.01
+        opacity: 0.01
 
         function show(posY) {
+            animHide.running = false
             navigation.anchors.topMargin = posY
-            overlay.visible = true
             contextMenu.visible = false
             navigation.visible = true
+            animShow.running = true
         }
 
         function showAddressBar() {
+            addressLine.visible = true
             navigation.visible = false
             contextMenu.visible = false
-            overlay.visible = true
+            animShow.running = true
         }
 
         function hide() {
-            overlay.visible = false
+            animShow.running = false
+            animHide.running = true
+        }
+
+        function hideExceptBar() {
+            animHide.running = false
+            animShow.running = false
+            navigation.visible = false
+            contextMenu.visible = false
+        }
+
+        PropertyAnimation {
+            id: animHide
+            target: overlay
+            properties: "opacity"
+            from: 1.0; to: 0.01; duration: 300;
+            running: false
+        }
+
+        PropertyAnimation {
+            id: animShow
+            target: overlay
+            properties: "opacity"
+            from: 0.01; to: 1.0; duration: 300;
+            running: false
+        }
+
+        PropertyAnimation {
+            id: menuHide
+            target: contextMenu
+            properties: "anchors.bottomMargin"
+            from: 5; to: 5-contextMenu.height; duration: 300
+            running: false
+        }
+
+        PropertyAnimation {
+            id: menuShow
+            target: contextMenu
+            properties: "anchors.bottomMargin"
+            from: 5-contextMenu.height; to: 5; duration: 300
+            running: false
         }
 
         MouseArea {
             anchors.fill: parent
             onPressed: {
                 addressLine.unfocusAddressBar()
-                overlay.visible = false
+                overlay.hide()
             }
         }
 
@@ -243,6 +286,7 @@ FocusScope {
             context: mozContext
 
             onSelected: {
+                menuHide.running = true
                 overlay.hide()
             }
         }
@@ -254,12 +298,14 @@ FocusScope {
             viewport: webViewport
 
             onContextMenuRequested: {
-                contextMenu.visible = true
+                //contextMenu.visible = true
                 navigation.visible = false
+                menuShow.running = true
+                contextMenu.visible = true
             }
 
             onSelected: {
-                overlay.hide()
+                overlay.hideExceptBar()
             }
         }
 
@@ -308,7 +354,9 @@ FocusScope {
 
     Settings {
         id: settingsPage
-        anchors.fill: parent
+        width: parent.width
+        height: parent.height
+        x: parent.width
         context: mozContext
     }
 
