@@ -222,7 +222,7 @@ void QmlApplicationViewer::setOrientation(ScreenOrientation orientation)
         attribute = static_cast<Qt::WidgetAttribute>(130);
         break;
 #else // QT_VERSION < 0x040702
-#if (QT_VERSION <= QT_VERSION_CHECK(5, 0, 0))
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
     case ScreenOrientationLockPortrait:
         attribute = Qt::WA_LockPortraitOrientation;
         break;

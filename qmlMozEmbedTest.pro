@@ -1,14 +1,18 @@
 CONFIG += link_pkgconfig
 TARGET = qmlMozEmbedTest
 contains(QT_MAJOR_VERSION, 4) {
-  QT += opengl declarative
   SOURCES += main.cpp qmlapplicationviewer.cpp WindowCreator.cpp
   HEADERS += qmlapplicationviewer.h WindowCreator.h
-  PKGCONFIG += QJson
+} else {
+  SOURCES += mainqt5.cpp
+}
 
+contains(QT_MAJOR_VERSION, 4) {
+  QT += opengl declarative
+  PKGCONFIG += QJson
 } else {
   QT += qml quick widgets
-  SOURCES += mainqt5.cpp
+  QT += opengl declarative
 }
 
 QML_FILES = qml/*.qml
