@@ -67,6 +67,9 @@ FocusScope {
                 if (startURL.length != 0 && createParentID == 0) {
                     load(startURL)
                 }
+                else {
+                    load("about:mozilla")
+                }
             }
             onLoadingChanged: {
                 var isLoading = webViewport.child().loading
