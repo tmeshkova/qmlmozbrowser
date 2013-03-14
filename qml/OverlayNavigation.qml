@@ -28,8 +28,8 @@ Item {
         enabled: viewport.child().canGoBack
 
         onClicked: {
-            viewport.child().goBack()
             root.selected()
+            viewport.child().goBack()
         }
     }
 
@@ -47,8 +47,8 @@ Item {
         enabled: viewport.child().canGoForward
 
         onClicked: {
-            viewport.child().goForward()
             root.selected()
+            viewport.child().goForward()
         }
     }
 
@@ -65,13 +65,12 @@ Item {
         iconSource: viewport.child().loading ? "../icons/stop.png" : "../icons/refresh.png"
 
         onClicked: {
+            //root.selected()
             if (viewport.child().loading) {
                 viewport.child().stop()
             } else {
                 viewport.child().reload()
             }
-
-            root.selected()
         }
     }
 
