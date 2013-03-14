@@ -68,7 +68,7 @@ FocusScope {
                     load(startURL)
                 }
                 else {
-                    load("about:mozilla")
+                    load("about:blank")
                 }
             }
             onLoadingChanged: {
