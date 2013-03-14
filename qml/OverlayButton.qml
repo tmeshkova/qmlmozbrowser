@@ -22,7 +22,7 @@ Item {
         border.width: 1
         smooth: true
         color: root.enabled ? (mouseArea.pressed ? "cyan" : "white") : "transparent"
-        opacity: mouseArea.pressed ? 0.3 : 0.6
+        opacity: mouseArea.pressed ? 0.5 : 0.8
     }
 
     Image {

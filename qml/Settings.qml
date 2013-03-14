@@ -3,17 +3,48 @@ import QtQuick 1.0
 
 Rectangle {
     id : root
-    visible: false
+    visible: true
     color: "white"
     property variant context
 
     function show() {
-        root.visible = true
+        //anchors.leftMargin = 0
+        animShow.running = true
         //GET SETTINGS NOT IMPLEMENTED
     }
 
     function hide() {
-        root.visible = false
+        uaString.setFocus(false)
+        animHide.running = true
+        //anchors.leftMargin = root.parent.width
+    }
+
+    ParallelAnimation {
+        id: animHide
+        PropertyAnimation {
+            target: root
+            properties: "x"
+            from: 0; to: -root.parent.width; duration: 300;
+        }
+        PropertyAnimation {
+            target: root
+            properties: "opacity"
+            from: 1.0; to: 0.01; duration: 300;
+        }
+    }
+
+    ParallelAnimation {
+        id: animShow
+        PropertyAnimation {
+            target: root
+            properties: "x"
+            from: root.parent.width; to: 0; duration: 300;
+        }
+        PropertyAnimation {
+            target: root
+            properties: "opacity"
+            from: 0.01; to: 1.0; duration: 300;
+        }
     }
 
     Rectangle {
