@@ -56,6 +56,7 @@ FocusScope {
                 mozContext.setPref("browser.ui.touch.bottom", 16);
                 mozContext.setPref("browser.ui.touch.weight.visited", 120);
                 mozContext.setPref("browser.download.folderList", 2); // 0 - Desktop, 1 - Downloads, 2 - Custom
+                mozContext.setPref("browser.download.useDownloadDir", false); // Invoke filepicker instead of immediate download to ~/Downloads
                 webViewport.child().loadFrameScript("chrome://embedlite/content/embedhelper.js");
                 webViewport.child().addMessageListener("embed:alert");
                 webViewport.child().addMessageListener("embed:prompt");
