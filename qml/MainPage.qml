@@ -23,7 +23,7 @@ FocusScope {
         objectName: "webViewport"
         visible: true
         focus: true
-        enabled: !(alertDlg.visible || confirmDlg.visible || promptDlg.visible || authDlg.visible || overlay.visible || settingsPage.x==0)
+        enabled: !(alertDlg.visible || confirmDlg.visible || promptDlg.visible || authDlg.visible || overlay.visible || settingsPage.x==0 || filePicker.visible)
         property bool movingHorizontally: false
         property bool movingVertically: true
         property variant visibleArea: QtObject {
@@ -62,6 +62,7 @@ FocusScope {
                 webViewport.child().addMessageListener("embed:prompt");
                 webViewport.child().addMessageListener("embed:confirm");
                 webViewport.child().addMessageListener("embed:auth");
+                webViewport.child().addMessageListener("embed:filepicker");
                 webViewport.child().addMessageListener("chrome:title")
                 webViewport.child().addMessageListener("context:info")
                 print("QML View Initialized")
@@ -77,7 +78,7 @@ FocusScope {
                 if (isLoading && !overlay.visible) {
                     overlay.showAddressBar()
                 }
-                else if (!isLoading && overlay.visible && !navigation.visible && !contextMenu.visible && !addressLine.inputFocus) {
+                else if (!isLoading && overlay.visible && !navigation.visible && !contextMenu.visible && !addressLine.inputFocus && !filePicker.visible) {
                     overlay.hide()
                 }
             }
@@ -118,6 +119,9 @@ FocusScope {
                     contextMenu.contextImageSrc = data.ImageSrc
                     navigation.contextInfoAvialable = (contextMenu.contextLinkHref.length > 0 || contextMenu.contextImageSrc.length > 0)
 
+                }
+                else if (message == "embed:filepicker") {
+                    filePicker.show(data.mode, "/home/user/MyDocs", data.title, data.winid)
                 }
             }
             onRecvSyncMessage: {
@@ -365,6 +369,20 @@ FocusScope {
         height: parent.height
         x: parent.width
         context: mozContext
+    }
+
+    FilePicker {
+        id: filePicker
+        anchors.fill: parent
+        onSelected: {
+            filePicker.visible = false
+            console.log("FilePicker selected: " + path + " accepted: " + accepted)
+            webViewport.child().sendAsyncMessage("filepickerresponse", {
+                                                         winid: winid,
+                                                         accepted: accepted,
+                                                         items: path
+                                                     })
+        }
     }
 
     Keys.onPressed: {
