@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <qdeclarativemozview.h>
 #include "qmlapplicationviewer.h"
+#include "qmlhelpertools.h"
 
 MozWindowCreator::MozWindowCreator(const QString& aQmlstring, const bool& aGlwidget, const bool& aIsFullScreen)
 {
@@ -59,6 +60,7 @@ MozWindowCreator::CreateNewWindow(const QString& url, quint32 *aUniqueID, quint3
 
     view->rootContext()->setContextProperty("startURL", QVariant(url));
     view->rootContext()->setContextProperty("createParentID", QVariant(aParentID));
+    view->rootContext()->setContextProperty("QmlHelperTools", new QmlHelperTools(this));
     view->setSource(qml);
     QObject* item = view->rootObject()->findChild<QObject*>("mainScope");
     if (item) {

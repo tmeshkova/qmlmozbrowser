@@ -40,11 +40,11 @@ ListView {
             switch (model.index) {
                 case 0: context.newWindow(contextLinkHref)
                     break
-                case 1: context.setClipboard(contextLinkHref)
+                case 1: QmlHelperTools.setClipboard(contextLinkHref)
                     break
                 case 2: context.newWindow(contextImageSrc)
                     break
-                case 3: context.setClipboard(contextImageSrc)
+                case 3: QmlHelperTools.setClipboard(contextImageSrc)
                     break
             }
         }
