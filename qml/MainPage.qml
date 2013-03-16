@@ -120,7 +120,7 @@ FocusScope {
 
                 }
                 else if (message == "embed:filepicker") {
-                    filePicker.show(data.mode, "/home/user/MyDocs", data.winid)
+                    filePicker.show(data.mode, "/home/user/MyDocs", data.title, data.winid)
                 }
             }
             onRecvSyncMessage: {

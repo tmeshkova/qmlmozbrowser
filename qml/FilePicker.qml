@@ -10,8 +10,8 @@ Item {
     property int winid: 0
     signal selected(variant path, bool accepted)
 
-    function show(mode, path, winId) {
-        console.log("winId: " + winId)
+    function show(mode, path, title, winId) {
+        titleText.text = title
         root.winid = winId
         pickerMode = mode
         currPath = path
@@ -75,7 +75,6 @@ Item {
             font.pixelSize: 20
             font.weight: Font.Bold
             elide: Text.ElideRight
-            text: pickerMode == 0 ? "Select file" : (pickerMode == 1 ? "Select folder" : "Select files") + (pickerMode == 2 ? ". Items selected: " + selectedItems.length : "")
         }
 
         Text {
