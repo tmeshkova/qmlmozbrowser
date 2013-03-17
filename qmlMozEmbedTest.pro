@@ -1,8 +1,8 @@
 CONFIG += link_pkgconfig
 TARGET = qmlMozEmbedTest
 contains(QT_MAJOR_VERSION, 4) {
-  SOURCES += main.cpp qmlapplicationviewer.cpp WindowCreator.cpp
-  HEADERS += qmlapplicationviewer.h WindowCreator.h
+  SOURCES += main.cpp qmlapplicationviewer.cpp WindowCreator.cpp qmlhelpertools.cpp
+  HEADERS += qmlapplicationviewer.h WindowCreator.h qmlhelpertools.h
 } else {
   SOURCES += mainqt5.cpp
 }
