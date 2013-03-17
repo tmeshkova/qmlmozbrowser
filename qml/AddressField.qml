@@ -21,14 +21,14 @@ Item {
     }
 
     Connections {
-        target: viewport.child()
+        target: viewport.child
 
         onUrlChanged: {
-            addressLine.text = viewport.child().url;
+            addressLine.text = viewport.child.url;
             addressLine.cursorPosition = 0;
         }
         onTitleChanged: {
-            pageTitle.text = viewport.child().title;
+            pageTitle.text = viewport.child.title;
         }
     }
 
@@ -67,9 +67,9 @@ Item {
         anchors.left: root.left
         anchors.right: root.right
         anchors.margins: 10
-        loadProgress: viewport.child().loadProgress
+        loadProgress: viewport.child.loadProgress
         onAccepted: {
-            viewport.child().load(text);
+            viewport.child.load(text);
             root.accepted()
         }
     }

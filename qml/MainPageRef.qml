@@ -12,7 +12,7 @@ FocusScope {
 
     function load(address) {
         addressLine.text = address
-        webViewport.child().load(address)
+        webViewport.child.load(address)
     }
 
     QmlMozContext { id: context }
@@ -46,14 +46,14 @@ FocusScope {
                     anchors.fill: parent
                     color: reloadButton.color
                     opacity: 0.8
-                    visible: !webViewport.child().canGoBack
+                    visible: !webViewport.child.canGoBack
                 }
 
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
                         console.log("going back")
-                        webViewport.child().goBack()
+                        webViewport.child.goBack()
                     }
                 }
             }
@@ -73,14 +73,14 @@ FocusScope {
                     anchors.fill: parent
                     color: forwardButton.color
                     opacity: 0.8
-                    visible: !webViewport.child().canGoForward
+                    visible: !webViewport.child.canGoForward
                 }
 
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
                         console.log("going forward")
-                        webViewport.child().goForward()
+                        webViewport.child.goForward()
                     }
                 }
             }
@@ -93,19 +93,19 @@ FocusScope {
                 Image {
                     anchors.fill: parent
                     anchors.centerIn: parent
-                    source: webViewport.child().loading ? "../icons/stop.png" : "../icons/refresh.png"
+                    source: webViewport.child.loading ? "../icons/stop.png" : "../icons/refresh.png"
                 }
 
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        webViewport.child()
+                        webViewport.child
                         if (webViewport.canStop) {
                             console.log("stop loading")
                             webViewport.stop()
                         } else {
                             console.log("reloading")
-                            webViewport.child().reload()
+                            webViewport.child.reload()
                         }
                     }
                 }
@@ -147,10 +147,10 @@ FocusScope {
                     bottom: parent.bottom
                     left: parent.left
                 }
-                width: parent.width / 100 * webViewport.child().loadProgress
+                width: parent.width / 100 * webViewport.child.loadProgress
                 color: "blue"
                 opacity: 0.3
-                visible: webViewport.child().loadProgress != 100
+                visible: webViewport.child.loadProgress != 100
             }
 
             TextInput {
@@ -218,46 +218,46 @@ FocusScope {
             bottom: parent.bottom
         }
         Connections {
-            target: webViewport.child()
+            target: webViewport.child
             onViewInitialized: {
                 context.setPref("browser.ui.touch.left", 32);
                 context.setPref("browser.ui.touch.right", 32);
                 context.setPref("browser.ui.touch.top", 48);
                 context.setPref("browser.ui.touch.bottom", 16);
                 context.setPref("browser.ui.touch.weight.visited", 120);
-                webViewport.child().loadFrameScript("chrome://embedlite/content/embedhelper.js");
-                webViewport.child().addMessageListener("embed:alert");
-                webViewport.child().addMessageListener("embed:prompt");
-                webViewport.child().addMessageListener("embed:confirm");
-                webViewport.child().addMessageListener("embed:auth");
-                webViewport.child().addMessageListener("chrome:title")
-                webViewport.child().addMessageListener("context:info")
+                webViewport.child.loadFrameScript("chrome://embedlite/content/embedhelper.js");
+                webViewport.child.addMessageListener("embed:alert");
+                webViewport.child.addMessageListener("embed:prompt");
+                webViewport.child.addMessageListener("embed:confirm");
+                webViewport.child.addMessageListener("embed:auth");
+                webViewport.child.addMessageListener("chrome:title")
+                webViewport.child.addMessageListener("context:info")
                 print("QML View Initialized")
                 if (startURL.length != 0 && createParentID == 0) {
                     load(startURL)
                 }
             }
             onViewAreaChanged: {
-                var r = webViewport.child().contentRect
-                var offset = webViewport.child().scrollableOffset
-                var s = webViewport.child().scrollableSize
+                var r = webViewport.child.contentRect
+                var offset = webViewport.child.scrollableOffset
+                var s = webViewport.child.scrollableSize
                 webViewport.visibleArea.widthRatio = r.width / s.width
                 webViewport.visibleArea.heightRatio = r.height / s.height
                 webViewport.visibleArea.xPosition = offset.x
                         * webViewport.visibleArea.widthRatio
-                        * webViewport.child().resolution
+                        * webViewport.child.resolution
                 webViewport.visibleArea.yPosition = offset.y
                         * webViewport.visibleArea.heightRatio
-                        * webViewport.child().resolution
+                        * webViewport.child.resolution
                 webViewport.movingHorizontally = true
                 webViewport.movingVertically = true
                 scrollTimer.restart()
             }
             onTitleChanged: {
-                pageTitleChanged(webViewport.child().title)
+                pageTitleChanged(webViewport.child.title)
             }
             onUrlChanged: {
-                addressLine.text = webViewport.child().url
+                addressLine.text = webViewport.child.url
             }
             onRecvAsyncMessage: {
                 print("onRecvAsyncMessage:" + message + ", data:" + data)
@@ -294,7 +294,7 @@ FocusScope {
         AlertDialog {
             id: alertDlg
             onHandled: {
-                webViewport.child().sendAsyncMessage("alertresponse", {
+                webViewport.child.sendAsyncMessage("alertresponse", {
                                                          winid: winid,
                                                          checkval: alertDlg.checkval,
                                                          accepted: alertDlg.accepted
@@ -305,7 +305,7 @@ FocusScope {
         ConfirmDialog {
             id: confirmDlg
             onHandled: {
-                webViewport.child().sendAsyncMessage("confirmresponse", {
+                webViewport.child.sendAsyncMessage("confirmresponse", {
                                                          winid: winid,
                                                          checkval: confirmDlg.checkval,
                                                          accepted: confirmDlg.accepted
@@ -316,7 +316,7 @@ FocusScope {
         PromptDialog {
             id: promptDlg
             onHandled: {
-                webViewport.child().sendAsyncMessage("promptresponse", {
+                webViewport.child.sendAsyncMessage("promptresponse", {
                                                          winid: winid,
                                                          checkval: promptDlg.checkval,
                                                          accepted: promptDlg.accepted,
@@ -328,7 +328,7 @@ FocusScope {
         AuthenticationDialog {
             id: authDlg
             onHandled: {
-                webViewport.child().sendAsyncMessage("authresponse", {
+                webViewport.child.sendAsyncMessage("authresponse", {
                                                          winid: winid,
                                                          checkval: authDlg.checkval,
                                                          accepted: authDlg.accepted,

@@ -25,11 +25,11 @@ Item {
         height: 100
 
         iconSource: "../icons/backward.png"
-        enabled: viewport.child().canGoBack
+        enabled: viewport.child.canGoBack
 
         onClicked: {
             root.selected()
-            viewport.child().goBack()
+            viewport.child.goBack()
         }
     }
 
@@ -44,11 +44,11 @@ Item {
         height: 100
 
         iconSource: "../icons/forward.png"
-        enabled: viewport.child().canGoForward
+        enabled: viewport.child.canGoForward
 
         onClicked: {
             root.selected()
-            viewport.child().goForward()
+            viewport.child.goForward()
         }
     }
 
@@ -62,14 +62,14 @@ Item {
         width: 100
         height: 100
 
-        iconSource: viewport.child().loading ? "../icons/stop.png" : "../icons/refresh.png"
+        iconSource: viewport.child.loading ? "../icons/stop.png" : "../icons/refresh.png"
 
         onClicked: {
             //root.selected()
-            if (viewport.child().loading) {
-                viewport.child().stop()
+            if (viewport.child.loading) {
+                viewport.child.stop()
             } else {
-                viewport.child().reload()
+                viewport.child.reload()
             }
         }
     }

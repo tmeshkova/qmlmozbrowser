@@ -12,7 +12,7 @@ FocusScope {
 
     function load(address) {
         addressLine.text = address
-        webViewport.child().load(address)
+        webViewport.child.load(address)
     }
 
     QmlMozContext { id: mozContext }
@@ -48,7 +48,7 @@ FocusScope {
         anchors.fill: parent
 
         Connections {
-            target: webViewport.child()
+            target: webViewport.child
             onViewInitialized: {
                 mozContext.setPref("browser.ui.touch.left", 32);
                 mozContext.setPref("browser.ui.touch.right", 32);
@@ -57,14 +57,14 @@ FocusScope {
                 mozContext.setPref("browser.ui.touch.weight.visited", 120);
                 mozContext.setPref("browser.download.folderList", 2); // 0 - Desktop, 1 - Downloads, 2 - Custom
                 mozContext.setPref("browser.download.useDownloadDir", false); // Invoke filepicker instead of immediate download to ~/Downloads
-                webViewport.child().loadFrameScript("chrome://embedlite/content/embedhelper.js");
-                webViewport.child().addMessageListener("embed:alert");
-                webViewport.child().addMessageListener("embed:prompt");
-                webViewport.child().addMessageListener("embed:confirm");
-                webViewport.child().addMessageListener("embed:auth");
-                webViewport.child().addMessageListener("embed:filepicker");
-                webViewport.child().addMessageListener("chrome:title")
-                webViewport.child().addMessageListener("context:info")
+                webViewport.child.loadFrameScript("chrome://embedlite/content/embedhelper.js");
+                webViewport.child.addMessageListener("embed:alert");
+                webViewport.child.addMessageListener("embed:prompt");
+                webViewport.child.addMessageListener("embed:confirm");
+                webViewport.child.addMessageListener("embed:auth");
+                webViewport.child.addMessageListener("embed:filepicker");
+                webViewport.child.addMessageListener("chrome:title")
+                webViewport.child.addMessageListener("context:info")
                 print("QML View Initialized")
                 if (startURL.length != 0 && createParentID == 0) {
                     load(startURL)
@@ -74,7 +74,7 @@ FocusScope {
                 }
             }
             onLoadingChanged: {
-                var isLoading = webViewport.child().loading
+                var isLoading = webViewport.child.loading
                 if (isLoading && !overlay.visible) {
                     overlay.showAddressBar()
                 }
@@ -94,23 +94,23 @@ FocusScope {
                 overlay.show(posY)
             }
             onViewAreaChanged: {
-                var r = webViewport.child().contentRect
-                var offset = webViewport.child().scrollableOffset
-                var s = webViewport.child().scrollableSize
+                var r = webViewport.child.contentRect
+                var offset = webViewport.child.scrollableOffset
+                var s = webViewport.child.scrollableSize
                 webViewport.visibleArea.widthRatio = r.width / s.width
                 webViewport.visibleArea.heightRatio = r.height / s.height
                 webViewport.visibleArea.xPosition = offset.x
                         * webViewport.visibleArea.widthRatio
-                        * webViewport.child().resolution
+                        * webViewport.child.resolution
                 webViewport.visibleArea.yPosition = offset.y
                         * webViewport.visibleArea.heightRatio
-                        * webViewport.child().resolution
+                        * webViewport.child.resolution
                 webViewport.movingHorizontally = true
                 webViewport.movingVertically = true
                 scrollTimer.restart()
             }
             onTitleChanged: {
-                pageTitleChanged(webViewport.child().title)
+                pageTitleChanged(webViewport.child.title)
             }
             onRecvAsyncMessage: {
                 print("onRecvAsyncMessage:" + message + ", data:" + data)
@@ -154,7 +154,7 @@ FocusScope {
         AlertDialog {
             id: alertDlg
             onHandled: {
-                webViewport.child().sendAsyncMessage("alertresponse", {
+                webViewport.child.sendAsyncMessage("alertresponse", {
                                                          winid: winid,
                                                          checkval: alertDlg.checkval,
                                                          accepted: alertDlg.accepted
@@ -165,7 +165,7 @@ FocusScope {
         ConfirmDialog {
             id: confirmDlg
             onHandled: {
-                webViewport.child().sendAsyncMessage("confirmresponse", {
+                webViewport.child.sendAsyncMessage("confirmresponse", {
                                                          winid: winid,
                                                          checkval: confirmDlg.checkval,
                                                          accepted: confirmDlg.accepted
@@ -176,7 +176,7 @@ FocusScope {
         PromptDialog {
             id: promptDlg
             onHandled: {
-                webViewport.child().sendAsyncMessage("promptresponse", {
+                webViewport.child.sendAsyncMessage("promptresponse", {
                                                          winid: winid,
                                                          checkval: promptDlg.checkval,
                                                          accepted: promptDlg.accepted,
@@ -188,7 +188,7 @@ FocusScope {
         AuthenticationDialog {
             id: authDlg
             onHandled: {
-                webViewport.child().sendAsyncMessage("authresponse", {
+                webViewport.child.sendAsyncMessage("authresponse", {
                                                          winid: winid,
                                                          checkval: authDlg.checkval,
                                                          accepted: authDlg.accepted,
@@ -377,7 +377,7 @@ FocusScope {
         onSelected: {
             filePicker.visible = false
             console.log("FilePicker selected: " + path + " accepted: " + accepted)
-            webViewport.child().sendAsyncMessage("filepickerresponse", {
+            webViewport.child.sendAsyncMessage("filepickerresponse", {
                                                          winid: winid,
                                                          accepted: accepted,
                                                          items: path
