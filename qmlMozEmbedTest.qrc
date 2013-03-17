@@ -31,6 +31,7 @@
         <file>qml/Settings.qml</file>
         <file>qml/InputArea.qml</file>
         <file>qml/Checkbox.qml</file>
+        <file>qml/FilePicker.qml</file>
 
         <file alias="qml/Dialog.qml">qml/dialogs/Dialog.qml</file>
         <file alias="qml/AlertDialog.qml">qml/dialogs/AlertDialog.qml</file>
