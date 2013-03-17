@@ -13,7 +13,7 @@
 #include <QFileInfo>
 #include <QVariant>
 #include <QFileInfoList>
-
+#include <QDesktopServices>
 
 class QmlHelperTools : public QObject
 {
@@ -30,7 +30,7 @@ public:
     Q_INVOKABLE QString getClipboard();
     Q_INVOKABLE QList<QVariant> getFolderModel(QString path);
     Q_INVOKABLE QString getFolderCleanPath(QString path);
-
+    Q_INVOKABLE QString getStorageLocation(int location);
 };
 
 #endif /* qmlhelpertools_h */

@@ -121,7 +121,7 @@ FocusScope {
 
                 }
                 else if (message == "embed:filepicker") {
-                    filePicker.show(data.mode, "/home/user/MyDocs", data.title, data.name, data.winid)
+                    filePicker.show(data.mode, QmlHelperTools.getStorageLocation(0), data.title, data.name, data.winid)
                 }
             }
             onRecvSyncMessage: {

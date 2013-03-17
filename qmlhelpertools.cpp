@@ -19,6 +19,24 @@ QmlHelperTools::getClipboard()
     return clipboard->text();
 }
 
+//QDesktopServices::DesktopLocation   0   Returns the user's desktop directory.
+//QDesktopServices::DocumentsLocation 1   Returns the user's document.
+//QDesktopServices::FontsLocation 2   Returns the user's fonts.
+//QDesktopServices::ApplicationsLocation  3   Returns the user's applications.
+//QDesktopServices::MusicLocation 4   Returns the users music.
+//QDesktopServices::MoviesLocation    5   Returns the user's movies.
+//QDesktopServices::PicturesLocation  6   Returns the user's pictures.
+//QDesktopServices::TempLocation  7   Returns the system's temporary directory.
+//QDesktopServices::HomeLocation  8   Returns the user's home directory.
+//QDesktopServices::DataLocation  9   Returns a directory location where persistent application data can be stored. QCoreApplication::applicationName and QCoreApplication::organizationName should work on all platforms.
+//QDesktopServices::CacheLocation 10  Returns a directory location where user-specific non-essential (cached) data should be written.
+
+QString
+QmlHelperTools::getStorageLocation(int location)
+{
+    return QDesktopServices::storageLocation((QDesktopServices::StandardLocation)location);
+}
+
 QString
 QmlHelperTools::getFolderCleanPath(QString path)
 {
