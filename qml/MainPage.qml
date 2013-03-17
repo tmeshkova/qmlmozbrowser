@@ -69,7 +69,7 @@ FocusScope {
                 if (startURL.length != 0 && createParentID == 0) {
                     load(startURL)
                 }
-                else {
+                else if (createParentID == 0) {
                     load("about:blank")
                 }
             }
