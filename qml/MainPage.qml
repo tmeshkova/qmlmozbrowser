@@ -380,7 +380,7 @@ FocusScope {
             webViewport.child.sendAsyncMessage("filepickerresponse", {
                                                          winid: winid,
                                                          accepted: accepted,
-                                                         items: path
+                                                         items: [ path ]
                                                      })
         }
     }
