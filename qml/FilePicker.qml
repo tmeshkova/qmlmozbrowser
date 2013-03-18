@@ -37,7 +37,7 @@ Item {
         id: rejectArea
         anchors.fill: parent
         onClicked: {
-            root.selected("null", false)
+            root.selected([ "null" ], false)
         }
     }
 
@@ -77,8 +77,8 @@ Item {
 
     Column {
         id: content
-        anchors.centerIn: parent
-        width: Math.min(Math.min(parent.width, parent.height) - 10, 400)
+        anchors.centerIn: root
+        width: Math.min(Math.min(root.width, root.height) - 10, 400)
         spacing: 10
 
         Text {
@@ -152,7 +152,7 @@ Item {
                             }
                             else if (pickerMode == 0) {
                                 fileName.setFocus(false)
-                                root.selected(item, true)
+                                root.selected([ item ], true)
                             }
                         }
                     }
@@ -168,13 +168,13 @@ Item {
             width: parent.width - 20
             onAccepted: {
                 fileName.setFocus(false)
-                root.selected(currPath + "/" + fileName.text, true)
+                root.selected([ currPath + "/" + fileName.text ], true)
             }
         }
 
         Item {
             anchors.horizontalCenter: parent.horizontalCenter
-            width: btOk.visible ? parent.width - 20 : btCancel.width
+            width: btOk.visible ? (parent.width - 20) : btCancel.width
             height: btCancel.height
 
             DialogButton {
@@ -187,10 +187,10 @@ Item {
                     fileName.setFocus(false)
                     switch (pickerMode) {
                         case 1:
-                            root.selected(currPath + "/" + fileName.text, true)
+                            root.selected([ currPath + "/" + fileName.text ], true)
                             break;
                         case 2:
-                            root.selected(currPath, true)
+                            root.selected([ currPath ], true)
                             break;
                         case 3:
                             root.selected(root.selectedItems, true)
@@ -207,9 +207,9 @@ Item {
                 anchors.leftMargin: btOk.visible ? 10 : 0
                 width: btOk.visible ? (parent.width / 2 - 5) : 200
                 text: "Cancel"
-                onClicked: {         
-                    fileName.setFocus(false)         
-                    root.selected("null", false)
+                onClicked: {
+                    fileName.setFocus(false)
+                    root.selected([ "null" ], false)
                 }
             }
         }
