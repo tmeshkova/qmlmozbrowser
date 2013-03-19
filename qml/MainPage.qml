@@ -16,6 +16,12 @@ FocusScope {
     }
 
     QmlMozContext { id: mozContext }
+    Connections {
+        target: mozContext.child
+        onOnInitialized: {
+            mozContext.child.addObserver("embed:download");
+        }
+    }
 
     QmlMozView {
         id: webViewport
