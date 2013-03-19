@@ -69,7 +69,6 @@ FocusScope {
                 webViewport.child.addMessageListener("embed:confirm");
                 webViewport.child.addMessageListener("embed:auth");
                 webViewport.child.addMessageListener("embed:filepicker");
-                webViewport.child.addMessageListener("chrome:title")
                 webViewport.child.addMessageListener("context:info")
                 print("QML View Initialized")
                 if (startURL.length != 0 && createParentID == 0) {
