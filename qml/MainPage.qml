@@ -19,7 +19,14 @@ FocusScope {
     Connections {
         target: mozContext.child
         onOnInitialized: {
+            print("QmlMozContext Initialized");
             mozContext.child.addObserver("embed:download");
+            mozContext.child.sendObserve("embedui:download", { msg: "requestDownloadsList" })
+        }
+        onRecvObserve: {
+            if (message == "embed:download" && data.msg == "dl-list") {
+                print("data: id:", data.list[0].id, "from:", data.list[0].from, "to:", data.list[0].to);
+            }
         }
     }
 
