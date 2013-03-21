@@ -16,10 +16,20 @@ FocusScope {
     }
 
     QmlMozContext { id: mozContext }
+
+    function saveFile(url) {
+        var fileName = url.split("/")
+        fileName = fileName[fileName.length - 1]
+        var path = filePicker.getFileSync(1, QmlHelperTools.getStorageLocation(0), fileName)
+        if (path != "")
+            mozContext.child.sendObserve("embedui:download", { msg: "addDownload", from: url, to: path })
+    }
+
     Connections {
         target: mozContext.child
         onOnInitialized: {
             print("QmlMozContext Initialized");
+            mozContext.setPref("browser.download.manager.retention", 2);
             mozContext.setPref("browser.ui.touch.left", 32);
             mozContext.setPref("browser.ui.touch.right", 32);
             mozContext.setPref("browser.ui.touch.top", 48);
@@ -31,11 +41,6 @@ FocusScope {
             mozContext.child.addObserver("embed:download");
             mozContext.child.sendObserve("embedui:download", { msg: "requestDownloadsList" })
         }
-        onRecvObserve: {
-            if (message == "embed:download" && data.msg == "dl-list") {
-                print("data: id:", data.list[0].id, "from:", data.list[0].from, "to:", data.list[0].to);
-            }
-        }
     }
 
     QmlMozView {
@@ -44,7 +49,7 @@ FocusScope {
         objectName: "webViewport"
         visible: true
         focus: true
-        enabled: !(alertDlg.visible || confirmDlg.visible || promptDlg.visible || authDlg.visible || overlay.visible || settingsPage.x==0 || filePicker.visible)
+        enabled: !(alertDlg.visible || confirmDlg.visible || promptDlg.visible || authDlg.visible || overlay.visible || settingsPage.x==0 || downloadsPage.x==0 || filePicker.visible)
         property bool movingHorizontally: false
         property bool movingVertically: true
         property variant visibleArea: QtObject {
@@ -72,12 +77,8 @@ FocusScope {
             target: webViewport.child
             onViewInitialized: {
                 webViewport.child.loadFrameScript("chrome://embedlite/content/embedhelper.js");
-                webViewport.child.addMessageListener("embed:alert");
-                webViewport.child.addMessageListener("embed:prompt");
-                webViewport.child.addMessageListener("embed:confirm");
-                webViewport.child.addMessageListener("embed:auth");
                 webViewport.child.addMessageListener("embed:filepicker");
-                webViewport.child.addMessageListener("context:info")
+                webViewport.child.addMessageListener("context:info");
                 print("QML View Initialized")
                 if (startURL.length != 0 && createParentID == 0) {
                     load(startURL)
@@ -160,7 +161,7 @@ FocusScope {
                     }
                     default:
                         break;
-                }
+                    }
             }
             onRecvSyncMessage: {
                 print("onRecvSyncMessage:" + message + ", data:" + data)
@@ -383,10 +384,39 @@ FocusScope {
                 settingsPage.show()
             }
         }
+
+        OverlayButton {
+            id: downloads
+
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            anchors.rightMargin: 10
+            anchors.bottomMargin: 10
+
+            width: 100
+            height: 100
+
+            visible: navigation.visible
+
+            iconSource: "../icons/download.png"
+
+            onClicked: {
+                overlay.hide()
+                downloadsPage.show()
+            }
+        }
     }
 
     Settings {
         id: settingsPage
+        width: parent.width
+        height: parent.height
+        x: parent.width
+        context: mozContext
+    }
+
+    Downloads {
+        id: downloadsPage
         width: parent.width
         height: parent.height
         x: parent.width

@@ -16,13 +16,14 @@ Item {
         id: background
 
         anchors.fill: root
-
+        anchors.rightMargin: 1
+        anchors.bottomMargin: 1
         radius: root.height / 5
         border.color: "black"
         border.width: 1
         smooth: true
         color: root.enabled ? (mouseArea.pressed ? "cyan" : "white") : "transparent"
-        opacity: mouseArea.pressed ? 0.5 : 0.8
+        opacity: root.enabled ? (mouseArea.pressed ? 0.5 : 0.8) : 0.3
     }
 
     Image {

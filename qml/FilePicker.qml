@@ -8,7 +8,30 @@ Item {
     property variant selectedItems
     property int pickerMode: 0
     property int winid: 0
+    property bool syncLock: false
+    property string syncFileName: ""
     signal selected(variant path, bool accepted)
+
+    function done(path, accepted) {
+        if (!syncLock) {
+            selected(path, accepted)
+        }
+        else {
+            syncFileName = "file://" + path[0]
+            syncLock = false
+        }
+    }
+
+    function getFileSync(mode, path, name) {
+        syncFileName = ""
+        syncLock = true
+        show(mode, path, "", name, 0)
+        while (syncLock) {
+            QmlHelperTools.processEvents()
+        }
+        root.visible = false
+        return syncFileName
+    }
 
     function show(mode, path, title, name, winId) {
         titleText.text = title ? title : getTitleByMode(mode)
@@ -37,7 +60,7 @@ Item {
         id: rejectArea
         anchors.fill: parent
         onClicked: {
-            root.selected([ "null" ], false)
+            root.done([ "null" ], false)
         }
     }
 
@@ -152,7 +175,7 @@ Item {
                             }
                             else if (pickerMode == 0) {
                                 fileName.setFocus(false)
-                                root.selected([ item ], true)
+                                root.done([ item ], true)
                             }
                         }
                     }
@@ -168,7 +191,7 @@ Item {
             width: parent.width - 20
             onAccepted: {
                 fileName.setFocus(false)
-                root.selected([ currPath + "/" + fileName.text ], true)
+                root.done([ currPath + "/" + fileName.text ], true)
             }
         }
 
@@ -187,13 +210,13 @@ Item {
                     fileName.setFocus(false)
                     switch (pickerMode) {
                         case 1:
-                            root.selected([ currPath + "/" + fileName.text ], true)
+                            root.done([ currPath + "/" + fileName.text ], true)
                             break;
                         case 2:
-                            root.selected([ currPath ], true)
+                            root.done([ currPath ], true)
                             break;
                         case 3:
-                            root.selected(root.selectedItems, true)
+                            root.done(root.selectedItems, true)
                             break;
                         default:
                             break
@@ -209,7 +232,7 @@ Item {
                 text: "Cancel"
                 onClicked: {
                     fileName.setFocus(false)
-                    root.selected([ "null" ], false)
+                    root.done([ "null" ], false)
                 }
             }
         }

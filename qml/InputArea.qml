@@ -28,16 +28,6 @@ Item {
         height: 40
 
         Rectangle {
-            anchors.fill: parent
-
-            color: "white"
-            border.width: 1
-            radius: 10
-            smooth: true
-            opacity: 0.6
-        }
-
-        Rectangle {
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             anchors.left: parent.left
@@ -47,6 +37,16 @@ Item {
             opacity: 0.6
             visible: (root.loadProgress > 0) ? (root.loadProgress < 100 ? true : false) : false
             smooth: true
+        }
+
+        Rectangle {
+            anchors.fill: parent
+
+            color: "white"
+            border.width: 1
+            radius: 10
+            smooth: true
+            opacity: 0.6
         }
 
         TextInput {

@@ -5,7 +5,20 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include <QApplication>
+#include <QUrl>
 #include "qmlhelpertools.h"
+
+void
+QmlHelperTools::openFileBySystem(QString path)
+{
+    QDesktopServices::openUrl(QUrl::fromLocalFile(path));
+}
+
+void
+QmlHelperTools::processEvents()
+{
+    QCoreApplication::processEvents();
+}
 
 void
 QmlHelperTools::setClipboard(QString text)

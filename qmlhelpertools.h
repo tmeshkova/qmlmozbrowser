@@ -31,6 +31,8 @@ public:
     Q_INVOKABLE QList<QVariant> getFolderModel(QString path);
     Q_INVOKABLE QString getFolderCleanPath(QString path);
     Q_INVOKABLE QString getStorageLocation(int location);
+    Q_INVOKABLE void processEvents();
+    Q_INVOKABLE void openFileBySystem(QString path);
 };
 
 #endif /* qmlhelpertools_h */
