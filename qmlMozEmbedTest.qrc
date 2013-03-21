@@ -12,7 +12,6 @@
         <file>qml/main.qml</file>
         <file>qml/main_ref.qml</file>
         <file>qml/MainPage.qml</file>
-        <file>qml/MainPageRef.qml</file>
         <file>qml/main_meego.qml</file>
         <file>qml/main_ref_meego.qml</file>
         <file>qml/MainPageQuick.qml</file>

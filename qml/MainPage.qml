@@ -127,14 +127,39 @@ FocusScope {
             }
             onRecvAsyncMessage: {
                 print("onRecvAsyncMessage:" + message + ", data:" + data)
-                if (message == "context:info") {
-                    contextMenu.contextLinkHref = data.LinkHref
-                    contextMenu.contextImageSrc = data.ImageSrc
-                    navigation.contextInfoAvialable = (contextMenu.contextLinkHref.length > 0 || contextMenu.contextImageSrc.length > 0)
-
-                }
-                else if (message == "embed:filepicker") {
-                    filePicker.show(data.mode, QmlHelperTools.getStorageLocation(0), data.title, data.name, data.winid)
+                switch (message) {
+                    case "context:info": {
+                        contextMenu.contextLinkHref = data.LinkHref
+                        contextMenu.contextImageSrc = data.ImageSrc
+                        navigation.contextInfoAvialable = (contextMenu.contextLinkHref.length > 0 || contextMenu.contextImageSrc.length > 0)
+                        break;
+                    }
+                    case "embed:filepicker": {
+                        filePicker.show(data.mode, QmlHelperTools.getStorageLocation(0), data.title, data.name, data.winid)
+                        break;
+                    }
+                    case "embed:alert": {
+                        print("onAlert: title:" + data.title + ", msg:" + data.text + " winid:" + data.winid)
+                        alertDlg.show(data.title, data.text, data.winid)
+                        break;
+                    }
+                    case "embed:confirm": {
+                        print("onConfirm: title:" + data.title + ", data.text:" + data.text)
+                        confirmDlg.show(data.title, data.text, data.winid)
+                        break;
+                    }
+                    case "embed:prompt": {
+                        print("onPrompt: title:" + data.title + ", msg:" + data.text)
+                        promptDlg.show(data.title, data.text, data.defaultValue, data.winid)
+                        break;
+                    }
+                    case "embed:auth": {
+                        print("onAuthRequired: title:" + data.title + ", msg:" + data.text + ", winid:" + data.winid)
+                        authDlg.show(data.title, data.text, data.defaultValue, data.winid)
+                        break;
+                    }
+                    default:
+                        break;
                 }
             }
             onRecvSyncMessage: {
@@ -145,22 +170,6 @@ FocusScope {
                         numval: 0.04
                     }
                 }
-            }
-            onAlert: {
-                print("onAlert: title:" + data.title + ", msg:" + data.text + " winid:" + data.winid)
-                alertDlg.show(data.title, data.text, data.winid)
-            }
-            onConfirm: {
-                print("onConfirm: title:" + data.title + ", data.text:" + data.text)
-                confirmDlg.show(data.title, data.text, data.winid)
-            }
-            onPrompt: {
-                print("onPrompt: title:" + data.title + ", msg:" + data.text)
-                promptDlg.show(data.title, data.text, data.defaultValue, data.winid)
-            }
-            onAuthRequired: {
-                print("onAuthRequired: title:" + data.title + ", msg:" + data.text + ", winid:" + data.winid)
-                authDlg.show(data.title, data.text, data.defaultValue, data.winid)
             }
         }
 
