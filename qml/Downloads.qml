@@ -286,12 +286,13 @@ Rectangle {
                     id: mouseArea
                     anchors.fill: parent
                     onPressed: {
-                        console.log("Download id: " + model.id + " state: " + model.state)
                         downloadsList.hideAll()
                         showControls = true
                     }
                     onDoubleClicked: {
-                        console.log("opening: " + model.to)
+                        if (model.state == 1) {
+                            QmlHelperTools.openFileBySystem(model.to)
+                        }
                     }
                 }
 
@@ -351,7 +352,7 @@ Rectangle {
                         anchors.left: retryButton.right
                         anchors.leftMargin: 15
                         iconSource: "../icons/download-remove.png"
-                        visible: (model.state > 1 && model.state != 4)
+                        visible: (model.state != 0 && model.state != 4)
                         onClicked: {
                             console.log("removeButton clicked")
                             context.child.sendObserve("embedui:download", { msg: "removeDownload", id: id })
