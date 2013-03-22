@@ -1,51 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>icons/forward.png</file>
-        <file>icons/backward.png</file>
-        <file>icons/refresh.png</file>
-        <file>icons/stop.png</file>
-        <file>icons/plus.png</file>
-        <file>icons/menu.png</file>
-        <file>icons/settings.png</file>
-        <file>icons/button.png</file>
-        <file>icons/button-checked.png</file>
-        <file>icons/download-pause.png</file>
-        <file>icons/download-remove.png</file>
-        <file>icons/download-retry.png</file>
-        <file>icons/download-start.png</file>
-        <file>icons/download-stop.png</file>
-        <file>icons/download.png</file>
-
         <file>qml/main.qml</file>
-        <file>qml/main_ref.qml</file>
-        <file>qml/MainPage.qml</file>
-        <file>qml/main_meego.qml</file>
-        <file>qml/main_ref_meego.qml</file>
-        <file>qml/MainPageQuick.qml</file>
-        <file>qml/ScrollIndicator.qml</file>
-        <file>qml/dialogs/Dialog.qml</file>
-        <file>qml/dialogs/AlertDialog.qml</file>
-        <file>qml/dialogs/ConfirmDialog.qml</file>
-        <file>qml/dialogs/PromptDialog.qml</file>
-        <file>qml/dialogs/AuthenticationDialog.qml</file>
-        <file>qml/dialogs/DialogButton.qml</file>
-        <file>qml/dialogs/DialogLineInput.qml</file>
-        <file>qml/AddressField.qml</file>
-        <file>qml/OverlayButton.qml</file>
-        <file>qml/OverlayContextMenu.qml</file>
-        <file>qml/OverlayNavigation.qml</file>
-        <file>qml/Settings.qml</file>
-        <file>qml/InputArea.qml</file>
-        <file>qml/Checkbox.qml</file>
-        <file>qml/FilePicker.qml</file>
-        <file>qml/Downloads.qml</file>
-
-        <file alias="qml/Dialog.qml">qml/dialogs/Dialog.qml</file>
-        <file alias="qml/AlertDialog.qml">qml/dialogs/AlertDialog.qml</file>
-        <file alias="qml/ConfirmDialog.qml">qml/dialogs/ConfirmDialog.qml</file>
-        <file alias="qml/PromptDialog.qml">qml/dialogs/PromptDialog.qml</file>
-        <file alias="qml/AuthenticationDialog.qml">qml/dialogs/AuthenticationDialog.qml</file>
-        <file alias="qml/DialogButton.qml">qml/dialogs/DialogButton.qml</file>
-        <file alias="qml/DialogLineInput.qml">qml/dialogs/DialogLineInput.qml</file>
     </qresource>
 </RCC>

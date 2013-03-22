@@ -1,19 +1,9 @@
 CONFIG += link_pkgconfig
 TARGET = qmlMozEmbedTest
-contains(QT_MAJOR_VERSION, 4) {
-  SOURCES += main.cpp qmlapplicationviewer.cpp WindowCreator.cpp qmlhelpertools.cpp
-  HEADERS += qmlapplicationviewer.h WindowCreator.h qmlhelpertools.h
-} else {
-  SOURCES += mainqt5.cpp
-}
+SOURCES += main.cpp
 
-contains(QT_MAJOR_VERSION, 4) {
-  QT += opengl declarative
-  PKGCONFIG += QJson
-} else {
-  QT += qml quick widgets
-  QT += opengl declarative
-}
+QT += opengl declarative
+PKGCONFIG += QJson
 
 QML_FILES = qml/*.qml
 RESOURCES += qmlMozEmbedTest.qrc
@@ -25,12 +15,6 @@ isEmpty(QTEMBED_LIB) {
   PKGCONFIG += qtembedwidget x11
 } else {
   LIBS+=$$QTEMBED_LIB -lX11
-}
-
-isEmpty(DEFAULT_COMPONENT_PATH) {
-  DEFINES += DEFAULT_COMPONENTS_PATH=\"\\\"/usr/lib/mozembedlite/\\\"\"
-} else {
-  DEFINES += DEFAULT_COMPONENTS_PATH=\"\\\"$$DEFAULT_COMPONENT_PATH\\\"\"
 }
 
 PREFIX = /usr
@@ -46,7 +30,3 @@ RCC_DIR += ./$$OBJ_DEB_DIR/tmp/rcc/release_static
 
 target.path = $$PREFIX/bin
 INSTALLS += target
-
-contains(CONFIG,qdeclarative-boostable):contains(MEEGO_EDITION,harmattan) {
-    DEFINES += HARMATTAN_BOOSTER
-}
