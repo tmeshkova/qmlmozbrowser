@@ -338,7 +338,7 @@ Rectangle {
                         anchors.left: stopButton.visible ? stopButton.right : ( pauseResumeButton.visible ? pauseResumeButton.right : parent.left)
                         anchors.leftMargin: pauseResumeButton.visible ? 15 : 0
                         iconSource: "../icons/download-retry.png"
-                        visible: (model.state != 0 || model.state != 4)
+                        visible: (model.state != 0 && model.state != 4)
                         onClicked: {
                             console.log("removeButton clicked")
                             context.child.sendObserve("embedui:download", { msg: "retryDownload", id: id })
@@ -356,6 +356,7 @@ Rectangle {
                         onClicked: {
                             console.log("removeButton clicked")
                             context.child.sendObserve("embedui:download", { msg: "removeDownload", id: id })
+                            downloadsListModel.remove(index)
                         }
                     }
                 }
