@@ -8,6 +8,7 @@
 #include <qdeclarativemozview.h>
 #include "qmlapplicationviewer.h"
 #include "qmlhelpertools.h"
+#include "qmozcontext.h"
 
 MozWindowCreator::MozWindowCreator(const QString& aQmlstring, const bool& aGlwidget, const bool& aIsFullScreen)
 {
@@ -55,8 +56,10 @@ MozWindowCreator::CreateNewWindow(const QString& url, quint32 *aUniqueID, quint3
     // See NEMO#415 for an explanation of why this may be necessary.
     if (glwidget && !getenv("SWRENDER"))
         view->setViewport(new QGLWidget);
-    else
+    else {
         qDebug() << "Not using QGLWidget viewport";
+        QMozContext::GetInstance()->setIsAccelerated(false);
+    }
 
     view->rootContext()->setContextProperty("startURL", QVariant(url));
     view->rootContext()->setContextProperty("createParentID", QVariant(aParentID));

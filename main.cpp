@@ -119,6 +119,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<QGraphicsMozView>("QtMozilla", 1, 0, "QGraphicsMozView");
     qmlRegisterType<QDeclarativeMozView>("QtMozilla", 1, 0, "QmlMozView");
 
+    // Make sure that context does not start earlier than app->exec
+    QMozContext::GetInstance(false);
     MozWindowCreator winCreator(qmlstring, glwidget, isFullscreen);
     QDeclarativeView *view = winCreator.CreateNewWindow(urlstring);
     winCreator.mWindowStack.append(view);
@@ -145,6 +147,8 @@ int main(int argc, char *argv[])
 //    QMozContext::GetInstance()->addObserver("history:checkurivisited");
 //    QMozContext::GetInstance()->addObserver("history:markurivisited");
 
+    // Push gecko startup into next loop iteration
+    QMozContext::GetInstance()->runEmbedding(0);
     int retval = application->exec();
     qDebug() << "Exiting from Application!!!";
     return retval;
