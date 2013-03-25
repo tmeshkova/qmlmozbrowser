@@ -29,17 +29,19 @@ FocusScope {
         target: mozContext.child
         onOnInitialized: {
             print("QmlMozContext Initialized");
-            mozContext.setPref("browser.download.manager.retention", 2);
-            mozContext.setPref("browser.ui.touch.left", 32);
-            mozContext.setPref("browser.ui.touch.right", 32);
-            mozContext.setPref("browser.ui.touch.top", 48);
-            mozContext.setPref("browser.ui.touch.bottom", 16);
-            mozContext.setPref("browser.ui.touch.weight.visited", 120);
-            mozContext.setPref("browser.download.folderList", 2); // 0 - Desktop, 1 - Downloads, 2 - Custom
-            mozContext.setPref("browser.download.useDownloadDir", false); // Invoke filepicker instead of immediate download to ~/Downloads
-            mozContext.setPref("browser.download.manager.retention", 2);
+            mozContext.child.setPref("browser.download.manager.retention", 2);
+            mozContext.child.setPref("browser.ui.touch.left", 32);
+            mozContext.child.setPref("browser.ui.touch.right", 32);
+            mozContext.child.setPref("browser.ui.touch.top", 48);
+            mozContext.child.setPref("browser.ui.touch.bottom", 16);
+            mozContext.child.setPref("browser.ui.touch.weight.visited", 120);
+            mozContext.child.setPref("browser.download.folderList", 2); // 0 - Desktop, 1 - Downloads, 2 - Custom
+            mozContext.child.setPref("browser.download.useDownloadDir", false); // Invoke filepicker instead of immediate download to ~/Downloads
+            mozContext.child.setPref("browser.download.manager.retention", 2);
             mozContext.child.addObserver("embed:download");
             mozContext.child.sendObserve("embedui:download", { msg: "requestDownloadsList" })
+            // mozContext.child.addObserver("embed:prefs");
+            // mozContext.child.sendObserve("embedui:prefs", { msg: "getPrefList", prefs: [ "browser.ui.touch.left", "browser.ui.touch.weight.visited",  "browser.download.folderList" ]})
         }
     }
 

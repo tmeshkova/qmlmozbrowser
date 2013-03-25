@@ -106,8 +106,8 @@ Rectangle {
                 text: "Override Geo policy to Accept always"
                 onClicked: {
                     console.log("geo override: " + checked)
-                    context.setPref("geo.prompt.testing", checked)
-                    context.setPref("geo.prompt.testing.allow", checked)
+                    context.child.setPref("geo.prompt.testing", checked)
+                    context.child.setPref("geo.prompt.testing.allow", checked)
                 }
             }
 
@@ -130,10 +130,10 @@ Rectangle {
                     onClicked: {
                         console.log("custom ua: " + checked)
                         if (checked) {
-                            context.setPref("general.useragent.override", uaString.text)
+                            context.child.setPref("general.useragent.override", uaString.text)
                         }
                         else {
-                            context.setPref("general.useragent.override", "Mozilla/5.0 (X11; Linux x86_64; rv:20.0) Gecko/20130124 Firefox/20.0")
+                            context.child.setPref("general.useragent.override", "Mozilla/5.0 (X11; Linux x86_64; rv:20.0) Gecko/20130124 Firefox/20.0")
                         }
                     }
                 }
