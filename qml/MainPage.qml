@@ -81,6 +81,7 @@ FocusScope {
                 webViewport.child.loadFrameScript("chrome://embedlite/content/embedhelper.js");
                 webViewport.child.addMessageListener("embed:filepicker");
                 webViewport.child.addMessageListener("context:info");
+                webViewport.child.addMessageListener("embed:permissions");
                 print("QML View Initialized")
                 if (startURL.length != 0 && createParentID == 0) {
                     load(startURL)
@@ -159,6 +160,14 @@ FocusScope {
                     case "embed:auth": {
                         print("onAuthRequired: title:" + data.title + ", msg:" + data.text + ", winid:" + data.winid)
                         authDlg.show(data.title, data.text, data.defaultValue, data.winid)
+                        break;
+                    }
+                    case "embed:permissions": {
+                        webViewport.child.sendAsyncMessage("embedui:premissions", {
+                                                        allow: true,
+                                                        checkedDontAsk: false,
+                                                        id: data.id
+                                                     })
                         break;
                     }
                     default:
