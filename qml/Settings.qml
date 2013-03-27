@@ -10,13 +10,43 @@ Rectangle {
     function show() {
         //anchors.leftMargin = 0
         animShow.running = true
-        //GET SETTINGS NOT IMPLEMENTED
+        context.child.sendObserve("embedui:prefs", { msg: "getPrefList", prefs: [ "geo.prompt.testing",
+                                                                                  "geo.prompt.testing.allow",
+                                                                                  "general.useragent.override",
+                                                                                  "browser.download.useDownloadDir" ]})
     }
 
     function hide() {
         uaString.setFocus(false)
         animHide.running = true
         //anchors.leftMargin = root.parent.width
+    }
+
+    Connections {
+        target: context.child
+        onRecvObserve: {
+            if (message == "embed:prefs") {
+                console.log(data)
+                for (var i=0; i<data.length; i++) {
+                    console.log(data[i].name + ": " + data[i].value)
+                    switch (data[i].name) {
+                        case "geo.prompt.testing": {
+                            overrideGeo.checked = data[i].value;
+                            break;
+                        }
+                        case "geo.prompt.testing.allow": {
+                            overrideGeo.checked = data[i].value;
+                            break;
+                        }
+                        case "general.useragent.override": {
+                            uaString.value = data[i].value;
+                            customUA.checked = true
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     ParallelAnimation {
@@ -133,7 +163,7 @@ Rectangle {
                             context.child.setPref("general.useragent.override", uaString.text)
                         }
                         else {
-                            context.child.setPref("general.useragent.override", "Mozilla/5.0 (X11; Linux x86_64; rv:20.0) Gecko/20130124 Firefox/20.0")
+                            context.child.setPref("general.useragent.override", "")
                         }
                     }
                 }
@@ -147,7 +177,7 @@ Rectangle {
                     anchors.top: parent.top
                     text: "Mozilla/5.0 (X11; Linux x86_64; rv:20.0) Gecko/20130124 Firefox/20.0"
                     onAccepted: {
-
+                        context.child.setPref("general.useragent.override", uaString.text)
                     }
                 }
             }

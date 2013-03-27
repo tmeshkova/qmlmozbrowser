@@ -39,6 +39,8 @@
         <file>qml/Checkbox.qml</file>
         <file>qml/FilePicker.qml</file>
         <file>qml/Downloads.qml</file>
+        <file>qml/PermissionsDialog.qml</file>
+        <file>qml/Selection.qml</file>
 
         <file alias="qml/Dialog.qml">qml/dialogs/Dialog.qml</file>
         <file alias="qml/AlertDialog.qml">qml/dialogs/AlertDialog.qml</file>

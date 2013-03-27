@@ -27,7 +27,7 @@ Item {
         id: label
         anchors.top: root.top
         anchors.left: icon.right
-        anchors.leftMargin: 10
+        anchors.leftMargin: 5
         anchors.right: root.right
         font.pixelSize: root.fixedHeight ? root.fixedHeight : (icon.height / 3 * 2)
         horizontalAlignment: Text.AlignLeft

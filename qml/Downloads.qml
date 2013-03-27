@@ -13,6 +13,7 @@ Rectangle {
             if (message == "embed:download") {
                 switch (data.msg) {
                     case "dl-list": {
+                        downloadsListModel.clear()
                         console.log("data count: " + data.list.length);
                         console.log("appending download items");
                         for (var i=0; i<data.list.length; i++) {
@@ -38,7 +39,6 @@ Rectangle {
 
     function show() {
         animShow.running = true
-        downloadsListModel.clear()
         context.child.sendObserve("embedui:download", { msg: "requestDownloadsList" })
     }
 
@@ -173,7 +173,7 @@ Rectangle {
         model: downloadsListModel
         delegate: Rectangle {
             width: parent.width-border.width
-            height: progress.height + infoText.height + fromText.height + toText.height + controls.height + 20 + (controls.visible ? 10 : 0)
+            height: content.height
             property bool showControls: false
             radius: 5
             color: showControls ? "#dddddd" : "#f0f0f0"
@@ -219,8 +219,13 @@ Rectangle {
 
             Item {
                 id: content
-                anchors.fill: parent
-                anchors.margins: 10
+                anchors.top: parent.top
+                anchors.topMargin: 10
+                anchors.left: parent.left
+                anchors.leftMargin: 10
+                anchors.right: parent.right
+                anchors.rightMargin: 10
+                height: progress.height + infoText.height + fromText.height + toText.height + controls.height + 20 + (controls.visible ? 10 : 0)
 
                 Rectangle {
                     color: "white"
@@ -261,7 +266,7 @@ Rectangle {
                     anchors.top: progress.bottom
                     font.pixelSize: 20
                     text: bytesToSize(cur) + " of " + bytesToSize(max) + " | " + percent + "%\n"
-                        + stateToText(model.state) + " | Speed: " + bytesToSize(speed) + "/s"
+                        + stateToText(model.state) + (model.state == 0 ? (" | Speed: " + bytesToSize(speed) + "/s") : "" )
                 }
 
                 Text {

@@ -29,7 +29,6 @@ FocusScope {
         target: mozContext.child
         onOnInitialized: {
             print("QmlMozContext Initialized");
-            mozContext.child.setPref("browser.download.manager.retention", 2);
             mozContext.child.setPref("browser.ui.touch.left", 32);
             mozContext.child.setPref("browser.ui.touch.right", 32);
             mozContext.child.setPref("browser.ui.touch.top", 48);
@@ -38,10 +37,10 @@ FocusScope {
             mozContext.child.setPref("browser.download.folderList", 2); // 0 - Desktop, 1 - Downloads, 2 - Custom
             mozContext.child.setPref("browser.download.useDownloadDir", false); // Invoke filepicker instead of immediate download to ~/Downloads
             mozContext.child.setPref("browser.download.manager.retention", 2);
+            mozContext.child.setPref("browser.helperApps.deleteTempFileOnExit", false);
+            mozContext.child.setPref("browser.download.manager.quitBehavior", 1);
             mozContext.child.addObserver("embed:download");
-            mozContext.child.sendObserve("embedui:download", { msg: "requestDownloadsList" })
-            // mozContext.child.addObserver("embed:prefs");
-            // mozContext.child.sendObserve("embedui:prefs", { msg: "getPrefList", prefs: [ "browser.ui.touch.left", "browser.ui.touch.weight.visited",  "browser.download.folderList" ]})
+            mozContext.child.addObserver("embed:prefs");
         }
     }
 
@@ -51,7 +50,7 @@ FocusScope {
         objectName: "webViewport"
         visible: true
         focus: true
-        enabled: !(alertDlg.visible || confirmDlg.visible || promptDlg.visible || authDlg.visible || overlay.visible || settingsPage.x==0 || downloadsPage.x==0 || filePicker.visible)
+        enabled: !(alertDlg.visible || confirmDlg.visible || promptDlg.visible || authDlg.visible || overlay.visible || settingsPage.x==0 || downloadsPage.x==0 || filePicker.visible || selectCombo.visible)
         property bool movingHorizontally: false
         property bool movingVertically: true
         property variant visibleArea: QtObject {
@@ -97,7 +96,7 @@ FocusScope {
                 if (isLoading && !overlay.visible) {
                     overlay.showAddressBar()
                 }
-                else if (!isLoading && overlay.visible && !navigation.visible && !contextMenu.visible && !addressLine.inputFocus && !filePicker.visible) {
+                else if (!isLoading && overlay.visible && !navigation.visible && !contextMenu.visible && !addressLine.inputFocus) {
                     overlay.hide()
                 }
             }
@@ -165,11 +164,12 @@ FocusScope {
                         break;
                     }
                     case "embed:permissions": {
+//                        permissionsDlg.show(data.title, data.host, data.id)
                         webViewport.child.sendAsyncMessage("embedui:premissions", {
-                                                        allow: true,
-                                                        checkedDontAsk: false,
-                                                        id: data.id
-                                                     })
+                                                            allow: true,
+                                                            checkedDontAsk: false,
+                                                            id: data.id
+                                                         })
                         break;
                     }
                     default:
@@ -187,10 +187,21 @@ FocusScope {
                     break;
                 case "embed:select":
                     response.message = {
-                        button: 0
+                        button: selectCombo.showSync(data)
                     }
                     break;
                 }
+            }
+        }
+
+        PermissionsDialog {
+            id: permissionsDlg
+            onHandled: {
+                webViewport.child.sendAsyncMessage("embedui:premissions", {
+                                                        allow: permissionsDlg.accepted,
+                                                        checkedDontAsk: permissionsDlg.dontAsk,
+                                                        id: permissionsDlg.uid
+                                                     })
             }
         }
 
@@ -455,6 +466,11 @@ FocusScope {
                                                          items: path
                                                      })
         }
+    }
+
+    Selection {
+        id: selectCombo
+        anchors.fill: parent
     }
 
     Keys.onPressed: {
