@@ -19,7 +19,7 @@ Rectangle {
     function hide() {
         uaString.setFocus(false)
         animHide.running = true
-        //anchors.leftMargin = root.parent.width
+        context.child.sendObserve("embedui:saveprefs", {})
     }
 
     Connections {
