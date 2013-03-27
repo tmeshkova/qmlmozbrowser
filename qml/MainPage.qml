@@ -79,9 +79,11 @@ FocusScope {
             target: webViewport.child
             onViewInitialized: {
                 webViewport.child.loadFrameScript("chrome://embedlite/content/embedhelper.js");
+                webViewport.child.loadFrameScript("chrome://embedlite/content/SelectHelper.js");
                 webViewport.child.addMessageListener("embed:filepicker");
                 webViewport.child.addMessageListener("context:info");
                 webViewport.child.addMessageListener("embed:permissions");
+                webViewport.child.addMessageListener("embed:select");
                 print("QML View Initialized")
                 if (startURL.length != 0 && createParentID == 0) {
                     load(startURL)
@@ -176,11 +178,18 @@ FocusScope {
             }
             onRecvSyncMessage: {
                 print("onRecvSyncMessage:" + message + ", data:" + data)
-                if (message == "embed:testsyncresponse") {
+                switch (message) {
+                case "embed:testsyncresponse":
                     response.message = {
                         val: "response",
                         numval: 0.04
                     }
+                    break;
+                case "embed:select":
+                    response.message = {
+                        button: 0
+                    }
+                    break;
                 }
             }
         }
