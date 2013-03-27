@@ -164,12 +164,8 @@ FocusScope {
                         break;
                     }
                     case "embed:permissions": {
-//                        permissionsDlg.show(data.title, data.host, data.id)
-                        webViewport.child.sendAsyncMessage("embedui:premissions", {
-                                                            allow: true,
-                                                            checkedDontAsk: false,
-                                                            id: data.id
-                                                         })
+                        print("grant permissions required: title:" + data.title + ", host:" + data.host + ", uid:" + data.id)
+                        permissionsDlg.show(data.title, data.host, data.id)
                         break;
                     }
                     default:
