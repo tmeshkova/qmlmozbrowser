@@ -171,12 +171,8 @@ FocusScope {
                         break;
                     }
                     case "embed:login": {
-                        print("login manager notification: name:" + data.name + ", uid:" + data.id)
-                        webViewport.child.sendAsyncMessage("embedui:login", {
-                                                        buttonidx: 0,
-                                                        checkedDontAsk: false,
-                                                        id: data.id
-                                                     })
+                        print("login manager notification: name:" + data.name + ", bt1:" + data.buttons[0].label + ", bt2:" + data.buttons[1].label)
+                        loginDlg.show(data.name, data.id)
                         break;
                     }
                     default:
@@ -208,6 +204,16 @@ FocusScope {
                                                         allow: permissionsDlg.accepted,
                                                         checkedDontAsk: permissionsDlg.dontAsk,
                                                         id: permissionsDlg.uid
+                                                     })
+            }
+        }
+
+        LoginDialog {
+            id: loginDlg
+            onHandled: {
+                webViewport.child.sendAsyncMessage("embedui:login", {
+                                                        buttonidx: loginDlg.accepted ? 0 : 1,
+                                                        id: data.id
                                                      })
             }
         }
