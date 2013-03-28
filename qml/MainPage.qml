@@ -41,6 +41,7 @@ FocusScope {
             mozContext.child.setPref("browser.download.manager.quitBehavior", 1);
             mozContext.child.addObserver("embed:download");
             mozContext.child.addObserver("embed:prefs");
+            mozContext.child.addObserver("embed:allprefs");
         }
     }
 
@@ -50,7 +51,7 @@ FocusScope {
         objectName: "webViewport"
         visible: true
         focus: true
-        enabled: !(alertDlg.visible || confirmDlg.visible || promptDlg.visible || authDlg.visible || overlay.visible || settingsPage.x==0 || downloadsPage.x==0 || filePicker.visible || selectCombo.visible)
+        enabled: !(alertDlg.visible || confirmDlg.visible || promptDlg.visible || authDlg.visible || overlay.visible || settingsPage.x==0 || downloadsPage.x==0 || filePicker.visible || selectCombo.visible || configPage.x==0)
         property bool movingHorizontally: false
         property bool movingVertically: true
         property variant visibleArea: QtObject {
@@ -454,6 +455,14 @@ FocusScope {
 
     Downloads {
         id: downloadsPage
+        width: parent.width
+        height: parent.height
+        x: parent.width
+        context: mozContext
+    }
+
+    Config {
+        id: configPage
         width: parent.width
         height: parent.height
         x: parent.width

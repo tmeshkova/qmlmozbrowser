@@ -26,7 +26,6 @@ Rectangle {
         target: context.child
         onRecvObserve: {
             if (message == "embed:prefs") {
-                console.log(data)
                 for (var i=0; i<data.length; i++) {
                     console.log(data[i].name + ": " + data[i].value)
                     switch (data[i].name) {
@@ -106,6 +105,22 @@ Rectangle {
             anchors.leftMargin: 20
             text: "Settings"
             font.pixelSize: 40
+        }
+
+        OverlayButton {
+            id: config
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
+            anchors.rightMargin: 10
+            width: 60
+            height: 60
+            enabled: true
+            iconSource: "../icons/settings.png"
+
+            onClicked: {
+                root.hide()
+                configPage.show()
+            }
         }
 
         Rectangle {

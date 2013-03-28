@@ -9,6 +9,7 @@ Item {
     height: inputArea.height + textInputOverlay.height
     property alias cursorPosition: inputLine.cursorPosition
     property alias inputFocus: inputLine.focus
+    property alias inputMethodHints: inputLine.inputMethodHints
 
     function setFocus(op) {
         if (op)

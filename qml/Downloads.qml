@@ -195,7 +195,6 @@ Rectangle {
                                 }
                                 case "dl-state":
                                 case "dl-security": {
-                                    console.log("download id:" + data.id + " changed state to:" + data.state)
                                     downloadsListModel.setProperty(index, "state", data.state)
                                     break;
                                 }
