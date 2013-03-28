@@ -83,6 +83,7 @@ FocusScope {
                 webViewport.child.addMessageListener("context:info");
                 webViewport.child.addMessageListener("embed:permissions");
                 webViewport.child.addMessageListener("embed:select");
+                webViewport.child.addMessageListener("embed:login");
                 print("QML View Initialized")
                 if (startURL.length != 0 && createParentID == 0) {
                     load(startURL)
@@ -166,6 +167,15 @@ FocusScope {
                     case "embed:permissions": {
                         print("grant permissions required: title:" + data.title + ", host:" + data.host + ", uid:" + data.id)
                         permissionsDlg.show(data.title, data.host, data.id)
+                        break;
+                    }
+                    case "embed:login": {
+                        print("login manager notification: name:" + data.name + ", uid:" + data.id)
+                        webViewport.child.sendAsyncMessage("embedui:login", {
+                                                        buttonidx: 0,
+                                                        checkedDontAsk: false,
+                                                        id: data.id
+                                                     })
                         break;
                     }
                     default:
