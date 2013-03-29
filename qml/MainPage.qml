@@ -43,6 +43,7 @@ FocusScope {
             mozContext.child.addObserver("embed:prefs");
             mozContext.child.addObserver("embed:allprefs");
             mozContext.child.addObserver("embed:logger");
+            mozContext.child.sendObserve("embedui:logger", { enabled: true })
         }
     }
 
