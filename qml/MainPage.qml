@@ -42,6 +42,7 @@ FocusScope {
             mozContext.child.addObserver("embed:download");
             mozContext.child.addObserver("embed:prefs");
             mozContext.child.addObserver("embed:allprefs");
+            mozContext.child.addObserver("embed:logger");
         }
     }
 
