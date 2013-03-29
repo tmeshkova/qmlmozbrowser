@@ -38,8 +38,27 @@ Rectangle {
         }
     }
 
+    function filterModel(value) {
+        if (value == "") {
+            prefsList.model = prefsListModel
+        }
+        else {
+            filterListModel.clear()
+            for (var i=0; i<prefsListModel.count; i++) {
+                if (prefsListModel.get(i).name.search(value) != -1) {
+                    filterListModel.append(prefsListModel.get(i))
+                }
+            }
+            prefsList.model = filterListModel
+        }
+    }
+
     ListModel {
         id: prefsListModel
+    }
+
+    ListModel {
+        id: filterListModel
     }
 
     ParallelAnimation {
@@ -117,6 +136,10 @@ Rectangle {
             anchors.topMargin: 15
             anchors.right: parent.right
             anchors.rightMargin: 10
+            inputMethodHints: Qt.ImhNoPredictiveText
+            onAccepted: {
+                filterModel(text)
+            }
         }
 
         Rectangle {
@@ -137,11 +160,11 @@ Rectangle {
         spacing: 0
         model: prefsListModel
         signal hideAll()
+        signal filterName(string value)
         delegate: Item {
             id: prefDelegate
             width: parent.width
             height: visible ? content.height : 0
-            visible: model.name.indexOf(filterArea.text) > -1
             property bool showMore: false
 
             Connections {
@@ -184,6 +207,7 @@ Rectangle {
                     text: model.name
                     font.pixelSize: 20
                     elide: Text.ElideRight
+                    wrapMode: Text.WrapAnywhere
                     color: model.modified ? "#0000ff" : "#000000"
                 }
 
@@ -191,8 +215,10 @@ Rectangle {
                     id: prefValue
                     anchors.top: parent.top
                     anchors.right: parent.right
+                    width: 100
                     text: model.value
                     font.pixelSize: 25
+                    elide: Text.ElideRight
                     visible: !showMore
                 }
 
