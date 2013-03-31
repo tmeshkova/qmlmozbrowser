@@ -64,6 +64,7 @@ MozWindowCreator::CreateNewWindow(const QString& url, quint32 *aUniqueID, quint3
     view->rootContext()->setContextProperty("startURL", QVariant(url));
     view->rootContext()->setContextProperty("createParentID", QVariant(aParentID));
     view->rootContext()->setContextProperty("QmlHelperTools", new QmlHelperTools(this));
+    view->rootContext()->setContextProperty("MozContext", QMozContext::GetInstance());
     view->setSource(qml);
     QObject* item = view->rootObject()->findChild<QObject*>("mainScope");
     if (item) {

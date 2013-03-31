@@ -15,35 +15,33 @@ FocusScope {
         webViewport.child.load(address)
     }
 
-    QmlMozContext { id: mozContext }
-
     function saveFile(url) {
         var fileName = url.split("/")
         fileName = fileName[fileName.length - 1]
         var path = filePicker.getFileSync(1, QmlHelperTools.getStorageLocation(0), fileName)
         if (path != "")
-            mozContext.child.sendObserve("embedui:download", { msg: "addDownload", from: url, to: path })
+            MozContext.sendObserve("embedui:download", { msg: "addDownload", from: url, to: path })
     }
 
     Connections {
-        target: mozContext.child
+        target: MozContext
         onOnInitialized: {
             print("QmlMozContext Initialized");
-            mozContext.child.setPref("browser.ui.touch.left", 32);
-            mozContext.child.setPref("browser.ui.touch.right", 32);
-            mozContext.child.setPref("browser.ui.touch.top", 48);
-            mozContext.child.setPref("browser.ui.touch.bottom", 16);
-            mozContext.child.setPref("browser.ui.touch.weight.visited", 120);
-            mozContext.child.setPref("browser.download.folderList", 2); // 0 - Desktop, 1 - Downloads, 2 - Custom
-            mozContext.child.setPref("browser.download.useDownloadDir", false); // Invoke filepicker instead of immediate download to ~/Downloads
-            mozContext.child.setPref("browser.download.manager.retention", 2);
-            mozContext.child.setPref("browser.helperApps.deleteTempFileOnExit", false);
-            mozContext.child.setPref("browser.download.manager.quitBehavior", 1);
-            mozContext.child.addObserver("embed:download");
-            mozContext.child.addObserver("embed:prefs");
-            mozContext.child.addObserver("embed:allprefs");
-            mozContext.child.addObserver("embed:logger");
-            mozContext.child.sendObserve("embedui:logger", { enabled: true })
+            MozContext.setPref("browser.ui.touch.left", 32);
+            MozContext.setPref("browser.ui.touch.right", 32);
+            MozContext.setPref("browser.ui.touch.top", 48);
+            MozContext.setPref("browser.ui.touch.bottom", 16);
+            MozContext.setPref("browser.ui.touch.weight.visited", 120);
+            MozContext.setPref("browser.download.folderList", 2); // 0 - Desktop, 1 - Downloads, 2 - Custom
+            MozContext.setPref("browser.download.useDownloadDir", false); // Invoke filepicker instead of immediate download to ~/Downloads
+            MozContext.setPref("browser.download.manager.retention", 2);
+            MozContext.setPref("browser.helperApps.deleteTempFileOnExit", false);
+            MozContext.setPref("browser.download.manager.quitBehavior", 1);
+            MozContext.addObserver("embed:download");
+            MozContext.addObserver("embed:prefs");
+            MozContext.addObserver("embed:allprefs");
+            MozContext.addObserver("embed:logger");
+            MozContext.sendObserve("embedui:logger", { enabled: true })
         }
     }
 
@@ -364,7 +362,6 @@ FocusScope {
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 5
             width: Math.min(parent.width, parent.height) - 10
-            context: mozContext
 
             onSelected: {
                 menuHide.running = true
@@ -405,7 +402,7 @@ FocusScope {
             iconSource: "../icons/plus.png"
 
             onClicked: {
-                mozContext.newWindow()
+                MozContext.newWindow()
                 overlay.hide()
             }
         }
@@ -458,7 +455,6 @@ FocusScope {
         width: parent.width
         height: parent.height
         x: parent.width
-        context: mozContext
     }
 
     Downloads {
@@ -466,7 +462,6 @@ FocusScope {
         width: parent.width
         height: parent.height
         x: parent.width
-        context: mozContext
     }
 
     Config {
