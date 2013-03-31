@@ -5,25 +5,24 @@ Rectangle {
     id : root
     visible: true
     color: "white"
-    property variant context
 
     function show() {
         //anchors.leftMargin = 0
         animShow.running = true
-        context.child.sendObserve("embedui:prefs", { msg: "getPrefList", prefs: [ "geo.prompt.testing",
-                                                                                  "geo.prompt.testing.allow",
-                                                                                  "general.useragent.override",
-                                                                                  "browser.download.useDownloadDir" ]})
+        MozContext.sendObserve("embedui:prefs", { msg: "getPrefList", prefs: [ "geo.prompt.testing",
+                                                                               "geo.prompt.testing.allow",
+                                                                               "general.useragent.override",
+                                                                               "browser.download.useDownloadDir" ]})
     }
 
     function hide() {
         uaString.setFocus(false)
         animHide.running = true
-        context.child.sendObserve("embedui:saveprefs", {})
+        MozContext.sendObserve("embedui:saveprefs", {})
     }
 
     Connections {
-        target: context.child
+        target: MozContext
         onRecvObserve: {
             if (message == "embed:prefs") {
                 for (var i=0; i<data.length; i++) {
@@ -151,8 +150,8 @@ Rectangle {
                 text: "Override Geo policy to Accept always"
                 onClicked: {
                     console.log("geo override: " + checked)
-                    context.child.setPref("geo.prompt.testing", checked)
-                    context.child.setPref("geo.prompt.testing.allow", checked)
+                    MozContext.setPref("geo.prompt.testing", checked)
+                    MozContext.setPref("geo.prompt.testing.allow", checked)
                 }
             }
 
@@ -175,10 +174,10 @@ Rectangle {
                     onClicked: {
                         console.log("custom ua: " + checked)
                         if (checked) {
-                            context.child.setPref("general.useragent.override", uaString.text)
+                            MozContext.setPref("general.useragent.override", uaString.text)
                         }
                         else {
-                            context.child.setPref("general.useragent.override", "")
+                            MozContext.setPref("general.useragent.override", "")
                         }
                     }
                 }
@@ -192,7 +191,7 @@ Rectangle {
                     anchors.top: parent.top
                     text: "Mozilla/5.0 (X11; Linux x86_64; rv:20.0) Gecko/20130124 Firefox/20.0"
                     onAccepted: {
-                        context.child.setPref("general.useragent.override", uaString.text)
+                        MozContext.setPref("general.useragent.override", uaString.text)
                     }
                 }
             }

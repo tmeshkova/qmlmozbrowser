@@ -6,7 +6,6 @@ ListView {
 
     property string contextImageSrc: ""
     property string contextLinkHref: ""
-    property variant context
 
     visible: false
     height: (contextLinkHref.length > 0 ? 240 : 0) + (contextImageSrc.length > 0 ? 240 : 0)
@@ -44,17 +43,17 @@ ListView {
         onClicked: {
             root.selected()
             switch (model.index) {
-                case 0: context.newWindow(contextLinkHref)
+                case 0: MozContext.newWindow(contextLinkHref)
                     break
                 case 1: saveFile(contextLinkHref)
                     break
-                case 2: context.setClipboard(contextLinkHref)
+                case 2: MozContext.setClipboard(contextLinkHref)
                     break
-                case 3: context.newWindow(contextImageSrc)
+                case 3: MozContext.newWindow(contextImageSrc)
                     break
                 case 4: saveFile(contextImageSrc)
                     break
-                case 5: context.setClipboard(contextImageSrc)
+                case 5: MozContext.setClipboard(contextImageSrc)
                     break
             }
         }

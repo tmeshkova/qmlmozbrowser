@@ -5,10 +5,9 @@ Rectangle {
     id : root
     visible: true
     color: "white"
-    property variant context
 
     Connections {
-        target: context.child
+        target: MozContext
         onRecvObserve: {
             if (message == "embed:download") {
                 switch (data.msg) {
@@ -39,7 +38,7 @@ Rectangle {
 
     function show() {
         animShow.running = true
-        context.child.sendObserve("embedui:download", { msg: "requestDownloadsList" })
+        MozContext.sendObserve("embedui:download", { msg: "requestDownloadsList" })
     }
 
     function hide() {
@@ -181,7 +180,7 @@ Rectangle {
             border.color: stateToColor(model.state)
 
             Connections {
-                target: context.child
+                target: MozContext
                 onRecvObserve: {
                     if (message == "embed:download") {
                         if (data.id == id) {
@@ -317,7 +316,7 @@ Rectangle {
                         visible: (model.state == 0 || model.state == 4)
                         onClicked: {
                             console.log("pauseResumeButton clicked")
-                            context.child.sendObserve("embedui:download", { msg: (model.state == 0 ? "pauseDownload" : "resumeDownload"), id: id })
+                            MozContext.sendObserve("embedui:download", { msg: (model.state == 0 ? "pauseDownload" : "resumeDownload"), id: id })
                         }
                     }
 
@@ -331,7 +330,7 @@ Rectangle {
                         visible: (model.state == 0 || model.state == 4)
                         onClicked: {
                             console.log("stopButton clicked")
-                            context.child.sendObserve("embedui:download", { msg: "cancelDownload", id: id })
+                            MozContext.sendObserve("embedui:download", { msg: "cancelDownload", id: id })
                         }
                     }
 
@@ -345,7 +344,7 @@ Rectangle {
                         visible: (model.state != 0 && model.state != 4)
                         onClicked: {
                             console.log("removeButton clicked")
-                            context.child.sendObserve("embedui:download", { msg: "retryDownload", id: id })
+                            MozContext.sendObserve("embedui:download", { msg: "retryDownload", id: id })
                         }
                     }
 
@@ -359,7 +358,7 @@ Rectangle {
                         visible: (model.state != 0 && model.state != 4)
                         onClicked: {
                             console.log("removeButton clicked")
-                            context.child.sendObserve("embedui:download", { msg: "removeDownload", id: id })
+                            MozContext.sendObserve("embedui:download", { msg: "removeDownload", id: id })
                             downloadsListModel.remove(index)
                         }
                     }
