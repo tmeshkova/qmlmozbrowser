@@ -5,10 +5,9 @@ Rectangle {
     id : root
     visible: true
     color: "white"
-    property variant context
 
     Connections {
-        target: context.child
+        target: MozContext
         onRecvObserve: {
             if (message == "embed:allprefs") {
                 var allprefs = data
@@ -22,11 +21,11 @@ Rectangle {
 
     function show() {
         animShow.running = true
-        context.child.sendObserve("embedui:allprefs", {})
+        MozContext.sendObserve("embedui:allprefs", {})
     }
 
     function hide() {
-        context.child.sendObserve("embedui:saveprefs", {})
+        MozContext.sendObserve("embedui:saveprefs", {})
         animHide.running = true
     }
 
@@ -244,10 +243,10 @@ Rectangle {
                     inputMethodHints: (model.type == 64 ? Qt.ImhDigitsOnly : 0)
                     onAccepted: {
                         if (model.type == 64) {
-                            context.child.setPref(model.name, parseInt(text))
+                            MozContext.setPref(model.name, parseInt(text))
                         }
                         else {
-                            context.child.setPref(model.name, text)
+                            MozContext.setPref(model.name, text)
                         }
                     }
                 }
@@ -264,7 +263,7 @@ Rectangle {
                     text: checked ? "true" : "false"
                     visible: showMore && model.type == 128
                     onClicked: {
-                        context.child.setPref(model.name, checked)
+                        MozContext.setPref(model.name, checked)
                     }
                 }
             }
