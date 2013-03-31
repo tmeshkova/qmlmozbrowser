@@ -51,7 +51,7 @@ FocusScope {
         objectName: "webViewport"
         visible: true
         focus: true
-        enabled: !(alertDlg.visible || confirmDlg.visible || promptDlg.visible || authDlg.visible || overlay.visible || settingsPage.x==0 || downloadsPage.x==0 || filePicker.visible || selectCombo.visible || configPage.x==0)
+        enabled: !(alertDlg.visible || confirmDlg.visible || promptDlg.visible || authDlg.visible || overlay.visible || settingsPage.x==0 || downloadsPage.x==0 || filePicker.visible || selectCombo.visible || configPage.x==0 || historyPage.x==0)
         property bool movingHorizontally: false
         property bool movingVertically: true
         property variant visibleArea: QtObject {
@@ -85,6 +85,7 @@ FocusScope {
                 webViewport.child.addMessageListener("embed:permissions");
                 webViewport.child.addMessageListener("embed:select");
                 webViewport.child.addMessageListener("embed:login");
+                webViewport.child.addMessageListener("chrome:linkadded");
                 print("QML View Initialized")
                 if (startURL.length != 0 && createParentID == 0) {
                     load(startURL)
@@ -354,6 +355,15 @@ FocusScope {
             onAccepted: {
                 overlay.hideExceptBar()
             }
+
+            onRecentTriggered: {
+                contextMenu.visible = !showRecent
+                navigation.visible = !showRecent
+                newPage.visible = !showRecent
+                settings.visible = !showRecent
+                history.visible = !showRecent
+                downloads.visible = !showRecent
+            }
         }
 
         OverlayContextMenu {
@@ -429,6 +439,27 @@ FocusScope {
         }
 
         OverlayButton {
+            id: history
+
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+            anchors.bottomMargin: 10
+
+            width: 100
+            height: 100
+
+            visible: navigation.visible
+
+            iconSource: "../icons/context-clipboard-image.png"
+
+            onClicked: {
+                overlay.hide()
+                historyPage.show()
+            }
+        }
+
+        OverlayButton {
             id: downloads
 
             anchors.bottom: parent.bottom
@@ -469,7 +500,14 @@ FocusScope {
         width: parent.width
         height: parent.height
         x: parent.width
-        context: mozContext
+    }
+
+    History {
+        id: historyPage
+        width: parent.width
+        height: parent.height
+        x: parent.width
+        viewport: webViewport
     }
 
     FilePicker {

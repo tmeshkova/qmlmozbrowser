@@ -6,10 +6,25 @@ Item {
     property int loadProgress: 0
     property alias text: inputLine.text
     signal accepted()
+    signal textChanged()
     height: inputArea.height + textInputOverlay.height
     property alias cursorPosition: inputLine.cursorPosition
     property alias inputFocus: inputLine.focus
     property alias inputMethodHints: inputLine.inputMethodHints
+    property bool setUrlCall: false
+    property bool setBackspace: false
+
+    function setUrl(value) {
+        if (!setBackspace) {
+            root.setUrlCall = true
+            var oldLength = inputLine.text.length
+            inputLine.text = value
+            inputLine.select(oldLength, inputLine.text.length)
+        }
+        else {
+            setBackspace = false
+        }
+    }
 
     function setFocus(op) {
         if (op)
@@ -64,13 +79,25 @@ Item {
             anchors.right: parent.right
             anchors.rightMargin: 5
 
+            onTextChanged: {
+                if (!root.setUrlCall) {
+                    root.textChanged()
+                }
+                if (setUrlCall) {
+                    setUrlCall = false
+                }
+            }
+
             Keys.onReturnPressed:{
                 root.accepted()
                 root.setFocus(false)
             }
 
             Keys.onPressed: {
-                if (((event.modifiers & Qt.ControlModifier) && event.key == Qt.Key_L) || event.key == Qt.key_F6) {
+                if (event.key == Qt.Key_Backspace) {
+                    setBackspace = true
+                }
+                else if (((event.modifiers & Qt.ControlModifier) && event.key == Qt.Key_L) || event.key == Qt.key_F6) {
                     root.setFocus(true)
                     event.accepted = true
                 }

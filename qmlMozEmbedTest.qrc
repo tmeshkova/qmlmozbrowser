@@ -43,6 +43,7 @@
         <file>qml/Selection.qml</file>
         <file>qml/Config.qml</file>
         <file>qml/LoginDialog.qml</file>
+        <file>qml/History.qml</file>
 
         <file alias="qml/Dialog.qml">qml/dialogs/Dialog.qml</file>
         <file alias="qml/AlertDialog.qml">qml/dialogs/AlertDialog.qml</file>
