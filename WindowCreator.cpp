@@ -4,6 +4,7 @@
 #include <QVariant>
 #include <QGLWidget>
 #include <QDeclarativeContext>
+#include <QDeclarativeEngine>
 #include <QDebug>
 #include <qdeclarativemozview.h>
 #include "qmlapplicationviewer.h"
@@ -60,7 +61,7 @@ MozWindowCreator::CreateNewWindow(const QString& url, quint32 *aUniqueID, quint3
         qDebug() << "Not using QGLWidget viewport";
         QMozContext::GetInstance()->setIsAccelerated(false);
     }
-
+    view->engine()->setOfflineStoragePath(QString("%1/.mozilla/").arg(QDir::homePath()));
     view->rootContext()->setContextProperty("startURL", QVariant(url));
     view->rootContext()->setContextProperty("createParentID", QVariant(aParentID));
     view->rootContext()->setContextProperty("QmlHelperTools", new QmlHelperTools(this));
