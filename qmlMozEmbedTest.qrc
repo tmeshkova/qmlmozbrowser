@@ -18,6 +18,8 @@
         <file>icons/history.png</file>
         <file>icons/context-window-url2.png</file>
         <file>icons/context-window-image2.png</file>
+        <file>icons/switch-on.png</file>
+        <file>icons/switch-off.png</file>
 
         <file>qml/main.qml</file>
         <file>qml/main_ref.qml</file>
