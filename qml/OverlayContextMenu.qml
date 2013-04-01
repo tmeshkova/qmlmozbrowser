@@ -50,13 +50,13 @@ ListView {
         onClicked: {
             root.selected()
             switch (model.index) {
-                case 0: MozContext.newWindow(contextLinkHref)
+                case 0: MozContext.newWindow(contextLinkHref, 0)
                     break
                 case 1: saveFile(contextLinkHref)
                     break
                 case 2: QmlHelperTools.setClipboard(contextLinkHref)
                     break
-                case 3: MozContext.newWindow(contextImageSrc)
+                case 3: MozContext.newWindow(contextImageSrc, 0)
                     break
                 case 4: saveFile(contextImageSrc)
                     break

@@ -412,7 +412,7 @@ FocusScope {
             iconSource: "../icons/plus.png"
 
             onClicked: {
-                MozContext.newWindow()
+                MozContext.newWindow("about:blank", 0)
                 overlay.hide()
             }
         }
