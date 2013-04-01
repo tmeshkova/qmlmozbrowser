@@ -177,7 +177,23 @@ Item {
         width: parent.width
         height: visible ? 30 : 0
         visible: recentSitesList.visible
-        color: "#2eeeee"
+        color: "white"
+        Rectangle {
+            width: parent.width / 3 * 2
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 10
+            height: 1
+            color: "black"
+        }
+        Rectangle {
+            width: parent.width / 3 * 2
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 20
+            height: 1
+            color: "black"
+        }
         MouseArea {
             anchors.fill:parent
             onClicked: {

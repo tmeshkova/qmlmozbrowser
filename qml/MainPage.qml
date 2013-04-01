@@ -451,7 +451,7 @@ FocusScope {
 
             visible: navigation.visible
 
-            iconSource: "../icons/context-clipboard-image.png"
+            iconSource: "../icons/history.png"
 
             onClicked: {
                 overlay.hide()

@@ -132,9 +132,9 @@ Rectangle {
         else if (index > 0) {
             var prevDate = historyList.model.get(index - 1).date
             var d1 = new Date()
-            d1.setMilliseconds(historyList.model.get(index).date)
+            d1.setTime(historyList.model.get(index).date)
             var d2 = new Date()
-            d2.setMilliseconds(prevDate)
+            d2.setTime(prevDate)
             if (d1.getDate() != d2.getDate()) {
                 return true
             }
