@@ -93,6 +93,9 @@ FocusScope {
                 else if (createParentID == 0) {
                     load("about:blank")
                 }
+                if (startURL == "about:blank") {
+                    overlay.show((mainScope.height / 2) - (navigation.height / 2))
+                }
             }
             onLoadingChanged: {
                 var isLoading = webViewport.child.loading
