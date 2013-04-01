@@ -161,6 +161,7 @@ Item {
                 onClicked: {
                     addressLine.text = model.url
                     root.showRecent = false
+                    recentSitesList.height = 0
                     root.recentTriggered()
                 }
             }
