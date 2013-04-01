@@ -34,6 +34,7 @@
 #include <QDebug>
 #include <QStringList>
 #include <QDir>
+#include <QTimer>
 #include "qmlapplicationviewer.h"
 #include "qdeclarativemozview.h"
 #include "qgraphicsmozview.h"
@@ -144,7 +145,9 @@ int main(int argc, char *argv[])
 //    QMozContext::GetInstance()->addObserver("history:checkurivisited");
 //    QMozContext::GetInstance()->addObserver("history:markurivisited");
 
-    QMozContext::GetInstance()->runEmbedding(0);
+    QObject::connect(application, SIGNAL(lastWindowClosed()),
+                     QMozContext::GetInstance(), SLOT(stopEmbedding()));
+    QTimer::singleShot(0, QMozContext::GetInstance(), SLOT(runEmbedding()));
     int retval = application->exec();
     qDebug() << "Exiting from Application!!!";
     return retval;
