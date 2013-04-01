@@ -94,6 +94,7 @@ FocusScope {
                     load("about:blank")
                 }
                 if (startURL == "about:blank") {
+                    navigation.anchors.topMargin = 0
                     overlay.show((mainScope.height / 2) - (navigation.height / 2))
                 }
             }
@@ -362,10 +363,6 @@ FocusScope {
             onRecentTriggered: {
                 contextMenu.visible = !showRecent
                 navigation.visible = !showRecent
-                newPage.visible = !showRecent
-                settings.visible = !showRecent
-                history.visible = !showRecent
-                downloads.visible = !showRecent
             }
         }
 
