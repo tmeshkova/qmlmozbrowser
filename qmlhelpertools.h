@@ -33,6 +33,7 @@ public:
     Q_INVOKABLE QString getStorageLocation(int location);
     Q_INVOKABLE void processEvents();
     Q_INVOKABLE void openFileBySystem(QString path);
+    Q_INVOKABLE QString getFaviconFromUrl(QString url);
 };
 
 #endif /* qmlhelpertools_h */

@@ -84,6 +84,14 @@ QmlHelperTools::getFolderModel(QString path)
     return result;
 }
 
+QString
+QmlHelperTools::getFaviconFromUrl(QString url)
+{
+    QUrl mUrl(url);
+    mUrl.setPath("/favicon.ico");
+    return mUrl.toString();
+}
+
 QmlHelperTools::QmlHelperTools(QObject* parent)
   : QObject(parent)
 {

@@ -132,7 +132,7 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: 3
-                source: model.icon
+                source: model.icon ? model.icon : QmlHelperTools.getFaviconFromUrl(model.url)
                 width: 20
                 height: 20
                 smooth: true

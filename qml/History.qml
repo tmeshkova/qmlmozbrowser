@@ -20,9 +20,11 @@ Rectangle {
     Connections {
         target: viewport.child
         onRecvAsyncMessage: {
+            print(data.rel + " " + data.href)
             if (message == "chrome:linkadded" && data.rel == "shortcut icon") {
                 var icon = data.href
                 var url = viewport.child.url
+                print("adding favicon " + icon + " to " + url)
                 var db = openDatabaseSync("qmlbrowser","0.1","historydb", 100000)
                 db.transaction(
                     function(tx) {
@@ -275,7 +277,7 @@ Rectangle {
 
             Image {
                 id: siteIcon
-                source: model.icon
+                source: model.icon ? model.icon : QmlHelperTools.getFaviconFromUrl(model.url)
                 width: 20
                 height: 20
                 smooth: true
