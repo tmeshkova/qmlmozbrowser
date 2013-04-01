@@ -144,6 +144,7 @@ int main(int argc, char *argv[])
 //    QMozContext::GetInstance()->addObserver("history:checkurivisited");
 //    QMozContext::GetInstance()->addObserver("history:markurivisited");
 
+    QMozContext::GetInstance()->runEmbedding(0);
     int retval = application->exec();
     qDebug() << "Exiting from Application!!!";
     return retval;
