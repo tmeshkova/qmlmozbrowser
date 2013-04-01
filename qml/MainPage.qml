@@ -361,7 +361,6 @@ FocusScope {
             }
 
             onRecentTriggered: {
-                contextMenu.visible = !showRecent
                 navigation.visible = !showRecent
             }
         }
