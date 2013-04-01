@@ -21,7 +21,13 @@ Item {
         addressLine.setFocus(false)
     }
 
-     function fillRecentFromDatabase(value) {
+    function hideRecentList() {
+        root.showRecent = false
+        recentSitesList.height = 0
+        root.recentTriggered()
+    }
+
+    function fillRecentFromDatabase(value) {
         var db = openDatabaseSync("qmlbrowser","0.1","historydb", 100000)
         db.transaction(
             function(tx) {
@@ -86,6 +92,7 @@ Item {
         loadProgress: viewport.child.loadProgress
         inputMethodHints: Qt.ImhNoPredictiveText
         onAccepted: {
+            hideRecentList()
             viewport.child.load(text);
             root.accepted()
         }
@@ -160,9 +167,7 @@ Item {
                 anchors.fill: parent
                 onClicked: {
                     addressLine.text = model.url
-                    root.showRecent = false
-                    recentSitesList.height = 0
-                    root.recentTriggered()
+                    hideRecentList()
                 }
             }
         }
@@ -198,9 +203,7 @@ Item {
         MouseArea {
             anchors.fill:parent
             onClicked: {
-                root.showRecent = false
-                recentSitesList.height = 0
-                root.recentTriggered()
+                hideRecentList()
             }
         }
     }
