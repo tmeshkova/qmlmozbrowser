@@ -7,12 +7,14 @@ Item {
     property alias text: inputLine.text
     signal accepted()
     signal textChanged()
+    signal focusChanged()
     height: inputArea.height + textInputOverlay.height
     property alias cursorPosition: inputLine.cursorPosition
     property alias inputFocus: inputLine.focus
     property alias inputMethodHints: inputLine.inputMethodHints
     property bool setUrlCall: false
     property bool setBackspace: false
+    property bool selectAllOnFocus: false
 
     function setUrl(value) {
         if (!setBackspace) {
@@ -67,6 +69,16 @@ Item {
 
         TextInput {
             id: inputLine
+
+            Timer {
+                id: selectTimer
+                interval: 500
+                repeat: false
+                onTriggered: {
+                    inputLine.selectAll()
+                }
+            }
+
             autoScroll: true
             selectByMouse: true
             font {
@@ -85,6 +97,12 @@ Item {
                 }
                 if (setUrlCall) {
                     setUrlCall = false
+                }
+            }
+
+            onActiveFocusChanged: {
+                if (activeFocus && selectAllOnFocus) {
+                    selectTimer.start()
                 }
             }
 

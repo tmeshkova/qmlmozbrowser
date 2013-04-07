@@ -1,5 +1,5 @@
 import Qt 4.7
-import QtQuick 1.0
+import QtQuick 1.1
 
 Rectangle {
     id : root
@@ -23,7 +23,7 @@ Rectangle {
             print(data.rel + " " + data.href)
             if (message == "chrome:linkadded" && data.rel == "shortcut icon") {
                 var icon = data.href
-                var url = viewport.child.url
+                var url = "" + viewport.child.url
                 print("adding favicon " + icon + " to " + url)
                 var db = openDatabaseSync("qmlbrowser","0.1","historydb", 100000)
                 db.transaction(
@@ -59,16 +59,18 @@ Rectangle {
         }
         onTitleChanged: {
             var title = viewport.child.title
-            var url = viewport.child.url
-            var db = openDatabaseSync("qmlbrowser","0.1","historydb", 100000)
-            db.transaction(
-                function(tx) {
-                    var result = tx.executeSql('update history set title=(?) where url=(?);',[title, url])
-                    if (result.rowsAffected < 1) {
-                        console.log("Error inserting title")
+            var url = "" + viewport.child.url
+            if (url.length > 3 && url.substr(0,6) != "about:") {
+                var db = openDatabaseSync("qmlbrowser","0.1","historydb", 100000)
+                db.transaction(
+                    function(tx) {
+                        var result = tx.executeSql('update history set title=(?) where url=(?);',[title, url])
+                        if (result.rowsAffected < 1) {
+                            console.log("Error inserting title")
+                        }
                     }
-                }
-            );
+                );
+            }
         }
     }
 
@@ -259,11 +261,6 @@ Rectangle {
                 color: mArea.pressed ? "#d0d0d0" : "#efefef"
             }
 
-            MouseArea {
-                id: mArea
-                anchors.fill: parent
-            }
-
             Text {
                 id: dateSeparator
                 anchors.left: parent.left
@@ -277,13 +274,20 @@ Rectangle {
 
             Image {
                 id: siteIcon
-                source: model.icon ? model.icon : QmlHelperTools.getFaviconFromUrl(model.url)
+                source: model.icon ? (testIcon.status == Image.Error ? QmlHelperTools.getFaviconFromUrl(model.url) : model.icon) : QmlHelperTools.getFaviconFromUrl(model.url)
                 width: 20
                 height: 20
                 smooth: true
                 anchors.left: parent.left
                 anchors.leftMargin: 5
                 anchors.verticalCenter: parent.verticalCenter
+                cache: true
+            }
+
+            Image {
+                id: testIcon
+                visible: false
+                source: model.icon
             }
 
             Text {
@@ -318,8 +322,13 @@ Rectangle {
                 anchors.topMargin: 5
                 font.pixelSize: 20
                 elide: Text.ElideRight
-                onLinkActivated: {
-                    viewport.child.load(model.url)
+            }
+
+            MouseArea {
+                id: mArea
+                anchors.fill: parent
+                onClicked: {
+                    load(model.url)
                     root.hide()
                 }
             }

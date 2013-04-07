@@ -1,5 +1,5 @@
 import Qt 4.7
-import QtQuick 1.0
+import QtQuick 1.1
 
 Item {
     id: root
@@ -90,10 +90,11 @@ Item {
         anchors.right: root.right
         anchors.margins: 10
         loadProgress: viewport.child.loadProgress
-        inputMethodHints: Qt.ImhNoPredictiveText
+        inputMethodHints: Qt.ImhNoPredictiveText || Qt.ImhNoAutoUppercase
+        selectAllOnFocus: true
         onAccepted: {
             hideRecentList()
-            viewport.child.load(text);
+            load(text);
             root.accepted()
         }
         onTextChanged: {
@@ -139,10 +140,16 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: 3
-                source: model.icon ? model.icon : QmlHelperTools.getFaviconFromUrl(model.url)
+                source: model.icon ? (testIcon.status == Image.Error ? QmlHelperTools.getFaviconFromUrl(model.url) : model.icon) : QmlHelperTools.getFaviconFromUrl(model.url)
                 width: 20
                 height: 20
                 smooth: true
+                cache: true
+            }
+            Image {
+                id: testIcon
+                visible: false
+                source: model.icon
             }
             Text {
                 id: siteLabel
