@@ -362,6 +362,19 @@ Rectangle {
                             downloadsListModel.remove(index)
                         }
                     }
+
+                    OverlayButton {
+                        id: copyUrlButton
+                        width: 60
+                        height: 60
+                        anchors.right: parent.right
+                        iconSource: "../icons/context-window-url2.png"
+                        visible: true
+                        onClicked: {
+                            console.log("copyUrlButton clicked")
+                            QmlHelperTools.setClipboard(from)
+                        }
+                    }
                 }
             }
         }
