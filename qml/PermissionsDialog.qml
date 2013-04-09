@@ -44,39 +44,27 @@ Item {
 
     Rectangle {
         id: dialogWindow
-
         color: "#fefefe"
-
         anchors.top: content.top
         anchors.horizontalCenter: content.horizontalCenter
         width: content.width
         height: content.height + 10
-
-        border {
-            width: 1
-            color: "#cfcfcf"
-        }
-
+        border.width: 1
+        border.color: "#cfcfcf"
         smooth: true
         radius: 5
     }
 
     Rectangle {
         id: fancy
-
         color: "#efefef"
-
         anchors.fill: dialogWindow
         anchors.topMargin: titleText.height
         anchors.leftMargin: 3
         anchors.rightMargin: 3
         anchors.bottomMargin: 3
-
-        border {
-            width: 1
-            color: "#bfbfbf"
-        }
-
+        border.width: 1
+        border.color: "#bfbfbf"
         smooth: true
         radius: 3
     }
@@ -93,7 +81,7 @@ Item {
             font.pixelSize: 20
             font.weight: Font.Bold
             elide: Text.ElideRight
-            text: "Premission request: " + title
+            text: "Premission request: " + dialog.title
         }
 
         Text {
@@ -102,7 +90,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             width: parent.width - 20
             font.pixelSize: 20
-            text: "Host: " + host
+            text: "Host: " + dialog.host
         }
 
         Column {
