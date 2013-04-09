@@ -42,12 +42,12 @@ Rectangle {
         anchors.bottom: parent.bottom
         flickableDirection: Flickable.VerticalFlick
         pressDelay: 200
+        contentHeight: buttonsColumn.height
 
         Column {
             id: buttonsColumn
             width: 110
             spacing: 10
-            clip: true
 
             OverlayButton {
                 id: goStart
@@ -90,7 +90,7 @@ Rectangle {
                 width: 100
                 height: 100
                 anchors.horizontalCenter: parent.horizontalCenter
-
+                visible: !startPage.visible
                 iconSource: "../icons/" + (isFavorite ? "" : "un") +"favorite.png"
 
                 onClicked: {
@@ -101,7 +101,6 @@ Rectangle {
                         addBookmark(webViewport.child.url, webViewport.child.title, "uncategorized", 0)
                     }
                     isFavorite = bookmarksPage.checkUrl(webViewport.child.url)
-                    root.toggle()
                 }
             }
 

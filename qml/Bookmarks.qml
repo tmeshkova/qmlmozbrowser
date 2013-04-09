@@ -528,7 +528,7 @@ Rectangle {
                 iconSource: "../icons/edit.png"
                 visible: showControls
                 onClicked: {
-                    updateBookmark(siteUrlEdit.fixSchemeUrl(), siteTitleEdit.text, editGroup.text, showOnStart ? 1 : 0, model.url)
+                    updateBookmark(siteUrlEdit.fixSchemeUrl(), siteTitleEdit.text, editGroup.text, showOnStart.checked ? 1 : 0, model.url)
                     showControls = false
                     fillModelFromDatabase()
                     fillGroupsModel()

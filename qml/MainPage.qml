@@ -504,6 +504,8 @@ FocusScope {
         height: parent.height
         anchors.top: parent.top
         anchors.topMargin: overlay.visible ? addressLine.height : startPage.topArea
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 5
         anchors.right: parent.right
         anchors.rightMargin: -111
     }
