@@ -146,6 +146,7 @@ Rectangle {
                 return false
             }
         }
+        return false
     }
 
     ListModel {
@@ -268,7 +269,7 @@ Rectangle {
                 anchors.top: parent.top
                 font.pixelSize: 16
                 text: visible ? getDateString(model.date) : ""
-                visible: isNewDate(index)
+                visible: root.isNewDate(index)
                 height: visible ? 20 : 0
             }
 
@@ -330,6 +331,7 @@ Rectangle {
                 onClicked: {
                     load(model.url)
                     root.hide()
+                    startPage.hide()
                 }
             }
         }

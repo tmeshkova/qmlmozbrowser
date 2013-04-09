@@ -7,12 +7,16 @@ Rectangle {
     color: "white"
 
     function show() {
-        //anchors.leftMargin = 0
         animShow.running = true
-        MozContext.sendObserve("embedui:prefs", { msg: "getPrefList", prefs: [ "geo.prompt.testing",
-                                                                               "geo.prompt.testing.allow",
-                                                                               "general.useragent.override",
-                                                                               "browser.download.useDownloadDir" ]})
+        MozContext.sendObserve("embedui:prefs", { msg: "getPrefList", prefs: [ "general.useragent.override",
+                                                                               "browser.ui.font.reflow",
+                                                                               "browser.ui.font.reflow.fontSize",
+                                                                               "font.size.inflation.minTwips",
+                                                                               "font.size.inflation.emPerLine",
+                                                                               "font.size.inflation.forceEnabled",
+                                                                               "keyword.URL",
+                                                                               "gfx.azpc.vertical_scroll_lock_ratio",
+                                                                               "gfx.azpc.horizontal_scroll_lock_ratio"]})
     }
 
     function hide() {
@@ -28,17 +32,48 @@ Rectangle {
                 for (var i=0; i<data.length; i++) {
                     console.log(data[i].name + ": " + data[i].value)
                     switch (data[i].name) {
-                        case "geo.prompt.testing": {
-                            overrideGeo.checked = data[i].value;
-                            break;
-                        }
-                        case "geo.prompt.testing.allow": {
-                            overrideGeo.checked = data[i].value;
-                            break;
-                        }
                         case "general.useragent.override": {
-                            uaString.value = data[i].value;
+                            uaString.text = data[i].value;
+                            uaString.cursorPosition = 0;
                             customUA.checked = true
+                            break;
+                        }
+                        case "font.size.inflation.forceEnabled": {
+                            forceFontInflation.checked = data[i].value;
+                            break;
+                        }
+                        case "font.size.inflation.emPerLine": {
+                            fontInflationEmPerLine.text = data[i].value;
+                            fontInflationEmPerLine.cursorPosition = 0;
+                            break;
+                        }
+                        case "font.size.inflation.minTwips": {
+                            fontInflationMinTwips.text = data[i].value;
+                            fontInflationMinTwips.cursorPosition = 0;
+                            break;
+                        }
+                        case "browser.ui.font.reflow": {
+                            zoomReflow.checked = data[i].value;
+                            break;
+                        }
+                        case "browser.ui.font.reflow.fontSize": {
+                            fontSizeOnReflow.text = data[i].value;
+                            fontSizeOnReflow.cursorPosition = 0;
+                            break;
+                        }
+                        case "keyword.URL": {
+                            searchKeyword.text = data[i].value;
+                            searchKeyword.cursorPosition = 0;
+                            break;
+                        }
+                        case "gfx.azpc.vertical_scroll_lock_ratio": {
+                            verticalScrollLockRatio.text = data[i].value;
+                            verticalScrollLockRatio.cursorPosition = 0;
+                            break;
+                        }
+                        case "gfx.azpc.horizontal_scroll_lock_ratio": {
+                            horizontalScrollLockRatio.text = data[i].value;
+                            horizontalScrollLockRatio.cursorPosition = 0;
                             break;
                         }
                     }
@@ -144,17 +179,6 @@ Rectangle {
             width: parent.width
             spacing: 5
 
-            Checkbox {
-                id: overrideGeo
-                width: parent.width
-                text: "Override Geo policy to Accept always"
-                onClicked: {
-                    console.log("geo override: " + checked)
-                    MozContext.setPref("geo.prompt.testing", checked)
-                    MozContext.setPref("geo.prompt.testing.allow", checked)
-                }
-            }
-
             Text {
                 text: "Custom user-agent string"
                 font.pixelSize: 26
@@ -197,30 +221,111 @@ Rectangle {
             }
 
             Checkbox {
-                id: test
+                id: forceFontInflation
                 width: parent.width
-                text: "Some test settings"
+                text: "Force font size inflations"
                 onClicked: {
-                    console.log("test: " + checked)
+                    MozContext.setPref("font.size.inflation.forceEnabled", checked)
                 }
             }
 
-            Rectangle {
-                width: 300
-                height: 300
-                color: "green"
+            Text {
+                id: twipsTitle
+                text: "Font inflation min twips"
+                font.pixelSize: 26
             }
 
-            Rectangle {
-                width: 300
-                height: 300
-                color: "red"
+            InputArea {
+                id: fontInflationMinTwips
+                width: parent.width-1
+                text: ""
+                onAccepted: {
+                    MozContext.setPref("font.size.inflation.minTwips", parseInt(fontInflationMinTwips.text))
+                }
             }
 
-            Rectangle {
-                width: 300
-                height: 300
-                color: "blue"
+            Text {
+                id: emPerLineTitle
+                text: "Font em per line"
+                font.pixelSize: 26
+            }
+
+            InputArea {
+                id: fontInflationEmPerLine
+                width: parent.width-1
+                text: ""
+                onAccepted: {
+                    MozContext.setPref("font.size.inflation.emPerLine", parseInt(fontInflationEmPerLine.text))
+                }
+            }
+
+            Checkbox {
+                id: zoomReflow
+                width: parent.width
+                text: "Reflow text on zoom"
+                onClicked: {
+                    MozContext.setPref("browser.ui.zoom.reflow", checked)
+                }
+            }
+
+            Text {
+                id: reflowTitle
+                text: "Font size on reflow"
+                font.pixelSize: 26
+            }
+
+            InputArea {
+                id: fontSizeOnReflow
+                width: parent.width-1
+                text: ""
+                onAccepted: {
+                    MozContext.setPref("browser.ui.zoom.reflow.fontSize", parseInt(fontSizeOnReflow.text))
+                }
+            }
+
+            Text {
+                id: searchTitle
+                text: "Search engine keyword"
+                font.pixelSize: 26
+            }
+
+            InputArea {
+                id: searchKeyword
+                width: parent.width-1
+                text: "http://bing.com/results.aspx?q="
+                onAccepted: {
+                    MozContext.setPref("keyword.URL", searchKeyword.text)
+                }
+            }
+
+            Text {
+                id: verticalScrollLockText
+                text: "Vertical scroll lock ratio"
+                font.pixelSize: 26
+            }
+
+            InputArea {
+                id: verticalScrollLockRatio
+                width: parent.width-1
+                text: ""
+                onAccepted: {
+                    MozContext.setPref("gfx.azpc.vertical_scroll_lock_ratio", parseFloat(verticalScrollLockRatio.text))
+                }
+            }
+
+            Text {
+                id: horizontalScrollLockText
+                text: "Horizontal scroll lock ratio"
+                font.pixelSize: 26
+            }
+
+            InputArea {
+                id: horizontalScrollLockRatio
+                width: parent.width-1
+                text: ""
+                onAccepted: {
+                    MozContext.setPref("gfx.azpc.horizontal_scroll_lock_ratio", parseFloat(horizontalScrollLockRatio.text))
+                }
             }
         }
     }
