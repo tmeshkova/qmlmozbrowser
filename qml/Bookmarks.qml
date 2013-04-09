@@ -16,6 +16,8 @@ Rectangle {
                 tx.executeSql('CREATE TABLE IF NOT EXISTS bookmarks (url TEXT, title TEXT, icon TEXT, category TEXT, type INTEGER)')
             }
         );
+        fillModelFromDatabase()
+        fillGroupsModel()
     }
 
     function show() {
@@ -97,6 +99,7 @@ Rectangle {
             var currGroup = bookmarksList.model.get(index).group
             return prevGroup != currGroup
         }
+        return false
     }
 
     function checkUrl(url) {
@@ -313,8 +316,6 @@ Rectangle {
                     addBookmark(newSiteUrl.fixSchemeUrl(), newSiteTitle.text, selectGroup.text, showOnStart ? 1 : 0)
                     title.addMode = false
                     filterArea.text = ""
-                    fillModelFromDatabase()
-                    fillGroupsModel()
                     bookmarksChanged()
                 }
             }
@@ -537,8 +538,6 @@ Rectangle {
                 onClicked: {
                     removeBookmark(model.url)
                     showControls = false
-                    fillModelFromDatabase()
-                    fillGroupsModel()
                     bookmarksChanged()
                 }
             }
@@ -548,7 +547,7 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.right: editBookmark.left
-                anchors.rightMargin: showControls ? parent.width : 5
+                anchors.rightMargin: showControls ? parent.width : 10
                 anchors.bottom: siteUrl.bottom
                 onClicked: {
                     if (!showControls) {

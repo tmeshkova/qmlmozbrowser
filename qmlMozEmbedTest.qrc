@@ -27,6 +27,11 @@
         <file>icons/unfavorite.png</file>
         <file>icons/context-window-url3.png</file>
         <file>icons/context-window-url4.png</file>
+        <file>icons/context-window-image4.png</file>
+        <file>icons/context-clipboard-image2.png</file>
+        <file>icons/context-clipboard-url.png</file>
+        <file>icons/nav-backward.png</file>
+        <file>icons/nav-forward.png</file>
 
         <file>qml/main.qml</file>
         <file>qml/main_ref.qml</file>

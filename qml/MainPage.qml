@@ -40,6 +40,8 @@ FocusScope {
                 }
             }
         );
+        bookmarksPage.fillModelFromDatabase()
+        bookmarksPage.fillGroupsModel()
     }
 
     function removeBookmark(url) {
@@ -49,6 +51,8 @@ FocusScope {
                 var result = tx.executeSql('delete from bookmarks where url=(?);',[url])
             }
         );
+        bookmarksPage.fillModelFromDatabase()
+        bookmarksPage.fillGroupsModel()
     }
 
     Connections {
@@ -70,6 +74,7 @@ FocusScope {
             MozContext.addObserver("embed:allprefs");
             MozContext.addObserver("embed:logger");
             MozContext.sendObserve("embedui:logger", { enabled: true })
+            MozContext.setPref("keyword.enabled", true);
         }
     }
 
@@ -485,12 +490,21 @@ FocusScope {
         anchors.top: parent.top
         anchors.topMargin: overlay.visible ? addressLine.height : startPage.topArea
         anchors.right: overlayRightMenu.left
+        anchors.rightMargin: -5
         border.width: 1
         border.color: "black"
-        color: "gray"
-        width: 50
+        radius: 5
+        color: "white"
+        width: 55
         height: 100
         visible: navigation.visible || startPage.visible
+        Image {
+            anchors.centerIn: parent
+            width: 40
+            height: 40
+            smooth: true
+            source: "../icons/nav-" + (overlayRightMenu.anchors.rightMargin == 0 ? "forward" : "backward") + ".png"
+        }
         MouseArea {
             anchors.fill: parent
             onClicked: {

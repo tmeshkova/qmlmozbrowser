@@ -24,7 +24,7 @@ ListView {
         }
         ListElement {
             name: "Copy link url to clipboard"
-            icon: "../icons/context-window-url2.png"
+            icon: "../icons/context-clipboard-url.png"
         }
         ListElement {
             name: "Open image url in a new window"
@@ -32,11 +32,11 @@ ListView {
         }
         ListElement {
             name: "Save by image url as..."
-            icon: "../icons/context-window-image2.png"
+            icon: "../icons/context-window-image4.png"
         }
         ListElement {
             name: "Copy image url to clipboard"
-            icon: "../icons/context-window-url2.png"
+            icon: "../icons/context-clipboard-image2.png"
         }
     }
 
