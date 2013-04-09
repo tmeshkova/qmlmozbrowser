@@ -88,7 +88,11 @@ QString
 QmlHelperTools::getFaviconFromUrl(QString url)
 {
     QUrl mUrl(url);
+    if (mUrl.scheme() != QString("http") &&
+        mUrl.scheme() != QString("https"))
+        return QString();
     mUrl.setPath("/favicon.ico");
+    mUrl.setFragment("");
     return mUrl.toString();
 }
 
