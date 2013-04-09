@@ -1,8 +1,8 @@
 CONFIG += link_pkgconfig
 TARGET = qmlMozEmbedTest
 contains(QT_MAJOR_VERSION, 4) {
-  SOURCES += main.cpp qmlapplicationviewer.cpp WindowCreator.cpp qmlhelpertools.cpp
-  HEADERS += qmlapplicationviewer.h WindowCreator.h qmlhelpertools.h
+  SOURCES += main.cpp qmlapplicationviewer.cpp WindowCreator.cpp qmlhelpertools.cpp DBusAdaptor.cpp
+  HEADERS += qmlapplicationviewer.h WindowCreator.h qmlhelpertools.h DBusAdaptor.h
 } else {
   SOURCES += mainqt5.cpp
 }
@@ -14,6 +14,7 @@ contains(QT_MAJOR_VERSION, 4) {
   QT += qml quick widgets
   QT += opengl declarative
 }
+QT += dbus
 
 QML_FILES = qml/*.qml
 RESOURCES += qmlMozEmbedTest.qrc

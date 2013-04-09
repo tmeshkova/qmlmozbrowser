@@ -31,6 +31,19 @@ MozWindowCreator::newWindowRequested(const QString& url, const unsigned& aParent
     return uniqueID;
 }
 
+void
+MozWindowCreator::bringToFront()
+{
+    QDeclarativeView* view = mWindowStack.at(0);
+    if (!view)
+        return;
+
+    if (mIsFullScreen)
+        view->showFullScreen();
+    else
+        view->show();
+}
+
 QDeclarativeView*
 MozWindowCreator::CreateNewWindow(const QString& url, quint32 *aUniqueID, quint32 aParentID)
 {

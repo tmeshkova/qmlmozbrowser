@@ -8,6 +8,7 @@ public:
     QDeclarativeView* CreateNewWindow(const QString& url = QString("about:blank"), quint32* aUniqueID = 0, quint32 aParentID = 0);
 public Q_SLOTS:
     quint32 newWindowRequested(const QString& url, const unsigned& aParentID);
+    void bringToFront();
 
 public:
     QList<QDeclarativeView*> mWindowStack;

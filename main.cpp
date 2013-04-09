@@ -34,6 +34,8 @@
 #include <QDebug>
 #include <QStringList>
 #include <QDir>
+#include <QDBusConnection>
+#include <QDBusInterface>
 #include <QTimer>
 #include "qmlapplicationviewer.h"
 #include "qdeclarativemozview.h"
@@ -44,6 +46,10 @@
 #endif
 #include "qmozcontext.h"
 #include "WindowCreator.h"
+#include "DBusAdaptor.h"
+
+#define OBJECT_NAME "/"
+#define SERVICE_NAME "org.mozilla.mozembed"
 
 #ifdef HAS_BOOSTER
 Q_DECL_EXPORT
@@ -123,6 +129,28 @@ int main(int argc, char *argv[])
     QDeclarativeView *view = winCreator.CreateNewWindow(urlstring);
     winCreator.mWindowStack.append(view);
 
+    DBusAdaptor* adaptor = new DBusAdaptor();
+    if (QDBusConnection::sessionBus().registerService(SERVICE_NAME) &&
+        QDBusConnection::sessionBus().registerObject(OBJECT_NAME, adaptor, QDBusConnection::ExportScriptableSlots)) {
+        qDebug() << "DBus service started!";
+        QObject::connect(adaptor, SIGNAL(newWindowUrl(QString, unsigned)),
+                     &winCreator, SLOT(newWindowRequested(const QString&, const unsigned&)));
+        QObject::connect(adaptor, SIGNAL(bringToFront()),
+                     &winCreator, SLOT(bringToFront()));
+    }
+    else {
+        qDebug() << "Object already exists. Another instance running?";
+        if ((urlstring.length() == 0) || (urlstring == QString("about:blank"))) {
+            QDBusInterface("org.mozilla.mozembed", "/", "org.mozilla.mozembed",
+                       QDBusConnection::sessionBus()).call("show");
+        }
+        else {
+            QDBusInterface("org.mozilla.mozembed", "/", "org.mozilla.mozembed",
+                       QDBusConnection::sessionBus()).call("newUrl", urlstring);
+        }
+        return 0;
+    }
+
     if (isFullscreen)
         view->showFullScreen();
     else
@@ -150,5 +178,7 @@ int main(int argc, char *argv[])
     QTimer::singleShot(0, QMozContext::GetInstance(), SLOT(runEmbedding()));
     int retval = application->exec();
     qDebug() << "Exiting from Application!!!";
+    QDBusConnection::sessionBus().unregisterObject(OBJECT_NAME);
+    QDBusConnection::sessionBus().unregisterService(SERVICE_NAME);
     return retval;
 }
