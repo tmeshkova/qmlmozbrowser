@@ -20,6 +20,18 @@
         <file>icons/context-window-image2.png</file>
         <file>icons/switch-on.png</file>
         <file>icons/switch-off.png</file>
+        <file>icons/bookmarks.png</file>
+        <file>icons/home.png</file>
+        <file>icons/edit.png</file>
+        <file>icons/favorite.png</file>
+        <file>icons/unfavorite.png</file>
+        <file>icons/context-window-url3.png</file>
+        <file>icons/context-window-url4.png</file>
+        <file>icons/context-window-image4.png</file>
+        <file>icons/context-clipboard-image2.png</file>
+        <file>icons/context-clipboard-url.png</file>
+        <file>icons/nav-backward.png</file>
+        <file>icons/nav-forward.png</file>
 
         <file>qml/main.qml</file>
         <file>qml/main_ref.qml</file>
@@ -49,6 +61,10 @@
         <file>qml/Config.qml</file>
         <file>qml/LoginDialog.qml</file>
         <file>qml/History.qml</file>
+        <file>qml/Bookmarks.qml</file>
+        <file>qml/StartPage.qml</file>
+        <file>qml/SelectDialog.qml</file>
+        <file>qml/OverlayRightMenu.qml</file>
 
         <file alias="qml/Dialog.qml">qml/dialogs/Dialog.qml</file>
         <file alias="qml/AlertDialog.qml">qml/dialogs/AlertDialog.qml</file>

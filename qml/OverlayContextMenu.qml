@@ -16,27 +16,27 @@ ListView {
     model: ListModel {
         ListElement {
             name: "Open link url in a new window"
-            icon: "../icons/context-window-image2.png"
+            icon: "../icons/context-window-url4.png"
         }
         ListElement {
             name: "Save by link url as..."
-            icon: ""
+            icon: "../icons/context-window-url3.png"
         }
         ListElement {
             name: "Copy link url to clipboard"
-            icon: "../icons/context-window-url2.png"
+            icon: "../icons/context-clipboard-url.png"
         }
         ListElement {
             name: "Open image url in a new window"
-            icon: "../icons/context-window-image2.png"
+            icon: "../icons/context-window-url4.png"
         }
         ListElement {
             name: "Save by image url as..."
-            icon: ""
+            icon: "../icons/context-window-image4.png"
         }
         ListElement {
             name: "Copy image url to clipboard"
-            icon: "../icons/context-window-url2.png"
+            icon: "../icons/context-clipboard-image2.png"
         }
     }
 

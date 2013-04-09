@@ -14,6 +14,7 @@ FocusScope {
         addressLine.text = address
         webViewport.child.load(address)
         overlay.showAddressBar()
+        overlayRightMenu.hide()
     }
 
     function saveFile(url) {
@@ -22,6 +23,36 @@ FocusScope {
         var path = filePicker.getFileSync(1, QmlHelperTools.getStorageLocation(0), fileName)
         if (path != "")
             MozContext.sendObserve("embedui:download", { msg: "addDownload", from: url, to: path })
+    }
+
+    function addBookmark(url, title, group, type) {
+        var db = openDatabaseSync("qmlbrowser","0.1","historydb", 100000)
+        db.transaction(
+            function(tx) {
+                var result = tx.executeSql('delete from bookmarks where url=(?);',[url])
+            }
+        );
+        db.transaction(
+            function(tx) {
+                var result = tx.executeSql('INSERT INTO bookmarks VALUES (?,?,?,?,?);',[url,title,QmlHelperTools.getFaviconFromUrl(url),group,type])
+                if (result.rowsAffected < 1) {
+                    console.log("Error inserting url")
+                }
+            }
+        );
+        bookmarksPage.fillModelFromDatabase()
+        bookmarksPage.fillGroupsModel()
+    }
+
+    function removeBookmark(url) {
+        var db = openDatabaseSync("qmlbrowser","0.1","historydb", 100000)
+        db.transaction(
+            function(tx) {
+                var result = tx.executeSql('delete from bookmarks where url=(?);',[url])
+            }
+        );
+        bookmarksPage.fillModelFromDatabase()
+        bookmarksPage.fillGroupsModel()
     }
 
     Connections {
@@ -43,6 +74,7 @@ FocusScope {
             MozContext.addObserver("embed:allprefs");
             MozContext.addObserver("embed:logger");
             MozContext.sendObserve("embedui:logger", { enabled: true })
+            MozContext.setPref("keyword.enabled", true);
         }
     }
 
@@ -52,7 +84,19 @@ FocusScope {
         objectName: "webViewport"
         visible: true
         focus: true
-        enabled: !(alertDlg.visible || confirmDlg.visible || promptDlg.visible || authDlg.visible || overlay.visible || settingsPage.x==0 || downloadsPage.x==0 || filePicker.visible || selectCombo.visible || configPage.x==0 || historyPage.x==0)
+        enabled: !(alertDlg.visible ||
+                   confirmDlg.visible ||
+                   promptDlg.visible ||
+                   authDlg.visible ||
+                   overlay.visible ||
+                   settingsPage.x==0 ||
+                   downloadsPage.x==0 ||
+                   filePicker.visible ||
+                   selectCombo.visible ||
+                   configPage.x==0 ||
+                   historyPage.x==0 ||
+                   bookmarksPage.x==0 ||
+                   startPage.visible)
         property bool movingHorizontally: false
         property bool movingVertically: true
         property variant visibleArea: QtObject {
@@ -97,7 +141,7 @@ FocusScope {
                 }
                 if (startURL == "about:blank") {
                     navigation.anchors.topMargin = 0
-                    overlay.show((mainScope.height / 2) - (navigation.height / 2))
+                    startPage.show()
                 }
             }
             onLoadingChanged: {
@@ -268,33 +312,40 @@ FocusScope {
             property int pressY: -1
             property int maxDistance: 20
             property bool movedFar: false
-            onPressAndHold: {
-                if (!movedFar) {
-                    navigation.anchors.topMargin = 0
-                    var posY = mapToItem(navigation, pressX, pressY).y - navigation.height/2
-                    if (posY < 0) {
-                        posY = 10
+            Timer {
+                id: longTapTimer
+                interval: 500
+                onTriggered: {
+                    if (!mArea.movedFar) {
+                        navigation.anchors.topMargin = 0
+                        var posY = mapToItem(navigation, mArea.pressX, mArea.pressY).y - navigation.height/2
+                        if (posY < 0) {
+                            posY = 10
+                        }
+                        else if (mArea.pressY + navigation.height/2 > mainScope.height) {
+                            posY -= (mArea.pressY + navigation.height/2) - mainScope.height + 10
+                        }
+                        overlay.show(posY)
                     }
-                    else if (pressY + navigation.height/2 > mainScope.height) {
-                        posY -= (pressY + navigation.height/2) - mainScope.height + 10
-                    }
-                    overlay.show(posY)
                 }
             }
             onPositionChanged: {
                 var distance = Math.sqrt(Math.pow(mouse.x - pressX ,2) + Math.pow(mouse.y - pressY, 2))
                 if (distance > maxDistance) {
                     movedFar = true
+                    longTapTimer.stop()
                 }
             }
             onPressed: {
                 pressX = mouse.x
                 pressY = mouse.y
+                longTapTimer.start()
             }
             onReleased: {
                 pressX = -1
                 pressY = -1
                 movedFar = false
+                longTapTimer.stop()
             }
         }
 
@@ -306,7 +357,10 @@ FocusScope {
 
     Item {
         id: overlay
-        anchors.fill: mainScope
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
         visible: opacity > 0.01
         opacity: 0.01
 
@@ -373,6 +427,7 @@ FocusScope {
             anchors.fill: parent
             onPressed: {
                 addressLine.unfocusAddressBar()
+                overlayRightMenu.hide()
                 overlay.hide()
             }
         }
@@ -422,90 +477,51 @@ FocusScope {
                 overlay.hideExceptBar()
             }
         }
+    }
 
-        OverlayButton {
-            id: newPage
+    StartPage {
+        id: startPage
+        width: parent.width
+        height: parent.height
+    }
 
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.leftMargin: 10
-            anchors.topMargin: addressLine.height + 10
-
-            width: 100
-            height: 100
-
-            visible: navigation.visible
-
-            iconSource: "../icons/plus.png"
-
+    Rectangle {
+        id: rightTab
+        anchors.top: parent.top
+        anchors.topMargin: overlay.visible ? addressLine.height : startPage.topArea
+        anchors.right: overlayRightMenu.left
+        anchors.rightMargin: -5
+        border.width: 1
+        border.color: "black"
+        radius: 5
+        color: "white"
+        width: 55
+        height: 100
+        visible: navigation.visible || startPage.visible
+        Image {
+            anchors.centerIn: parent
+            width: 40
+            height: 40
+            smooth: true
+            source: "../icons/nav-" + (overlayRightMenu.anchors.rightMargin == 0 ? "forward" : "backward") + ".png"
+        }
+        MouseArea {
+            anchors.fill: parent
             onClicked: {
-                MozContext.newWindow("about:blank", 0)
-                overlay.hide()
+                overlayRightMenu.toggle()
             }
         }
+    }
 
-        OverlayButton {
-            id: settings
-
-            anchors.top: parent.top
-            anchors.right: parent.right
-            anchors.rightMargin: 10
-            anchors.topMargin: addressLine.height + 10
-
-            width: 100
-            height: 100
-
-            visible: navigation.visible
-
-            iconSource: "../icons/settings.png"
-
-            onClicked: {
-                overlay.hide()
-                settingsPage.show()
-            }
-        }
-
-        OverlayButton {
-            id: history
-
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.leftMargin: 10
-            anchors.bottomMargin: 10
-
-            width: 100
-            height: 100
-
-            visible: navigation.visible
-
-            iconSource: "../icons/history.png"
-
-            onClicked: {
-                overlay.hide()
-                historyPage.show()
-            }
-        }
-
-        OverlayButton {
-            id: downloads
-
-            anchors.bottom: parent.bottom
-            anchors.right: parent.right
-            anchors.rightMargin: 10
-            anchors.bottomMargin: 10
-
-            width: 100
-            height: 100
-
-            visible: navigation.visible
-
-            iconSource: "../icons/download.png"
-
-            onClicked: {
-                overlay.hide()
-                downloadsPage.show()
-            }
-        }
+    OverlayRightMenu {
+        id: overlayRightMenu
+        height: parent.height
+        anchors.top: parent.top
+        anchors.topMargin: overlay.visible ? addressLine.height : startPage.topArea
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 5
+        anchors.right: parent.right
+        anchors.rightMargin: -111
     }
 
     Settings {
@@ -535,6 +551,13 @@ FocusScope {
         height: parent.height
         x: parent.width
         viewport: webViewport
+    }
+
+    Bookmarks {
+        id: bookmarksPage
+        width: parent.width
+        height: parent.height
+        x: parent.width
     }
 
     FilePicker {

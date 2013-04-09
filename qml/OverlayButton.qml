@@ -14,7 +14,6 @@ Item {
 
     Rectangle {
         id: background
-
         anchors.fill: root
         anchors.rightMargin: 1
         anchors.bottomMargin: 1
@@ -49,15 +48,12 @@ Item {
         anchors.right: parent.right
         horizontalAlignment: icon.visible ? Text.AlignLeft : Text.AlignHCenter
         elide: Text.ElideRight
-
         opacity: root.enabled ? 1.0 : 0.2
     }
 
     MouseArea {
         id: mouseArea
-
         anchors.fill: parent
-
         onPressed: {
             root.pressed()
             mouse.accepted = true
