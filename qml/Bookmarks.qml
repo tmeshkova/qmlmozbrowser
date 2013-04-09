@@ -251,9 +251,6 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 inputMethodHints: Qt.ImhNoPredictiveText || Qt.ImhNoAutoUppercase
-                onAccepted: {
-                    
-                }
             }
 
             Text {
@@ -271,9 +268,6 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 inputMethodHints: Qt.ImhNoPredictiveText || Qt.ImhNoAutoUppercase
-                onAccepted: {
-                    
-                }
             }
 
             OverlayButton {
@@ -437,9 +431,6 @@ Rectangle {
                 anchors.rightMargin: 10
                 text: model.title
                 visible: showControls
-                onAccepted: {
-
-                }
             }
 
             Text {
@@ -473,9 +464,6 @@ Rectangle {
                 anchors.right: parent.right
                 anchors.rightMargin: 10
                 visible: showControls
-                onAccepted: {
-
-                }
             }
 
             OverlayButton {
