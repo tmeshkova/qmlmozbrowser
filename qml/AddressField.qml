@@ -31,7 +31,7 @@ Item {
         var db = openDatabaseSync("qmlbrowser","0.1","historydb", 100000)
         db.transaction(
             function(tx) {
-                var result = tx.executeSql('SELECT url, title, icon FROM history where url like (?)',["%" + value + "%"])
+                var result = tx.executeSql('SELECT url, title, icon FROM history where url like (?) order by date desc limit 5',["%" + value + "%"])
                 recentListModel.clear()
                 for (var i=0; i < result.rows.length; i++) {
                     recentListModel.insert(0, {"url": result.rows.item(i).url,
@@ -204,6 +204,12 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
             anchors.topMargin: 20
+            height: 1
+            color: "black"
+        }
+        Rectangle {
+            anchors.bottom: parent.bottom
+            width: parent.width
             height: 1
             color: "black"
         }

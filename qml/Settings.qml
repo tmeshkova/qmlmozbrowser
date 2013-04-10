@@ -16,7 +16,9 @@ Rectangle {
                                                                                "font.size.inflation.forceEnabled",
                                                                                "keyword.URL",
                                                                                "gfx.azpc.vertical_scroll_lock_ratio",
-                                                                               "gfx.azpc.horizontal_scroll_lock_ratio"]})
+                                                                               "gfx.azpc.horizontal_scroll_lock_ratio",
+                                                                               "gfx.azpc.touch_start_tolerance",
+                                                                               "ui.click_hold_context_menus.delay"]})
     }
 
     function hide() {
@@ -74,6 +76,16 @@ Rectangle {
                         case "gfx.azpc.horizontal_scroll_lock_ratio": {
                             horizontalScrollLockRatio.text = data[i].value.replace("f", "");
                             horizontalScrollLockRatio.cursorPosition = 0;
+                            break;
+                        }
+                        case "gfx.azpc.touch_start_tolerance": {
+                            longTapCancelDistance.text = parseFloat(data[i].value.replace("f", "")) * 72;
+                            longTapCancelDistance.cursorPosition = 0;
+                            break;
+                        }
+                        case "ui.click_hold_context_menus.delay": {
+                            longTapDelay.text = data[i].value;
+                            longTapDelay.cursorPosition = 0;
                             break;
                         }
                     }
@@ -330,6 +342,38 @@ Rectangle {
                 inputMethodHints: Qt.ImhDigitsOnly
                 onAccepted: {
                     MozContext.setPref("gfx.azpc.horizontal_scroll_lock_ratio", horizontalScrollLockRatio.text + "f")
+                }
+            }
+
+            Text {
+                id: longTapCancelDistanceText
+                text: "Distance to cancel LongTap"
+                font.pixelSize: 26
+            }
+
+            InputArea {
+                id: longTapCancelDistance
+                width: parent.width-1
+                text: "10"
+                inputMethodHints: Qt.ImhDigitsOnly
+                onAccepted: {
+                    MozContext.setPref("gfx.azpc.touch_start_tolerance", (parseInt(longTapCancelDistance.text) / 72) + "f")
+                }
+            }
+
+            Text {
+                id: longTapDelayText
+                text: "LongTap delay (ms)"
+                font.pixelSize: 26
+            }
+
+            InputArea {
+                id: longTapDelay
+                width: parent.width-1
+                text: "500"
+                inputMethodHints: Qt.ImhDigitsOnly
+                onAccepted: {
+                    MozContext.setPref("ui.click_hold_context_menus.delay", parseInt(longTapDelay.text))
                 }
             }
         }

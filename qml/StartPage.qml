@@ -6,7 +6,8 @@ Rectangle {
     id: root
     color: "white"
     visible: false
-    property int topArea: address.height + 10
+    property int topArea: address.height + 16 + recentSitesList.height + hideRecent.height
+    property bool showRecent: false
 
     function getRecentCount(count) {
         var db = openDatabaseSync("qmlbrowser","0.1","historydb", 100000)
@@ -52,6 +53,27 @@ Rectangle {
         root.visible = false
     }
 
+    function hideRecentList() {
+        root.showRecent = false
+        recentSitesList.height = 0
+        root.recentTriggered()
+    }
+
+    function fillRecentFromDatabase(value) {
+        var db = openDatabaseSync("qmlbrowser","0.1","historydb", 100000)
+        db.transaction(
+            function(tx) {
+                var result = tx.executeSql('SELECT url, title, icon FROM history where url like (?) order by date desc limit 5',["%" + value + "%"])
+                addressListModel.clear()
+                for (var i=0; i < result.rows.length; i++) {
+                    addressListModel.insert(0, {"url": result.rows.item(i).url,
+                                     "title": result.rows.item(i).title,
+                                     "icon": result.rows.item(i).icon})
+                }
+            }
+        );
+    }
+
     Connections {
         target: webViewport.child
 
@@ -84,9 +106,28 @@ Rectangle {
         anchors.right: parent.right
         anchors.margins: 5
         inputMethodHints: Qt.ImhNoPredictiveText || Qt.ImhNoAutoUppercase
+        selectAllOnFocus: true
         onAccepted: {
             load(text)
             root.hide()
+        }
+        onTextChanged: {
+            if (inputFocus) {
+                fillRecentFromDatabase(text)
+                root.showRecent = (addressListModel.count > 0)
+                if (addressListModel.count > 0) {
+                    var url0 = addressListModel.get(0).url
+                    if (url0.search(text) == 0) {
+                        address.setUrl(url0)
+                    }
+                }
+                if (addressListModel.count > 4) {
+                    recentSitesList.height = 200
+                }
+                else {
+                    recentSitesList.height = (50 * addressListModel.count)
+                }
+            }
         }
     }
 
@@ -231,5 +272,108 @@ Rectangle {
                 }
             }
         }
+    }
+
+    ListView {
+        id: recentSitesList
+        anchors.top: address.bottom
+        anchors.topMargin: 10
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 0
+        clip: true
+        visible: root.showRecent
+        model: addressListModel
+        delegate: Item {
+            width: parent.width
+            height: 50
+            Rectangle {
+                anchors.fill: parent
+                color: mArea.pressed ? "#f0f0f0" : "white"
+            }
+            Image {
+                id: siteIcon
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.leftMargin: 3
+                source: model.icon ? (testIcon.status == Image.Error ? QmlHelperTools.getFaviconFromUrl(model.url) : model.icon) : QmlHelperTools.getFaviconFromUrl(model.url)
+                width: 20
+                height: 20
+                smooth: true
+                cache: true
+            }
+            Image {
+                id: testIcon
+                visible: false
+                source: model.icon
+            }
+            Text {
+                id: siteLabel
+                anchors.top: parent.top
+                anchors.topMargin: 3
+                anchors.left: siteIcon.right
+                anchors.leftMargin: 3
+                text: model.title
+                font.pixelSize: 18
+            }
+            Text {
+                id: siteUrl
+                anchors.top: siteLabel.bottom
+                anchors.topMargin: 1
+                anchors.left: siteIcon.right
+                anchors.leftMargin: 3
+                text: model.url
+                font.pixelSize: 18
+            }
+            MouseArea {
+                id: mArea
+                anchors.fill: parent
+                onClicked: {
+                    address.text = model.url
+                    hideRecentList()
+                }
+            }
+        }
+    }
+
+    Rectangle {
+        id: hideRecent
+        anchors.top: recentSitesList.bottom
+        width: parent.width
+        height: visible ? 30 : 0
+        visible: recentSitesList.visible
+        color: "white"
+        Rectangle {
+            width: parent.width / 3 * 2
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 10
+            height: 1
+            color: "black"
+        }
+        Rectangle {
+            width: parent.width / 3 * 2
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 20
+            height: 1
+            color: "black"
+        }
+        Rectangle {
+            anchors.bottom: parent.bottom
+            width: parent.width
+            height: 1
+            color: "black"
+        }
+        MouseArea {
+            anchors.fill:parent
+            onClicked: {
+                hideRecentList()
+            }
+        }
+    }
+
+    ListModel {
+        id: addressListModel
     }
 }

@@ -13,6 +13,7 @@ FocusScope {
     function load(address) {
         addressLine.text = address
         webViewport.child.load(address)
+        overlay.showAddressBar()
         overlayRightMenu.hide()
     }
 
@@ -122,6 +123,7 @@ FocusScope {
         Connections {
             target: webViewport.child
             onViewInitialized: {
+                print("QmlMozView Initialized");
                 webViewport.child.loadFrameScript("chrome://embedlite/content/embedhelper.js");
                 webViewport.child.loadFrameScript("chrome://embedlite/content/SelectHelper.js");
                 webViewport.child.addMessageListener("embed:filepicker");
@@ -345,6 +347,8 @@ FocusScope {
         }
 
         function hide() {
+            navigation.visible = false
+            contextMenu.visible = false
             buttonsShow.running = false
             buttonsHide.running = true
         }
