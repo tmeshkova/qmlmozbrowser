@@ -67,12 +67,12 @@ Rectangle {
                             break;
                         }
                         case "gfx.azpc.vertical_scroll_lock_ratio": {
-                            verticalScrollLockRatio.text = data[i].value;
+                            verticalScrollLockRatio.text = parseFloat(data[i].value);
                             verticalScrollLockRatio.cursorPosition = 0;
                             break;
                         }
                         case "gfx.azpc.horizontal_scroll_lock_ratio": {
-                            horizontalScrollLockRatio.text = data[i].value;
+                            horizontalScrollLockRatio.text = parseFloat(data[i].value);
                             horizontalScrollLockRatio.cursorPosition = 0;
                             break;
                         }
@@ -239,6 +239,7 @@ Rectangle {
                 id: fontInflationMinTwips
                 width: parent.width-1
                 text: ""
+                inputMethodHints: Qt.ImhDigitsOnly
                 onAccepted: {
                     MozContext.setPref("font.size.inflation.minTwips", parseInt(fontInflationMinTwips.text))
                 }
@@ -254,6 +255,7 @@ Rectangle {
                 id: fontInflationEmPerLine
                 width: parent.width-1
                 text: ""
+                inputMethodHints: Qt.ImhDigitsOnly
                 onAccepted: {
                     MozContext.setPref("font.size.inflation.emPerLine", parseInt(fontInflationEmPerLine.text))
                 }
@@ -278,6 +280,7 @@ Rectangle {
                 id: fontSizeOnReflow
                 width: parent.width-1
                 text: ""
+                inputMethodHints: Qt.ImhDigitsOnly
                 onAccepted: {
                     MozContext.setPref("browser.ui.zoom.reflow.fontSize", parseInt(fontSizeOnReflow.text))
                 }
@@ -307,7 +310,8 @@ Rectangle {
             InputArea {
                 id: verticalScrollLockRatio
                 width: parent.width-1
-                text: ""
+                text: "2.0"
+                inputMethodHints: Qt.ImhDigitsOnly
                 onAccepted: {
                     MozContext.setPref("gfx.azpc.vertical_scroll_lock_ratio", parseFloat(verticalScrollLockRatio.text))
                 }
@@ -322,7 +326,8 @@ Rectangle {
             InputArea {
                 id: horizontalScrollLockRatio
                 width: parent.width-1
-                text: ""
+                text: "0.5"
+                inputMethodHints: Qt.ImhDigitsOnly
                 onAccepted: {
                     MozContext.setPref("gfx.azpc.horizontal_scroll_lock_ratio", parseFloat(horizontalScrollLockRatio.text))
                 }

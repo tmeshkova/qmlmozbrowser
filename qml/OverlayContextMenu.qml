@@ -16,7 +16,7 @@ ListView {
     model: ListModel {
         ListElement {
             name: "Open link url in a new window"
-            icon: "../icons/context-window-url4.png"
+            icon: "../icons/context-window-url5.png"
         }
         ListElement {
             name: "Save by link url as..."
@@ -28,7 +28,7 @@ ListView {
         }
         ListElement {
             name: "Open image url in a new window"
-            icon: "../icons/context-window-url4.png"
+            icon: "../icons/context-window-image5.png"
         }
         ListElement {
             name: "Save by image url as..."

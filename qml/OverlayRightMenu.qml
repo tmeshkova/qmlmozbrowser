@@ -24,6 +24,13 @@ Rectangle {
         root.anchors.rightMargin = -111
     }
 
+    Connections {
+        target: webViewport.child
+        onUrlChanged: {
+            favorite.iconSource = "../icons/" + (bookmarksPage.checkUrl(webViewport.child.url) ? "" : "un") +"favorite.png"
+        }
+    }
+
     Rectangle {
         id: rightSeparator
         anchors.top: parent.top
@@ -41,7 +48,6 @@ Rectangle {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         flickableDirection: Flickable.VerticalFlick
-        pressDelay: 200
         contentHeight: buttonsColumn.height
 
         Column {
@@ -86,21 +92,20 @@ Rectangle {
 
             OverlayButton {
                 id: favorite
-                property bool isFavorite: bookmarksPage.checkUrl(webViewport.child.url)
                 width: 100
                 height: 100
                 anchors.horizontalCenter: parent.horizontalCenter
                 visible: !startPage.visible
-                iconSource: "../icons/" + (isFavorite ? "" : "un") +"favorite.png"
+                iconSource: "../icons/" + (bookmarksPage.checkUrl(webViewport.child.url) ? "" : "un") +"favorite.png"
 
                 onClicked: {
-                    if (isFavorite) {
+                    if (bookmarksPage.checkUrl(webViewport.child.url)) {
                         removeBookmark(webViewport.child.url)
                     }
                     else {
                         addBookmark(webViewport.child.url, webViewport.child.title, "uncategorized", 0)
                     }
-                    isFavorite = bookmarksPage.checkUrl(webViewport.child.url)
+                    iconSource = "../icons/" + (bookmarksPage.checkUrl(webViewport.child.url) ? "" : "un") +"favorite.png"
                 }
             }
 

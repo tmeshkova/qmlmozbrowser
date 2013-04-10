@@ -21,9 +21,9 @@ Rectangle {
     }
 
     function show() {
+        animShow.running = true
         fillModelFromDatabase()
         fillGroupsModel()
-        animShow.running = true
     }
 
     function hide() {
@@ -382,7 +382,7 @@ Rectangle {
                 smooth: true
                 anchors.left: parent.left
                 anchors.leftMargin: 5
-                anchors.verticalCenter: parent.verticalCenter
+                anchors.verticalCenter: showControls ? siteTitleEdit.verticalCenter : siteTitle.verticalCenter
                 cache: true
             }
 

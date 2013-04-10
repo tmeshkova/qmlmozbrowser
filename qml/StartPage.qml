@@ -14,10 +14,10 @@ Rectangle {
             function(tx) {
                 var result = tx.executeSql('select * from history order by date desc limit (?)', count)
                 recentListModel.clear()
-                for (var i=0; i < result.rows.length; i++) {
-                    recentListModel.insert(0, {"url": result.rows.item(i).url,
-                                     "title": result.rows.item(i).title,
-                                     "icon": result.rows.item(i).icon})
+                for (var i=result.rows.length; i > 0; i--) {
+                    recentListModel.insert(0, {"url": result.rows.item(i-1).url,
+                                     "title": result.rows.item(i-1).title,
+                                     "icon": result.rows.item(i-1).icon})
                 }
             }
         );
