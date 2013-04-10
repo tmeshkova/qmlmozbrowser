@@ -248,6 +248,7 @@ Rectangle {
                         else {
                             MozContext.setPref(model.name, text)
                         }
+                        prefValue.text = text
                     }
                 }
 
@@ -264,6 +265,7 @@ Rectangle {
                     visible: showMore && model.type == 128
                     onClicked: {
                         MozContext.setPref(model.name, checked)
+                        prefValue.text = checked ? "true" : "false"
                     }
                 }
             }

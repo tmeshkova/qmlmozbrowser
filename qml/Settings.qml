@@ -67,12 +67,12 @@ Rectangle {
                             break;
                         }
                         case "gfx.azpc.vertical_scroll_lock_ratio": {
-                            verticalScrollLockRatio.text = parseFloat(data[i].value);
+                            verticalScrollLockRatio.text = data[i].value.replace("f", "");
                             verticalScrollLockRatio.cursorPosition = 0;
                             break;
                         }
                         case "gfx.azpc.horizontal_scroll_lock_ratio": {
-                            horizontalScrollLockRatio.text = parseFloat(data[i].value);
+                            horizontalScrollLockRatio.text = data[i].value.replace("f", "");
                             horizontalScrollLockRatio.cursorPosition = 0;
                             break;
                         }
@@ -295,7 +295,7 @@ Rectangle {
             InputArea {
                 id: searchKeyword
                 width: parent.width-1
-                text: "http://bing.com/results.aspx?q="
+                text: "https://www.google.com/search?ie=UTF-8&oe=utf-8&q="
                 onAccepted: {
                     MozContext.setPref("keyword.URL", searchKeyword.text)
                 }
@@ -313,7 +313,7 @@ Rectangle {
                 text: "2.0"
                 inputMethodHints: Qt.ImhDigitsOnly
                 onAccepted: {
-                    MozContext.setPref("gfx.azpc.vertical_scroll_lock_ratio", parseFloat(verticalScrollLockRatio.text))
+                    MozContext.setPref("gfx.azpc.vertical_scroll_lock_ratio", verticalScrollLockRatio.text + "f")
                 }
             }
 
@@ -329,7 +329,7 @@ Rectangle {
                 text: "0.5"
                 inputMethodHints: Qt.ImhDigitsOnly
                 onAccepted: {
-                    MozContext.setPref("gfx.azpc.horizontal_scroll_lock_ratio", parseFloat(horizontalScrollLockRatio.text))
+                    MozContext.setPref("gfx.azpc.horizontal_scroll_lock_ratio", horizontalScrollLockRatio.text + "f")
                 }
             }
         }
