@@ -13,7 +13,6 @@ FocusScope {
     function load(address) {
         addressLine.text = address
         webViewport.child.load(address)
-        overlay.showAddressBar()
         overlayRightMenu.hide()
     }
 
@@ -123,7 +122,6 @@ FocusScope {
         Connections {
             target: webViewport.child
             onViewInitialized: {
-                print("QmlMozView Initialized");
                 webViewport.child.loadFrameScript("chrome://embedlite/content/embedhelper.js");
                 webViewport.child.loadFrameScript("chrome://embedlite/content/SelectHelper.js");
                 webViewport.child.addMessageListener("embed:filepicker");
@@ -152,6 +150,17 @@ FocusScope {
                 else if (!isLoading && overlay.visible && !navigation.visible && !contextMenu.visible && !addressLine.inputFocus) {
                     overlay.hide()
                 }
+            }
+            onHandleLongTap: {
+                navigation.anchors.topMargin = 0
+                var posY = mapToItem(navigation, point.x, point.y).y - navigation.height/2
+                if (posY < 0) {
+                    posY = 10
+                }
+                else if (point.y + navigation.height/2 > mainScope.height) {
+                    posY -= (point.y + navigation.height/2) - mainScope.height + 10
+                }
+                overlay.show(posY)
             }
             onViewAreaChanged: {
                 var r = webViewport.child.contentRect
@@ -302,50 +311,6 @@ FocusScope {
                                                          username: authDlg.username,
                                                          password: authDlg.password
                                                      })
-            }
-        }
-
-        MouseArea {
-            id: mArea
-            anchors.fill: parent
-            property int pressX: -1
-            property int pressY: -1
-            property int maxDistance: 20
-            property bool movedFar: false
-            Timer {
-                id: longTapTimer
-                interval: 500
-                onTriggered: {
-                    if (!mArea.movedFar) {
-                        navigation.anchors.topMargin = 0
-                        var posY = mapToItem(navigation, mArea.pressX, mArea.pressY).y - navigation.height/2
-                        if (posY < 0) {
-                            posY = 10
-                        }
-                        else if (mArea.pressY + navigation.height/2 > mainScope.height) {
-                            posY -= (mArea.pressY + navigation.height/2) - mainScope.height + 10
-                        }
-                        overlay.show(posY)
-                    }
-                }
-            }
-            onPositionChanged: {
-                var distance = Math.sqrt(Math.pow(mouse.x - pressX ,2) + Math.pow(mouse.y - pressY, 2))
-                if (distance > maxDistance) {
-                    movedFar = true
-                    longTapTimer.stop()
-                }
-            }
-            onPressed: {
-                pressX = mouse.x
-                pressY = mouse.y
-                longTapTimer.start()
-            }
-            onReleased: {
-                pressX = -1
-                pressY = -1
-                movedFar = false
-                longTapTimer.stop()
             }
         }
 
