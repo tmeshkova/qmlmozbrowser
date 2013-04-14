@@ -79,10 +79,11 @@ int main(int argc, char *argv[])
     QString path;
     QString urlstring;
     QString qmlstring;
-    bool glwidget = true;
 #ifdef __arm__
+    bool glwidget = true;
     bool isFullscreen = true;
 #else
+    bool glwidget = false; // dont have GLX renderer yet
     bool isFullscreen = false;
 #endif
 
