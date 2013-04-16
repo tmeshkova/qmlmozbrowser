@@ -7,8 +7,8 @@ Item {
     property alias text: inputLine.text
     signal accepted()
     signal textChanged()
-    signal focusChanged()
-    height: inputArea.height + textInputOverlay.height
+    signal activeFocusChanged()
+    height: inputArea.height + textInputOverlay.height + 2
     property alias cursorPosition: inputLine.cursorPosition
     property alias inputFocus: inputLine.focus
     property alias inputMethodHints: inputLine.inputMethodHints
@@ -21,7 +21,8 @@ Item {
             root.setUrlCall = true
             var oldLength = inputLine.text.length
             inputLine.text = value
-            inputLine.select(oldLength, inputLine.text.length)
+            inputLine.cursorPosition = 0
+            inputLine.select(inputLine.text.length, oldLength)
         }
         else {
             setBackspace = false
@@ -101,6 +102,7 @@ Item {
             }
 
             onActiveFocusChanged: {
+                root.activeFocusChanged()
                 if (activeFocus && selectAllOnFocus) {
                     selectTimer.start()
                 }

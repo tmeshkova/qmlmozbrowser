@@ -9,11 +9,8 @@ Rectangle {
     function show() {
         animShow.running = true
         MozContext.sendObserve("embedui:prefs", { msg: "getPrefList", prefs: [ "general.useragent.override",
-                                                                               "browser.ui.font.reflow",
-                                                                               "browser.ui.font.reflow.fontSize",
-                                                                               "font.size.inflation.minTwips",
-                                                                               "font.size.inflation.emPerLine",
-                                                                               "font.size.inflation.forceEnabled",
+                                                                               "browser.zoom.reflowOnZoom",
+                                                                               "browser.zoom.reflowMobilePages",
                                                                                "keyword.URL",
                                                                                "gfx.azpc.vertical_scroll_lock_ratio",
                                                                                "gfx.azpc.horizontal_scroll_lock_ratio",
@@ -40,27 +37,12 @@ Rectangle {
                             customUA.checked = true
                             break;
                         }
-                        case "font.size.inflation.forceEnabled": {
-                            forceFontInflation.checked = data[i].value;
-                            break;
-                        }
-                        case "font.size.inflation.emPerLine": {
-                            fontInflationEmPerLine.text = data[i].value;
-                            fontInflationEmPerLine.cursorPosition = 0;
-                            break;
-                        }
-                        case "font.size.inflation.minTwips": {
-                            fontInflationMinTwips.text = data[i].value;
-                            fontInflationMinTwips.cursorPosition = 0;
-                            break;
-                        }
-                        case "browser.ui.font.reflow": {
+                        case "browser.zoom.reflowOnZoom": {
                             zoomReflow.checked = data[i].value;
                             break;
                         }
-                        case "browser.ui.font.reflow.fontSize": {
-                            fontSizeOnReflow.text = data[i].value;
-                            fontSizeOnReflow.cursorPosition = 0;
+                        case "browser.zoom.reflowMobilePages": {
+                            mobileReflow.checked = data[i].value;
                             break;
                         }
                         case "keyword.URL": {
@@ -178,6 +160,7 @@ Rectangle {
     }
 
     Flickable {
+        id: flick
         anchors.top: title.bottom
         anchors.left: root.left
         anchors.right: root.right
@@ -185,7 +168,13 @@ Rectangle {
         anchors.margins: 10
         clip: true
         contentHeight: content.height
-
+        function flickToItem(item) {
+            var posY = item.y
+            if (contentHeight - posY < root.height) {
+                posY = posY - root.height + item.height + 15
+            }
+            contentY = posY
+        }
         Column {
             id: content
             width: parent.width
@@ -229,47 +218,11 @@ Rectangle {
                     onAccepted: {
                         MozContext.setPref("general.useragent.override", uaString.text)
                     }
-                }
-            }
-
-            Checkbox {
-                id: forceFontInflation
-                width: parent.width
-                text: "Force font size inflations"
-                onClicked: {
-                    MozContext.setPref("font.size.inflation.forceEnabled", checked)
-                }
-            }
-
-            Text {
-                id: twipsTitle
-                text: "Font inflation min twips"
-                font.pixelSize: 26
-            }
-
-            InputArea {
-                id: fontInflationMinTwips
-                width: parent.width-1
-                text: ""
-                inputMethodHints: Qt.ImhDigitsOnly
-                onAccepted: {
-                    MozContext.setPref("font.size.inflation.minTwips", parseInt(fontInflationMinTwips.text))
-                }
-            }
-
-            Text {
-                id: emPerLineTitle
-                text: "Font em per line"
-                font.pixelSize: 26
-            }
-
-            InputArea {
-                id: fontInflationEmPerLine
-                width: parent.width-1
-                text: ""
-                inputMethodHints: Qt.ImhDigitsOnly
-                onAccepted: {
-                    MozContext.setPref("font.size.inflation.emPerLine", parseInt(fontInflationEmPerLine.text))
+                    onActiveFocusChanged: {
+                        if (inputFocus) {
+                            flick.flickToItem(uaString)
+                        }
+                    }
                 }
             }
 
@@ -278,23 +231,16 @@ Rectangle {
                 width: parent.width
                 text: "Reflow text on zoom"
                 onClicked: {
-                    MozContext.setPref("browser.ui.zoom.reflow", checked)
+                    MozContext.setPref("browser.zoom.reflowOnZoom", checked)
                 }
             }
 
-            Text {
-                id: reflowTitle
-                text: "Font size on reflow"
-                font.pixelSize: 26
-            }
-
-            InputArea {
-                id: fontSizeOnReflow
-                width: parent.width-1
-                text: ""
-                inputMethodHints: Qt.ImhDigitsOnly
-                onAccepted: {
-                    MozContext.setPref("browser.ui.zoom.reflow.fontSize", parseInt(fontSizeOnReflow.text))
+            Checkbox {
+                id: mobileReflow
+                width: parent.width
+                text: "Allow reflow mobile pages"
+                onClicked: {
+                    MozContext.setPref("browser.zoom.reflowMobilePages", checked)
                 }
             }
 
@@ -311,6 +257,11 @@ Rectangle {
                 onAccepted: {
                     MozContext.setPref("keyword.URL", searchKeyword.text)
                 }
+                onActiveFocusChanged: {
+                    if (inputFocus) {
+                        flick.flickToItem(searchKeyword)
+                    }
+                }
             }
 
             Text {
@@ -322,10 +273,15 @@ Rectangle {
             InputArea {
                 id: verticalScrollLockRatio
                 width: parent.width-1
-                text: "2.0"
+                text: "1.2"
                 inputMethodHints: Qt.ImhDigitsOnly
                 onAccepted: {
                     MozContext.setPref("gfx.azpc.vertical_scroll_lock_ratio", verticalScrollLockRatio.text + "f")
+                }
+                onActiveFocusChanged: {
+                    if (inputFocus) {
+                        flick.flickToItem(verticalScrollLockRatio)
+                    }
                 }
             }
 
@@ -343,6 +299,11 @@ Rectangle {
                 onAccepted: {
                     MozContext.setPref("gfx.azpc.horizontal_scroll_lock_ratio", horizontalScrollLockRatio.text + "f")
                 }
+                onActiveFocusChanged: {
+                    if (inputFocus) {
+                        flick.flickToItem(horizontalScrollLockRatio)
+                    }
+                }
             }
 
             Text {
@@ -359,6 +320,11 @@ Rectangle {
                 onAccepted: {
                     MozContext.setPref("gfx.azpc.touch_start_tolerance", (parseInt(longTapCancelDistance.text) / 72) + "f")
                 }
+                onActiveFocusChanged: {
+                    if (inputFocus) {
+                        flick.flickToItem(longTapCancelDistance)
+                    }
+                }
             }
 
             Text {
@@ -374,6 +340,11 @@ Rectangle {
                 inputMethodHints: Qt.ImhDigitsOnly
                 onAccepted: {
                     MozContext.setPref("ui.click_hold_context_menus.delay", parseInt(longTapDelay.text))
+                }
+                onActiveFocusChanged: {
+                    if (inputFocus) {
+                        flick.flickToItem(longTapDelay)
+                    }
                 }
             }
         }
