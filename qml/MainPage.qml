@@ -139,10 +139,6 @@ FocusScope {
                 else if (createParentID == 0) {
                     load("about:blank")
                 }
-                if (startURL == "about:blank") {
-                    navigation.anchors.topMargin = 0
-                    startPage.show()
-                }
             }
             onLoadingChanged: {
                 var isLoading = webViewport.child.loading
@@ -151,6 +147,10 @@ FocusScope {
                 }
                 else if (!isLoading && overlay.visible && !navigation.visible && !contextMenu.visible && !addressLine.inputFocus) {
                     overlay.hide()
+                }
+                if (!isLoading && webViewport.child.url == "about:blank") {
+                    navigation.anchors.topMargin = 0
+                    startPage.show()
                 }
             }
             onHandleLongTap: {
@@ -394,10 +394,21 @@ FocusScope {
 
         MouseArea {
             anchors.fill: parent
-            onPressed: {
+            onClicked: {
                 addressLine.unfocusAddressBar()
                 overlayRightMenu.hide()
                 overlay.hide()
+            }
+            onPressAndHold: {
+                navigation.anchors.topMargin = 0
+                var posY = mapToItem(navigation, mouseX, mouseY).y - navigation.height/2
+                if (posY < 0) {
+                    posY = 10
+                }
+                else if (mouseY + navigation.height/2 > mainScope.height) {
+                    posY -= (mouseY + navigation.height/2) - mainScope.height + 10
+                }
+                overlay.show(posY)
             }
         }
 
