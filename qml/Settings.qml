@@ -11,7 +11,6 @@ Rectangle {
         MozContext.sendObserve("embedui:prefs", { msg: "getPrefList", prefs: [ "general.useragent.override",
                                                                                "browser.zoom.reflowOnZoom",
                                                                                "browser.zoom.reflowMobilePages",
-                                                                               "keyword.URL",
                                                                                "gfx.azpc.vertical_scroll_lock_ratio",
                                                                                "gfx.azpc.horizontal_scroll_lock_ratio",
                                                                                "gfx.azpc.touch_start_tolerance",
@@ -241,26 +240,6 @@ Rectangle {
                 text: "Allow reflow mobile pages"
                 onClicked: {
                     MozContext.setPref("browser.zoom.reflowMobilePages", checked)
-                }
-            }
-
-            Text {
-                id: searchTitle
-                text: "Search engine keyword"
-                font.pixelSize: 26
-            }
-
-            InputArea {
-                id: searchKeyword
-                width: parent.width-1
-                text: "https://www.google.com/search?ie=UTF-8&oe=utf-8&q="
-                onAccepted: {
-                    MozContext.setPref("keyword.URL", searchKeyword.text)
-                }
-                onActiveFocusChanged: {
-                    if (inputFocus) {
-                        flick.flickToItem(searchKeyword)
-                    }
                 }
             }
 
