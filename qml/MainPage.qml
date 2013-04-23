@@ -132,6 +132,9 @@ FocusScope {
                 webViewport.child.addMessageListener("embed:select");
                 webViewport.child.addMessageListener("embed:login");
                 webViewport.child.addMessageListener("chrome:linkadded");
+                webViewport.child.addMessageListener("embed:alert");
+                webViewport.child.addMessageListener("embed:confirm");
+                webViewport.child.addMessageListener("embed:prompt");
                 print("QML View Initialized")
                 if (startURL.length != 0 && createParentID == 0) {
                     load(startURL)
