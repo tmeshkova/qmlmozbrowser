@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
     bool glwidget = true;
     bool isFullscreen = true;
 #else
-    bool glwidget = false; // dont have GLX renderer yet
+    bool glwidget = true; // dont have GLX renderer yet
     bool isFullscreen = false;
 #endif
 
@@ -170,6 +170,8 @@ int main(int argc, char *argv[])
     QMozContext::GetInstance()->addComponentManifest(componentPath + QString("/components") + QString("/EmbedLiteJSComponents.manifest"));
     qDebug() << "Load components from:" << componentPath + QString("/chrome") + QString("/EmbedLiteJSScripts.manifest");
     QMozContext::GetInstance()->addComponentManifest(componentPath + QString("/chrome") + QString("/EmbedLiteJSScripts.manifest"));
+    qDebug() << "Load components from:" << componentPath + QString("/chrome") + QString("/EmbedLiteOverrides.manifest");
+    QMozContext::GetInstance()->addComponentManifest(componentPath + QString("/chrome") + QString("/EmbedLiteOverrides.manifest"));
 
 //    QMozContext::GetInstance()->addObserver("history:checkurivisited");
 //    QMozContext::GetInstance()->addObserver("history:markurivisited");
