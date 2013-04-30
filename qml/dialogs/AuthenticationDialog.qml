@@ -73,7 +73,7 @@ Dialog {
         id: passwordInput
         text: ""
         width: 300 - 30
-        echoMode: TextInput.PasswordEchoOnEdit
+        echoMode: TextInput.Password
 
         onAccepted: topdialog.handle(true)
     }

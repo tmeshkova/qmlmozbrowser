@@ -51,6 +51,8 @@ Rectangle {
         focus: true
         selectByMouse: true
         anchors.fill: parent
+        anchors.margins: 2
+        font.pixelSize: dialogLineInput.height - 8
 
         onAccepted: dialogLineInput.accepted()
     }
