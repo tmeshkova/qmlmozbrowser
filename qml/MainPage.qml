@@ -76,6 +76,8 @@ FocusScope {
             MozContext.addObserver("embed:logger");
             MozContext.sendObserve("embedui:logger", { enabled: true })
             MozContext.setPref("keyword.enabled", true);
+            // Need to expose flexible API and allow to choose different engines
+            MozContext.sendObserve("embedui:search", {msg:"loadxml", uri:"chrome://embedlite/content/bing.xml", confirm: false})
         }
     }
 
