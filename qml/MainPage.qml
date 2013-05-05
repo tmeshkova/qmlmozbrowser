@@ -124,6 +124,16 @@ FocusScope {
         anchors.fill: parent
 
         Connections {
+            target: QGVWindow
+            onDisplayEntered: {
+                webViewport.child.suspendView();
+            }
+            onDisplayExited: {
+                webViewport.child.resumeView();
+            }
+        }
+
+        Connections {
             target: webViewport.child
             onViewInitialized: {
                 print("QmlMozView Initialized");
