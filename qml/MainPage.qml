@@ -147,6 +147,9 @@ FocusScope {
                     load("about:blank")
                 }
             }
+            onBgColorChanged: {
+                QmlHelperTools.setViewPaletteColor(QGVWindow, webViewport.child.bgcolor);
+            }
             onLoadingChanged: {
                 var isLoading = webViewport.child.loading
                 if (isLoading && !overlay.visible) {

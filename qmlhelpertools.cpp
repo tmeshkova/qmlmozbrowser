@@ -6,6 +6,7 @@
 
 #include <QApplication>
 #include <QUrl>
+#include <QGraphicsView>
 #include "qmlhelpertools.h"
 
 void
@@ -96,8 +97,18 @@ QmlHelperTools::getFaviconFromUrl(QString url)
     return mUrl.toString();
 }
 
+void QmlHelperTools::setViewPaletteColor(QObject* aView, QColor color)
+{
+    QGraphicsView* view = qobject_cast<QGraphicsView*>(aView);
+    if (view) {
+        QPalette palette;
+        palette.setColor(view->backgroundRole(), QColor(color));
+        view->setPalette(palette);
+    }
+}
+
 QmlHelperTools::QmlHelperTools(QObject* parent)
   : QObject(parent)
 {
     clipboard = QApplication::clipboard();
-} 
+}

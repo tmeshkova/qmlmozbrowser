@@ -14,7 +14,9 @@
 #include <QVariant>
 #include <QFileInfoList>
 #include <QDesktopServices>
+#include <QColor>
 
+class QGraphicsView;
 class QmlHelperTools : public QObject
 {
     Q_OBJECT
@@ -34,6 +36,7 @@ public:
     Q_INVOKABLE void processEvents();
     Q_INVOKABLE void openFileBySystem(QString path);
     Q_INVOKABLE QString getFaviconFromUrl(QString url);
+    Q_INVOKABLE void setViewPaletteColor(QObject* aView, QColor color);
 };
 
 #endif /* qmlhelpertools_h */
