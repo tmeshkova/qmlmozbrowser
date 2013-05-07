@@ -6,6 +6,7 @@ ListView {
 
     property string contextImageSrc: ""
     property string contextLinkHref: ""
+    property variant lastContextInfo: null
 
     visible: false
     height: (contextLinkHref.length > 0 ? 240 : 0) + (contextImageSrc.length > 0 ? 240 : 0)

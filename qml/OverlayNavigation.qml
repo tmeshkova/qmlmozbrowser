@@ -5,12 +5,14 @@ Item {
     id: root
 
     property bool contextInfoAvialable: false
+    property bool selectionInfoAvialable: false
     property variant viewport
 
     visible: false
     width: 300
     height: 300
 
+    signal startSelectionRequested()
     signal contextMenuRequested()
     signal selected()
 
@@ -89,6 +91,24 @@ Item {
 
         onClicked: {
             root.contextMenuRequested()
+        }
+    }
+
+    OverlayButton {
+        id: selectionHelper
+
+        anchors.bottom: root.bottom
+        anchors.left: root.left
+        anchors.leftMargin: 200
+
+        width: 80
+        height: 80
+
+        iconSource: "../icons/select_text_icon.png"
+        enabled: root.selectionInfoAvialable
+
+        onClicked: {
+            root.startSelectionRequested()
         }
     }
 }

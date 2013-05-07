@@ -104,6 +104,7 @@ FocusScope {
                    configPage.x==0 ||
                    historyPage.x==0 ||
                    bookmarksPage.x==0 ||
+                   selection.visible ||
                    startPage.visible)
         property bool movingHorizontally: false
         property bool movingVertically: true
@@ -154,6 +155,8 @@ FocusScope {
                 webViewport.child.addMessageListener("embed:confirm");
                 webViewport.child.addMessageListener("embed:prompt");
                 webViewport.child.addMessageListener("embed:auth");
+                webViewport.child.addMessageListener("Content:ContextMenu");
+                webViewport.child.addMessageListener("Content:SelectionRange");
                 print("QML View Initialized")
                 if (startURL.length != 0 && createParentID == 0) {
                     load(startURL)
@@ -170,7 +173,7 @@ FocusScope {
                 if (isLoading && !overlay.visible) {
                     overlay.showAddressBar()
                 }
-                else if (!isLoading && overlay.visible && !navigation.visible && !contextMenu.visible && !addressLine.inputFocus) {
+                else if (!isLoading && overlay.visible && !navigation.visible && !selection.visible && !contextMenu.visible && !addressLine.inputFocus) {
                     overlay.hide()
                 }
                 if (!isLoading && webViewport.child.url == "about:blank") {
@@ -179,6 +182,8 @@ FocusScope {
                 }
             }
             onHandleLongTap: {
+                // Request context menu
+                webViewport.child.sendAsyncMessage("embed:ContextMenuCreate", { x: point.x, y: point.y })
                 navigation.anchors.topMargin = 0
                 var posY = mapToItem(navigation, point.x, point.y).y - navigation.height/2
                 if (posY < 0) {
@@ -188,8 +193,6 @@ FocusScope {
                     posY -= (point.y + navigation.height/2) - mainScope.height + 10
                 }
                 overlay.show(posY)
-                // Way to forward context menu to UI
-                // webViewport.child.sendAsyncMessage("Gesture:ContextMenuSynth", { x: point.x, y: point.y })
             }
             onViewAreaChanged: {
                 var r = webViewport.child.contentRect
@@ -216,7 +219,27 @@ FocusScope {
                     case "context:info": {
                         contextMenu.contextLinkHref = data.LinkHref
                         contextMenu.contextImageSrc = data.ImageSrc
-                        navigation.contextInfoAvialable = (contextMenu.contextLinkHref.length > 0 || contextMenu.contextImageSrc.length > 0)
+                        navigation.contextInfoAvialable = ((contextMenu.contextLinkHref && contextMenu.contextLinkHref.length > 0) ||
+                                                           (contextMenu.contextImageSrc && contextMenu.contextImageSrc.length > 0))
+                        break;
+                    }
+                    case "Content:ContextMenu": {
+                        contextMenu.lastContextInfo = data;
+                        if (data.types.indexOf("content-text") !== -1) {
+                            navigation.selectionInfoAvialable = true;
+                        } else {
+                            navigation.selectionInfoAvialable = false;
+                        }
+                        break;
+                    }
+                    case "Content:SelectionRange": {
+                        if (data.updateStart) {
+                            selection.updateStart(data.start.xPos, data.start.yPos)
+                        }
+                        if (data.updateEnd) {
+                            selection.updateEnd(data.end.xPos, data.end.yPos)
+                        }
+                        selection.visible = true
                         break;
                     }
                     case "embed:filepicker": {
@@ -480,9 +503,27 @@ FocusScope {
                 contextMenu.visible = true
             }
 
+            onStartSelectionRequested: {
+//                overlay.hide()
+                if (contextMenu.lastContextInfo) {
+                    webViewport.child.sendAsyncMessage("Browser:SelectionStart", {
+                                                        xPos: contextMenu.lastContextInfo.xPos,
+                                                        yPos: contextMenu.lastContextInfo.yPos
+                                                      })
+                }
+            }
+
             onSelected: {
                 overlay.hideExceptBar()
             }
+        }
+
+        OverlaySelection {
+            id: selection
+            visible: true
+            anchors.fill: parent
+            opacity: 1.0
+            viewport: webViewport
         }
     }
 
