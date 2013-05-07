@@ -60,6 +60,11 @@ FocusScope {
         onOnInitialized: {
             print("QmlMozContext Initialized");
             MozContext.setPref("security.alternate_certificate_error_page", "certerror");
+            MozContext.setPref("embedlite.azpc.handle.singletap", false);
+            MozContext.setPref("embedlite.azpc.json.singletap", true);
+            MozContext.setPref("embedlite.azpc.handle.longtap", false);
+            MozContext.setPref("embedlite.azpc.json.longtap", true);
+            MozContext.setPref("embedlite.azpc.json.viewport", true);
             MozContext.setPref("browser.ui.touch.left", 32);
             MozContext.setPref("browser.ui.touch.right", 32);
             MozContext.setPref("browser.ui.touch.top", 48);
@@ -183,6 +188,8 @@ FocusScope {
                     posY -= (point.y + navigation.height/2) - mainScope.height + 10
                 }
                 overlay.show(posY)
+                // Way to forward context menu to UI
+                // webViewport.child.sendAsyncMessage("Gesture:ContextMenuSynth", { x: point.x, y: point.y })
             }
             onViewAreaChanged: {
                 var r = webViewport.child.contentRect
