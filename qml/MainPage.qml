@@ -104,7 +104,8 @@ FocusScope {
                    configPage.x==0 ||
                    historyPage.x==0 ||
                    bookmarksPage.x==0 ||
-                   selection.visible ||
+                   selectionStart.visible ||
+                   selectionEnd.visible ||
                    startPage.visible)
         property bool movingHorizontally: false
         property bool movingVertically: true
@@ -173,7 +174,7 @@ FocusScope {
                 if (isLoading && !overlay.visible) {
                     overlay.showAddressBar()
                 }
-                else if (!isLoading && overlay.visible && !navigation.visible && !selection.visible && !contextMenu.visible && !addressLine.inputFocus) {
+                else if (!isLoading && overlay.visible && !navigation.visible && !contextMenu.visible && !addressLine.inputFocus) {
                     overlay.hide()
                 }
                 if (!isLoading && webViewport.child.url == "about:blank") {
@@ -234,12 +235,15 @@ FocusScope {
                     }
                     case "Content:SelectionRange": {
                         if (data.updateStart) {
-                            selection.updateStart(data.start.xPos, data.start.yPos)
+                            selectionStart.x = data.start.xPos
+                            selectionStart.y = data.start.yPos
                         }
                         if (data.updateEnd) {
-                            selection.updateEnd(data.end.xPos, data.end.yPos)
+                            selectionEnd.x = data.end.xPos
+                            selectionEnd.y = data.end.yPos
                         }
-                        selection.visible = true
+                        selectionStart.visible = true
+                        selectionEnd.visible = true
                         break;
                     }
                     case "embed:filepicker": {
@@ -518,12 +522,69 @@ FocusScope {
             }
         }
 
-        OverlaySelection {
-            id: selection
-            visible: true
-            anchors.fill: parent
-            opacity: 1.0
-            viewport: webViewport
+        Rectangle {
+            id: selectionStart
+            visible: false
+            color: "transparent"
+            width: 40
+            height: 40
+            radius: 20
+            border.width: 1
+            border.color: "red"
+            smooth: true
+            MouseArea {
+                anchors.fill: parent
+                onPositionChanged: {
+                    var mapped = mapToItem(mainScope, mouseX, mouseY)
+                    selectionStart.x = mapped.x - 20
+                    selectionStart.y = mapped.y - 80
+                    if (selectionStart.x < 0)
+                        selectionStart.x = 0
+                    if (selectionStart.y < 0)
+                        selectionStart.y = 0
+                }
+            }
+        }
+
+        Rectangle {
+            id: selectionEnd
+            visible: false
+            color: "transparent"
+            width: 40
+            height: 40
+            radius: 20
+            border.width: 1
+            border.color: "green"
+            smooth: true
+            MouseArea {
+                anchors.fill: parent
+                onPositionChanged: {
+                    var mapped = mapToItem(mainScope, mouseX, mouseY)
+                    selectionEnd.x = mapped.x - 20
+                    selectionEnd.y = mapped.y - 80
+                    if (selectionEnd.x < 0)
+                        selectionEnd.x = 0
+                    if (selectionEnd.y < 0)
+                        selectionEnd.y = 0
+                }
+            }
+        }
+    }
+
+    OverlayButton {
+        id: selectionDone
+        visible: selectionEnd.visible
+        anchors.top: selectionEnd.bottom
+        anchors.topMargin: 20
+        anchors.horizontalCenter: selectionEnd.horizontalCenter
+        width: 60
+        height: 60
+        iconSource: "../icons/selection.png"
+        onClicked: {
+            selectionStart.visible = false
+            selectionEnd.visible = false
+            //overlay.visible = false
+            //do action on selection here
         }
     }
 
