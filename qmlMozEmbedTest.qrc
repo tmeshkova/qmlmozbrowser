@@ -34,7 +34,6 @@
         <file>icons/nav-forward.png</file>
         <file>icons/context-window-url5.png</file>
         <file>icons/context-window-image5.png</file>
-        <file>icons/select_text_icon.png</file>
 
         <file>qml/main.qml</file>
         <file>qml/main_ref.qml</file>
@@ -68,8 +67,6 @@
         <file>qml/StartPage.qml</file>
         <file>qml/SelectDialog.qml</file>
         <file>qml/OverlayRightMenu.qml</file>
-        <file>qml/SelectIndicator.qml</file>
-        <file>qml/OverlaySelection.qml</file>
 
         <file alias="qml/Dialog.qml">qml/dialogs/Dialog.qml</file>
         <file alias="qml/AlertDialog.qml">qml/dialogs/AlertDialog.qml</file>

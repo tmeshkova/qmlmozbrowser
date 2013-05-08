@@ -1,6 +1,6 @@
 import Qt 4.7
 import QtMozilla 1.0
-import QtQuick 1.0
+import QtQuick 1.1
 
 FocusScope {
     id: mainScope
@@ -234,13 +234,16 @@ FocusScope {
                         break;
                     }
                     case "Content:SelectionRange": {
-                        if (data.updateStart) {
-                            selectionStart.x = data.start.xPos
-                            selectionStart.y = data.start.yPos
+                        console.log("Content:SelectionRange")
+                        if (data.updateStart) {                            
+                            //not working properly
+                            //selectionStart.x = data.start.xPos
+                            //selectionStart.y = data.start.yPos
                         }
                         if (data.updateEnd) {
-                            selectionEnd.x = data.end.xPos
-                            selectionEnd.y = data.end.yPos
+                            //not working properly
+                            //selectionEnd.x = data.end.xPos
+                            //selectionEnd.y = data.end.yPos
                         }
                         selectionStart.visible = true
                         selectionEnd.visible = true
@@ -401,10 +404,12 @@ FocusScope {
         }
 
         function hide() {
-            navigation.visible = false
-            contextMenu.visible = false
-            buttonsShow.running = false
-            buttonsHide.running = true
+            if (!startSelection.visible) {
+                navigation.visible = false
+                contextMenu.visible = false
+                buttonsShow.running = false
+                buttonsHide.running = true
+            }
         }
 
         function hideExceptBar() {
@@ -412,6 +417,21 @@ FocusScope {
             buttonsShow.running = false
             navigation.visible = false
             contextMenu.visible = false
+        }
+
+        function startSelection() {
+            navigation.visible = false
+            buttonsHide.running = false
+            buttonsShow.running = false
+            navigation.visible = false
+            contextMenu.visible = false
+            selectionStart.visible = true
+            selectionStart.visible = true
+        }
+
+        function stopSelection() {
+            selectionStart.visible = false
+            selectionEnd.visible = false
         }
 
         PropertyAnimation {
@@ -449,9 +469,14 @@ FocusScope {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                addressLine.unfocusAddressBar()
-                overlayRightMenu.hide()
-                overlay.hide()
+                if (selectionStart.visible) {
+                    overlay.stopSelection()
+                }
+                else {
+                    addressLine.unfocusAddressBar()
+                    overlayRightMenu.hide()
+                    overlay.hide()
+                }
             }
             onPressAndHold: {
                 navigation.anchors.topMargin = 0
@@ -508,17 +533,34 @@ FocusScope {
             }
 
             onStartSelectionRequested: {
-//                overlay.hide()
                 if (contextMenu.lastContextInfo) {
+                    overlay.startSelection()
                     webViewport.child.sendAsyncMessage("Browser:SelectionStart", {
                                                         xPos: contextMenu.lastContextInfo.xPos,
                                                         yPos: contextMenu.lastContextInfo.yPos
                                                       })
+                    selectionStart.x = contextMenu.lastContextInfo.xPos - 20
+                    selectionStart.y = contextMenu.lastContextInfo.yPos - 20
+                    selectionEnd.x = contextMenu.lastContextInfo.xPos - 20
+                    selectionEnd.y = contextMenu.lastContextInfo.yPos - 20
                 }
             }
 
             onSelected: {
                 overlay.hideExceptBar()
+            }
+        }
+
+        MouseArea {
+            x: selectionStart.x
+            y: selectionStart.y
+            width: selectionEnd.x - selectionStart.x + 40
+            height: selectionEnd.y - selectionStart.y + 40
+            enabled: selectionStart.visible
+            onClicked: {
+                console.log("selection finished. do something")
+                overlay.stopSelection()
+                //do something when clicked inside
             }
         }
 
@@ -542,6 +584,11 @@ FocusScope {
                         selectionStart.x = 0
                     if (selectionStart.y < 0)
                         selectionStart.y = 0
+
+                    webViewport.child.sendAsyncMessage("Browser:SelectionStart", {
+                                                        xPos: selectionStart.x + 20,
+                                                        yPos: selectionStart.y + 20
+                                                      })
                 }
             }
         }
@@ -566,25 +613,13 @@ FocusScope {
                         selectionEnd.x = 0
                     if (selectionEnd.y < 0)
                         selectionEnd.y = 0
+
+                    webViewport.child.sendAsyncMessage("Browser:SelectionEnd", {
+                                                        xPos: selectionEnd.x + 20,
+                                                        yPos: selectionEnd.y + 20
+                                                      })
                 }
             }
-        }
-    }
-
-    OverlayButton {
-        id: selectionDone
-        visible: selectionEnd.visible
-        anchors.top: selectionEnd.bottom
-        anchors.topMargin: 20
-        anchors.horizontalCenter: selectionEnd.horizontalCenter
-        width: 60
-        height: 60
-        iconSource: "../icons/selection.png"
-        onClicked: {
-            selectionStart.visible = false
-            selectionEnd.visible = false
-            //overlay.visible = false
-            //do action on selection here
         }
     }
 
