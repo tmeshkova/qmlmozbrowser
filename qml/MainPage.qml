@@ -158,6 +158,7 @@ FocusScope {
                 webViewport.child.addMessageListener("embed:auth");
                 webViewport.child.addMessageListener("Content:ContextMenu");
                 webViewport.child.addMessageListener("Content:SelectionRange");
+                webViewport.child.addMessageListener("Content:SelectionCopied");
                 print("QML View Initialized")
                 if (startURL.length != 0 && createParentID == 0) {
                     load(startURL)
@@ -235,7 +236,7 @@ FocusScope {
                     }
                     case "Content:SelectionRange": {
                         console.log("Content:SelectionRange")
-                        if (data.updateStart) {                            
+                        if (data.updateStart) {
                             //not working properly
                             //selectionStart.x = data.start.xPos
                             //selectionStart.y = data.start.yPos
@@ -471,6 +472,9 @@ FocusScope {
             onClicked: {
                 if (selectionStart.visible) {
                     overlay.stopSelection()
+                    webViewport.child.sendAsyncMessage("Browser:SelectionClose", {
+                                                        clearSelection: true
+                                                      })
                 }
                 else {
                     addressLine.unfocusAddressBar()
@@ -539,6 +543,9 @@ FocusScope {
                                                         xPos: contextMenu.lastContextInfo.xPos,
                                                         yPos: contextMenu.lastContextInfo.yPos
                                                       })
+                    webViewport.child.sendAsyncMessage("Browser:SelectionMoveStart", {
+                                                        change: "start"
+                                                      })
                     selectionStart.x = contextMenu.lastContextInfo.xPos - 20
                     selectionStart.y = contextMenu.lastContextInfo.yPos - 20
                     selectionEnd.x = contextMenu.lastContextInfo.xPos - 20
@@ -558,7 +565,11 @@ FocusScope {
             height: selectionEnd.y - selectionStart.y + 40
             enabled: selectionStart.visible
             onClicked: {
-                console.log("selection finished. do something")
+                print("selection finished. do something>>>>>>>>>>>>>>>>>")
+                webViewport.child.sendAsyncMessage("Browser:SelectionCopy", {
+                                                    xPos: x,
+                                                    yPos: y
+                                                  })
                 overlay.stopSelection()
                 //do something when clicked inside
             }
@@ -585,9 +596,12 @@ FocusScope {
                     if (selectionStart.y < 0)
                         selectionStart.y = 0
 
-                    webViewport.child.sendAsyncMessage("Browser:SelectionStart", {
-                                                        xPos: selectionStart.x + 20,
-                                                        yPos: selectionStart.y + 20
+                    webViewport.child.sendAsyncMessage("Browser:SelectionMove", {
+                                                        change: "start",
+                                                        start: {
+                                                            xPos: selectionStart.x + 20,
+                                                            yPos: selectionStart.y + 20
+                                                        }
                                                       })
                 }
             }
@@ -614,9 +628,12 @@ FocusScope {
                     if (selectionEnd.y < 0)
                         selectionEnd.y = 0
 
-                    webViewport.child.sendAsyncMessage("Browser:SelectionEnd", {
-                                                        xPos: selectionEnd.x + 20,
-                                                        yPos: selectionEnd.y + 20
+                    webViewport.child.sendAsyncMessage("Browser:SelectionMove", {
+                                                        change: "end",
+                                                        end: {
+                                                            xPos: selectionEnd.x + 20,
+                                                            yPos: selectionEnd.y + 20
+                                                        }
                                                       })
                 }
             }
