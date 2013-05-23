@@ -134,8 +134,8 @@ int main(int argc, char *argv[])
     if (QDBusConnection::sessionBus().registerService(SERVICE_NAME) &&
         QDBusConnection::sessionBus().registerObject(OBJECT_NAME, adaptor, QDBusConnection::ExportScriptableSlots)) {
         qDebug() << "DBus service started!";
-        QObject::connect(adaptor, SIGNAL(newWindowUrl(QString, unsigned)),
-                     &winCreator, SLOT(newWindowRequested(const QString&, const unsigned&)));
+        QObject::connect(adaptor, SIGNAL(newWindowUrl(QString, unsigned, QNewWindowResponse*)),
+                     &winCreator, SLOT(newWindowRequested(const QString&, const unsigned&, QNewWindowResponse*)));
         QObject::connect(adaptor, SIGNAL(bringToFront()),
                      &winCreator, SLOT(bringToFront()));
     }
@@ -160,8 +160,8 @@ int main(int argc, char *argv[])
     qDebug() << "Starting Application!!!";
 
     QObject::connect(QMozContext::GetInstance(),
-                     SIGNAL(newWindowRequested(const QString&, const unsigned&)),
-                     &winCreator, SLOT(newWindowRequested(const QString&, const unsigned&)));
+                     SIGNAL(newWindowRequested(const QString&, const unsigned&, QNewWindowResponse*)),
+                     &winCreator, SLOT(newWindowRequested(const QString&, const unsigned&, QNewWindowResponse*)));
 
     QString componentPath(DEFAULT_COMPONENTS_PATH);
     qDebug() << "Load components from:" << componentPath + QString("/components") + QString("/EmbedLiteBinComponents.manifest");

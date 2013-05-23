@@ -19,7 +19,7 @@ MozWindowCreator::MozWindowCreator(const QString& aQmlstring, const bool& aGlwid
 }
 
 quint32
-MozWindowCreator::newWindowRequested(const QString& url, const unsigned& aParentID)
+MozWindowCreator::newWindowRequested(const QString& url, const unsigned& aParentID, QNewWindowResponse* response)
 {
     quint32 uniqueID = 0;
     QDeclarativeView* view = CreateNewWindow(url, &uniqueID, aParentID);
@@ -28,7 +28,9 @@ MozWindowCreator::newWindowRequested(const QString& url, const unsigned& aParent
         view->showFullScreen();
     else
         view->show();
-    return uniqueID;
+    if (response) {
+        response->setNewWindowID(uniqueID);
+    }
 }
 
 void

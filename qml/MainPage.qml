@@ -59,28 +59,36 @@ FocusScope {
         target: MozContext
         onOnInitialized: {
             print("QmlMozContext Initialized");
-            MozContext.setPref("security.alternate_certificate_error_page", "certerror");
-            MozContext.setPref("embedlite.azpc.handle.singletap", false);
-            MozContext.setPref("embedlite.azpc.json.singletap", true);
-            MozContext.setPref("embedlite.azpc.handle.longtap", false);
-            MozContext.setPref("embedlite.azpc.json.longtap", true);
-            MozContext.setPref("embedlite.azpc.json.viewport", true);
-            MozContext.setPref("browser.ui.touch.left", 32);
-            MozContext.setPref("browser.ui.touch.right", 32);
-            MozContext.setPref("browser.ui.touch.top", 48);
-            MozContext.setPref("browser.ui.touch.bottom", 16);
-            MozContext.setPref("browser.ui.touch.weight.visited", 120);
-            MozContext.setPref("browser.download.folderList", 2); // 0 - Desktop, 1 - Downloads, 2 - Custom
-            MozContext.setPref("browser.download.useDownloadDir", false); // Invoke filepicker instead of immediate download to ~/Downloads
-            MozContext.setPref("browser.download.manager.retention", 2);
-            MozContext.setPref("browser.helperApps.deleteTempFileOnExit", false);
-            MozContext.setPref("browser.download.manager.quitBehavior", 1);
+            MozContext.sendObserve("embedui:setprefs", { prefs :
+            [
+                { n: "extensions.logging.enabled", v: true},
+                { n: "extensions.strictCompatibility", v: false},
+                { n: "dom.experimental_forms", v: true},
+                { n: "xpinstall.whitelist.add", v: "addons.mozilla.org"},
+                { n: "xpinstall.whitelist.add.180", v: "marketplace.firefox.com"},
+                { n: "security.alternate_certificate_error_page", v: "certerror"},
+                { n: "embedlite.azpc.handle.singletap", v: false},
+                { n: "embedlite.azpc.json.singletap", v: true},
+                { n: "embedlite.azpc.handle.longtap", v: false},
+                { n: "embedlite.azpc.json.longtap", v: true},
+                { n: "embedlite.azpc.json.viewport", v: true},
+                { n: "browser.ui.touch.left", v: 32},
+                { n: "browser.ui.touch.right", v: 32},
+                { n: "browser.ui.touch.top", v: 48},
+                { n: "browser.ui.touch.bottom", v: 16},
+                { n: "browser.ui.touch.weight.visited", v: 120},
+                { n: "browser.download.folderList", v: 2}, // 0 - Desktop, 1 - Downloads, 2 - Custom
+                { n: "browser.download.useDownloadDir", v: false}, // Invoke filepicker instead of immediate download to ~/Downloads
+                { n: "browser.download.manager.retention", v: 2},
+                { n: "browser.helperApps.deleteTempFileOnExit", v: false},
+                { n: "browser.download.manager.quitBehavior", v: 1},
+                { n: "keyword.enabled", v: true}
+            ]});
             MozContext.addObserver("embed:download");
             MozContext.addObserver("embed:prefs");
             MozContext.addObserver("embed:allprefs");
             MozContext.addObserver("embed:logger");
             MozContext.sendObserve("embedui:logger", { enabled: true })
-            MozContext.setPref("keyword.enabled", true);
             // Need to expose flexible API and allow to choose different engines
             MozContext.sendObserve("embedui:search", {msg:"loadxml", uri:"chrome://embedlite/content/bing.xml", confirm: false})
         }
