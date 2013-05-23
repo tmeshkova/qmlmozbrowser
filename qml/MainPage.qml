@@ -61,6 +61,11 @@ FocusScope {
             print("QmlMozContext Initialized");
             MozContext.sendObserve("embedui:setprefs", { prefs :
             [
+                { n: "extensions.logging.enabled", v: true},
+                { n: "extensions.strictCompatibility", v: false},
+                { n: "dom.experimental_forms", v: true},
+                { n: "xpinstall.whitelist.add", v: "addons.mozilla.org"},
+                { n: "xpinstall.whitelist.add.180", v: "marketplace.firefox.com"},
                 { n: "security.alternate_certificate_error_page", v: "certerror"},
                 { n: "embedlite.azpc.handle.singletap", v: false},
                 { n: "embedlite.azpc.json.singletap", v: true},
