@@ -5,7 +5,7 @@ DBusAdaptor::DBusAdaptor()
 
 void DBusAdaptor::newUrl(QString url)
 {
-    Q_EMIT newWindowUrl(url, 0);
+    Q_EMIT newWindowUrl(url, 0, 0);
 }
 
 void DBusAdaptor::show()

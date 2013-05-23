@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QDBusConnection>
 
+class QNewWindowResponse;
 class DBusAdaptor : public QObject
 {
     Q_OBJECT
@@ -13,7 +14,7 @@ public:
     DBusAdaptor();
 
 signals:
-    void newWindowUrl(QString url, unsigned dummy);
+    void newWindowUrl(QString url, unsigned dummy, QNewWindowResponse* newDummy);
     void bringToFront();
 
 public slots:
