@@ -74,24 +74,84 @@ Rectangle {
         }
     }
 
-    function fillModelFromDatabase() {
+    function calculateLastWeek(startdate) {
+        var date = new Date()
+        date.setTime(startdate)
+        var delta = 0        
+        delta += date.getDay() * 86400
+        delta += date.getHours() * 3600
+        delta += date.getMinutes() * 60
+        delta += date.getSeconds()
+        delta *= 1000
+        delta += date.getMilliseconds()
+        return (startdate - delta)
+    }
+
+    function fillModelFromDatabase(startdate) {
+        historyList.isLoading = true
         var db = openDatabaseSync("qmlbrowser","0.1","historydb", 100000)
+        var date = new Date()
+        if (startdate == 0) {
+            startdate = date.getTime()
+            historyListModel.clear()
+        }
+        else {
+            startdate -= 1
+            date.setTime(startdate)
+        }
+        var enddate = calculateLastWeek(startdate)
+        var count = 0
         db.transaction(
             function(tx) {
-                var result = tx.executeSql('SELECT * FROM history')
-                historyListModel.clear()
+                var result = tx.executeSql('SELECT count(*) as cnt FROM history where date between (?) and (?)', [enddate, startdate])
+                count = result.rows.item(0).cnt
+            }
+        );
+        if (count == 0) {
+            var allcount = 0
+            db.transaction(
+                function(tx) {
+                    var result = tx.executeSql('SELECT count(*) as cnt FROM history where date < (?)', [startdate])
+                    allcount = result.rows.item(0).cnt
+                }
+            );
+            if (allcount == 0) {
+                return
+            }
+            else {
+                while (count == 0) {
+                    enddate = calculateLastWeek(enddate - 1)
+                    db.transaction(
+                        function(tx) {
+                            var result = tx.executeSql('SELECT count(*) as cnt FROM history where date between (?) and (?)', [enddate, startdate])
+                            count = result.rows.item(0).cnt
+                        }
+                    );
+                }
+            }
+        }
+
+        db.transaction(
+            function(tx) {
+                var result = tx.executeSql('SELECT * FROM history where date between (?) and (?) order by date desc', [enddate, startdate])
                 for (var i=0; i < result.rows.length; i++) {
-                    historyListModel.insert(0, {"url": result.rows.item(i).url,
+                    historyListModel.append({"url": result.rows.item(i).url,
                                      "title": result.rows.item(i).title,
                                      "icon": result.rows.item(i).icon,
                                      "date": parseInt(result.rows.item(i).date)})
                 }
             }
         );
+
+        historyList.isLoading = false
+        
+        //if (historyListModel.count < 20 && /* check if we have items before enddate */) {
+        //    fillModelFromDatabase(enddate)
+        //}
     }
 
     function show() {
-        fillModelFromDatabase()
+        fillModelFromDatabase(0)
         animShow.running = true
     }
 
@@ -241,6 +301,8 @@ Rectangle {
 
     ListView {
         id: historyList
+        property bool isLoading: false
+        property bool isLocked: false
         clip: true
         anchors.top: title.bottom
         anchors.left: root.left
@@ -332,6 +394,29 @@ Rectangle {
                     load(model.url)
                     root.hide()
                     startPage.hide()
+                }
+            }
+        }
+
+        onMovementStarted: {
+
+        }
+
+        onMovementEnded: {
+            
+        }
+
+        Connections {
+            target: historyList.visibleArea
+            onYPositionChanged: {
+                if (historyList.flicking)
+                    return;
+
+                var contentYPos = historyList.visibleArea.yPosition * Math.max(historyList.height, historyList.contentHeight);
+
+                if (!historyList.isLoading && (historyList.contentHeight < historyList.height || (contentYPos + historyList.height) - historyList.contentHeight > 30)) {
+                    var lastdate = historyListModel.get(historyListModel.count - 1).date
+                    fillModelFromDatabase(lastdate)
                 }
             }
         }
