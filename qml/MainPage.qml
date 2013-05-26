@@ -149,6 +149,7 @@ FocusScope {
                 webViewport.child.addMessageListener("embed:confirm");
                 webViewport.child.addMessageListener("embed:prompt");
                 webViewport.child.addMessageListener("embed:auth");
+                webViewport.child.useQmlMouse = true;
                 print("QML View Initialized")
                 if (startURL.length != 0 && createParentID == 0) {
                     load(startURL)
