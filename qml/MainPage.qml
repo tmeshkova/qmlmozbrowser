@@ -149,6 +149,10 @@ FocusScope {
                 webViewport.child.addMessageListener("embed:confirm");
                 webViewport.child.addMessageListener("embed:prompt");
                 webViewport.child.addMessageListener("embed:auth");
+                webViewport.child.addMessageListener("WebApps:PreInstall");
+                webViewport.child.addMessageListener("WebApps:PostInstall");
+                webViewport.child.addMessageListener("WebApps:Uninstall");
+                webViewport.child.addMessageListener("WebApps:Open");
                 webViewport.child.useQmlMouse = true;
                 print("QML View Initialized")
                 if (startURL.length != 0 && createParentID == 0) {
@@ -249,6 +253,15 @@ FocusScope {
                         loginDlg.show(data.name, data.id)
                         break;
                     }
+                    case "WebApps:PostInstall": {
+                        break;
+                    }
+                    case "WebApps:Open": {
+                        break;
+                    }
+                    case "WebApps:Uninstall": {
+                        break;
+                    }
                     default:
                         break;
                     }
@@ -266,6 +279,9 @@ FocusScope {
                     response.message = {
                         button: selectCombo.showSync(data)
                     }
+                    break;
+                case "WebApps:PreInstall":
+                    response.message = { path: "/tmp/webapps" };
                     break;
                 }
             }
