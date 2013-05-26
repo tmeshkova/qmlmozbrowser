@@ -100,19 +100,6 @@ FocusScope {
         objectName: "webViewport"
         visible: true
         focus: true
-        enabled: !(alertDlg.visible ||
-                   confirmDlg.visible ||
-                   promptDlg.visible ||
-                   authDlg.visible ||
-                   overlay.visible ||
-                   settingsPage.x==0 ||
-                   downloadsPage.x==0 ||
-                   filePicker.visible ||
-                   selectCombo.visible ||
-                   configPage.x==0 ||
-                   historyPage.x==0 ||
-                   bookmarksPage.x==0 ||
-                   startPage.visible)
         property bool movingHorizontally: false
         property bool movingVertically: true
         property variant visibleArea: QtObject {
@@ -162,6 +149,7 @@ FocusScope {
                 webViewport.child.addMessageListener("embed:confirm");
                 webViewport.child.addMessageListener("embed:prompt");
                 webViewport.child.addMessageListener("embed:auth");
+                webViewport.child.useQmlMouse = true;
                 print("QML View Initialized")
                 if (startURL.length != 0 && createParentID == 0) {
                     load(startURL)
@@ -280,6 +268,20 @@ FocusScope {
                     }
                     break;
                 }
+            }
+        }
+
+        MouseArea {
+            id: viewportMouse
+            anchors.fill: parent
+            onPressed: {
+                webViewport.child.recvMousePress(mouseX, mouseY)
+            }
+            onReleased: {
+                webViewport.child.recvMouseRelease(mouseX, mouseY)
+            }
+            onPositionChanged: {
+                webViewport.child.recvMouseMove(mouseX, mouseY)
             }
         }
 
