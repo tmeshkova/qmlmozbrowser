@@ -415,8 +415,11 @@ Rectangle {
                 var contentYPos = historyList.visibleArea.yPosition * Math.max(historyList.height, historyList.contentHeight);
 
                 if (!historyList.isLoading && (historyList.contentHeight < historyList.height || (contentYPos + historyList.height) - historyList.contentHeight > 30)) {
-                    var lastdate = historyListModel.get(historyListModel.count - 1).date
-                    fillModelFromDatabase(lastdate)
+                    var model = historyListModel.get(historyListModel.count - 1);
+                    if (lastdate) {
+                        var lastdate = model.date
+                        fillModelFromDatabase(lastdate)
+                    }
                 }
             }
         }
