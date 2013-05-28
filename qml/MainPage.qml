@@ -84,10 +84,11 @@ FocusScope {
                 { n: "browser.download.manager.quitBehavior", v: 1},
                 { n: "keyword.enabled", v: true}
             ]});
-            MozContext.addObserver("embed:download");
-            MozContext.addObserver("embed:prefs");
-            MozContext.addObserver("embed:allprefs");
-            MozContext.addObserver("embed:logger");
+            MozContext.addObservers([
+                "embed:download",
+                "embed:prefs",
+                "embed:allprefs",
+                "embed:logger"]);
             MozContext.sendObserve("embedui:logger", { enabled: true })
             // Need to expose flexible API and allow to choose different engines
             MozContext.sendObserve("embedui:search", {msg:"loadxml", uri:"chrome://embedlite/content/bing.xml", confirm: false})
@@ -139,20 +140,21 @@ FocusScope {
                 print("QmlMozView Initialized");
                 webViewport.child.loadFrameScript("chrome://embedlite/content/embedhelper.js");
                 webViewport.child.loadFrameScript("chrome://embedlite/content/SelectHelper.js");
-                webViewport.child.addMessageListener("embed:filepicker");
-                webViewport.child.addMessageListener("context:info");
-                webViewport.child.addMessageListener("embed:permissions");
-                webViewport.child.addMessageListener("embed:select");
-                webViewport.child.addMessageListener("embed:login");
-                webViewport.child.addMessageListener("chrome:linkadded");
-                webViewport.child.addMessageListener("embed:alert");
-                webViewport.child.addMessageListener("embed:confirm");
-                webViewport.child.addMessageListener("embed:prompt");
-                webViewport.child.addMessageListener("embed:auth");
-                webViewport.child.addMessageListener("WebApps:PreInstall");
-                webViewport.child.addMessageListener("WebApps:PostInstall");
-                webViewport.child.addMessageListener("WebApps:Uninstall");
-                webViewport.child.addMessageListener("WebApps:Open");
+                webViewport.child.addMessageListeners([
+                    "embed:filepicker",
+                    "context:info",
+                    "embed:permissions",
+                    "embed:select",
+                    "embed:login",
+                    "chrome:linkadded",
+                    "embed:alert",
+                    "embed:confirm",
+                    "embed:prompt",
+                    "embed:auth",
+                    "WebApps:PreInstall",
+                    "WebApps:PostInstall",
+                    "WebApps:Uninstall",
+                    "WebApps:Open"]);
                 webViewport.child.useQmlMouse = true;
                 print("QML View Initialized")
                 if (startURL.length != 0 && createParentID == 0) {
