@@ -88,10 +88,17 @@ FocusScope {
                 "embed:download",
                 "embed:prefs",
                 "embed:allprefs",
-                "embed:logger"]);
+                "clipboard:setdata",
+                "embed:logger"
+            ]);
             MozContext.sendObserve("embedui:logger", { enabled: true })
             // Need to expose flexible API and allow to choose different engines
             MozContext.sendObserve("embedui:search", {msg:"loadxml", uri:"chrome://embedlite/content/bing.xml", confirm: false})
+        }
+        onRecvObserve: {
+            if (message == "clipboard:setdata") {
+                QmlHelperTools.setClipboard(data.data);
+            }
         }
     }
 
