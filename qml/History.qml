@@ -5,7 +5,6 @@ Rectangle {
     id : root
     visible: true
     color: "white"
-    property variant viewport
 
     Component.onCompleted: {
         print("History ready!")
@@ -18,12 +17,12 @@ Rectangle {
     }
 
     Connections {
-        target: viewport.child
+        target: webViewport.child
         onRecvAsyncMessage: {
             print(data.rel + " " + data.href)
             if (message == "chrome:linkadded" && data.rel == "shortcut icon") {
                 var icon = data.href
-                var url = "" + viewport.child.url
+                var url = "" + webViewport.child.url
                 print("adding favicon " + icon + " to " + url)
                 var db = openDatabaseSync("qmlbrowser","0.1","historydb", 100000)
                 db.transaction(
@@ -37,7 +36,7 @@ Rectangle {
             }
         }
         onUrlChanged: {
-            var url = "" + viewport.child.url
+            var url = "" + webViewport.child.url
             var date = new Date()
             date = date.getTime()
             if (url.length > 3 && url.substr(0,6) != "about:") {
@@ -58,8 +57,8 @@ Rectangle {
             }
         }
         onTitleChanged: {
-            var title = viewport.child.title
-            var url = "" + viewport.child.url
+            var title = webViewport.child.title
+            var url = "" + webViewport.child.url
             if (url.length > 3 && url.substr(0,6) != "about:") {
                 var db = openDatabaseSync("qmlbrowser","0.1","historydb", 100000)
                 db.transaction(
@@ -415,11 +414,8 @@ Rectangle {
                 var contentYPos = historyList.visibleArea.yPosition * Math.max(historyList.height, historyList.contentHeight);
 
                 if (!historyList.isLoading && (historyList.contentHeight < historyList.height || (contentYPos + historyList.height) - historyList.contentHeight > 30)) {
-                    var model = historyListModel.get(historyListModel.count - 1);
-                    if (lastdate) {
-                        var lastdate = model.date
-                        fillModelFromDatabase(lastdate)
-                    }
+                    var lastdate = historyListModel.get(historyListModel.count - 1).date
+                    fillModelFromDatabase(lastdate)
                 }
             }
         }

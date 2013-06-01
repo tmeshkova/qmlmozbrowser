@@ -1,6 +1,6 @@
 import Qt 4.7
 import QtMozilla 1.0
-import QtQuick 1.0
+import QtQuick 1.1
 
 FocusScope {
     id: mainScope
@@ -13,7 +13,6 @@ FocusScope {
     function load(address) {
         addressLine.text = address
         webViewport.child.load(address)
-        overlay.showAddressBar()
         overlayRightMenu.hide()
     }
 
@@ -149,7 +148,6 @@ FocusScope {
                 webViewport.child.loadFrameScript("chrome://embedlite/content/SelectHelper.js");
                 webViewport.child.addMessageListeners([
                     "embed:filepicker",
-                    "context:info",
                     "embed:permissions",
                     "embed:select",
                     "embed:login",
@@ -161,7 +159,10 @@ FocusScope {
                     "WebApps:PreInstall",
                     "WebApps:PostInstall",
                     "WebApps:Uninstall",
-                    "WebApps:Open"]);
+                    "WebApps:Open",
+                    "Content:ContextMenu",
+                    "Content:SelectionRange",
+                    "Content:SelectionCopied"]);
                 webViewport.child.useQmlMouse = true;
                 print("QML View Initialized")
                 if (startURL.length != 0 && createParentID == 0) {
@@ -175,19 +176,13 @@ FocusScope {
                 QmlHelperTools.setViewPaletteColor(QGVWindow, webViewport.child.bgcolor);
             }
             onLoadingChanged: {
-                var isLoading = webViewport.child.loading
-                if (isLoading && !overlay.visible) {
-                    overlay.showAddressBar()
-                }
-                else if (!isLoading && overlay.visible && !navigation.visible && !contextMenu.visible && !addressLine.inputFocus) {
-                    overlay.hide()
-                }
-                if (!isLoading && webViewport.child.url == "about:blank") {
+                if (!webViewport.child.loading && webViewport.child.url == "about:blank") {
                     navigation.anchors.topMargin = 0
                     startPage.show()
                 }
             }
             onHandleLongTap: {
+                webViewport.child.sendAsyncMessage("embed:ContextMenuCreate", { x: point.x, y: point.y })
                 navigation.anchors.topMargin = 0
                 var posY = mapToItem(navigation, point.x, point.y).y - navigation.height/2
                 if (posY < 0) {
@@ -198,7 +193,7 @@ FocusScope {
                 }
                 overlay.show(posY)
                 // Way to forward context menu to UI
-                // webViewport.child.sendAsyncMessage("Gesture:ContextMenuSynth", { x: point.x, y: point.y })
+                webViewport.child.sendAsyncMessage("Gesture:ContextMenuSynth", { x: point.x, y: point.y })
             }
             onViewAreaChanged: {
                 var r = webViewport.child.contentRect
@@ -220,14 +215,8 @@ FocusScope {
                 pageTitleChanged(webViewport.child.title)
             }
             onRecvAsyncMessage: {
-                print("onRecvAsyncMessage:" + message + ", data:" + data)
+                //print("onRecvAsyncMessage:" + message + ", data:" + data)
                 switch (message) {
-                    case "context:info": {
-                        contextMenu.contextLinkHref = data.LinkHref
-                        contextMenu.contextImageSrc = data.ImageSrc
-                        navigation.contextInfoAvialable = (contextMenu.contextLinkHref.length > 0 || contextMenu.contextImageSrc.length > 0)
-                        break;
-                    }
                     case "embed:filepicker": {
                         filePicker.show(data.mode, QmlHelperTools.getStorageLocation(0), data.title, data.name, data.winid)
                         break;
@@ -271,6 +260,17 @@ FocusScope {
                     case "WebApps:Uninstall": {
                         break;
                     }
+                    case "Content:ContextMenu": {
+                        contextMenu.contextLinkHref = data.linkURL
+                        contextMenu.contextImageSrc = data.mediaURL
+                        contextMenu.lastContextInfo = data;
+                        if (data.types.indexOf("content-text") !== -1) {
+                            contextMenu.selectionInfoAvialable = true;
+                        } else {
+                            contextMenu.selectionInfoAvialable = false;
+                        }
+                        break;
+                    }
                     default:
                         break;
                     }
@@ -301,12 +301,24 @@ FocusScope {
             anchors.fill: parent
             onPressed: {
                 webViewport.child.recvMousePress(mouseX, mouseY)
+                addressLine.unfocusAddressBar()
+                addressLine.forceVisible = false
             }
             onReleased: {
                 webViewport.child.recvMouseRelease(mouseX, mouseY)
+                if (overlay.visible) {
+                    rightTab.handleMouse(mouseX, mouseY)
+                    navigation.handleMouse(mouseX, mouseY, true)
+                    addressLine.handleMouse(mouseX, mouseY)
+                }
             }
             onPositionChanged: {
-                webViewport.child.recvMouseMove(mouseX, mouseY)
+                if (!overlay.visible) {
+                    webViewport.child.recvMouseMove(mouseX, mouseY)
+                }
+                else {
+                    navigation.handleMouse(mouseX, mouseY, false)
+                }
             }
         }
 
@@ -386,77 +398,30 @@ FocusScope {
 
     Item {
         id: overlay
-        anchors.top: parent.top
+        anchors.top: addressLine.bottom
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        visible: opacity > 0.01
-        opacity: 0.01
+        visible: false
 
         function show(posY) {
-            buttonsHide.running = false
             navigation.anchors.topMargin = posY
             contextMenu.visible = false
             navigation.visible = true
-            buttonsShow.running = true
-        }
-
-        function showAddressBar() {
-            addressLine.visible = true
-            navigation.visible = false
-            contextMenu.visible = false
-            buttonsShow.running = true
+            overlay.visible = true
         }
 
         function hide() {
             navigation.visible = false
             contextMenu.visible = false
-            buttonsShow.running = false
-            buttonsHide.running = true
-        }
-
-        function hideExceptBar() {
-            buttonsHide.running = false
-            buttonsShow.running = false
-            navigation.visible = false
-            contextMenu.visible = false
-        }
-
-        PropertyAnimation {
-            id: buttonsHide
-            target: overlay
-            properties: "opacity"
-            from: 1.0; to: 0.01; duration: 300;
-            running: false
-        }
-
-        PropertyAnimation {
-            id: buttonsShow
-            target: overlay
-            properties: "opacity"
-            from: 0.01; to: 1.0; duration: 300;
-            running: false
-        }
-
-        PropertyAnimation {
-            id: menuHide
-            target: contextMenu
-            properties: "anchors.bottomMargin"
-            from: 5; to: 5-contextMenu.height; duration: 300
-            running: false
-        }
-
-        PropertyAnimation {
-            id: menuShow
-            target: contextMenu
-            properties: "anchors.bottomMargin"
-            from: 5-contextMenu.height; to: 5; duration: 300
-            running: false
+            overlay.visible = false
         }
 
         MouseArea {
             anchors.fill: parent
+            preventStealing: true
             onClicked: {
+                addressLine.forceVisible = false
                 addressLine.unfocusAddressBar()
                 overlayRightMenu.hide()
                 overlay.hide()
@@ -474,22 +439,6 @@ FocusScope {
             }
         }
 
-        AddressField {
-            id: addressLine
-            viewport: webViewport
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-
-            onAccepted: {
-                overlay.hideExceptBar()
-            }
-
-            onRecentTriggered: {
-                navigation.visible = !showRecent
-            }
-        }
-
         OverlayContextMenu {
             id: contextMenu
             anchors.horizontalCenter: parent.horizontalCenter
@@ -498,25 +447,156 @@ FocusScope {
             width: Math.min(parent.width, parent.height) - 10
 
             onSelected: {
-                menuHide.running = true
                 overlay.hide()
+            }
+
+            onStartSelectionRequested: {
+                if (contextMenu.lastContextInfo) {
+                    webViewport.child.sendAsyncMessage("Browser:SelectionStart", {
+                                                        xPos: contextMenu.lastContextInfo.xPos,
+                                                        yPos: contextMenu.lastContextInfo.yPos
+                                                      })
+                    webViewport.child.sendAsyncMessage("Browser:SelectionMoveStart", {
+                                                        change: "start"
+                                                      })
+                    selectionStart.x = contextMenu.lastContextInfo.xPos - 20
+                    selectionStart.y = contextMenu.lastContextInfo.yPos - 20
+                    selectionEnd.x = contextMenu.lastContextInfo.xPos - 20
+                    selectionEnd.y = contextMenu.lastContextInfo.yPos - 20
+                    selectionStart.visible = true
+                    selectionEnd.visible = true
+                }
             }
         }
 
         OverlayNavigation {
             id: navigation
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: addressLine.bottom
-            viewport: webViewport
+            anchors.top: parent.top
+            contextInfoAvialable: contextMenu.contextLinkHref.length > 0 || contextMenu.contextImageSrc.length > 0
 
             onContextMenuRequested: {
                 navigation.visible = false
-                menuShow.running = true
                 contextMenu.visible = true
             }
 
-            onSelected: {
-                overlay.hideExceptBar()
+            onSelected : {
+                overlay.hide()
+            }
+        }
+    }
+
+    AddressField {
+        id: addressLine
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        property bool forceVisible: false
+        visible: webViewport.child.loading || overlay.visible || addressLine.forceVisible || addressLine.inputFocus
+
+        function handleMouse(ptX, ptY) {
+            var mapped = mapFromItem(mainScope, ptX, ptY)
+            console.log("addressLine.mapped x:" + mapped.x + " y:" + mapped.y)
+            if ((mapped.x > 0 && mapped.x < width) && (mapped.y > 0 && mapped.y < height)) {
+                console.log("addressLine activate")
+                overlay.hide()
+                addressLine.forceVisible = true
+            }
+        }
+
+        onRecentTriggered: {
+            navigation.visible = !showRecent
+        }
+
+        onAccepted: {
+            addressLine.forceVisible = false
+            overlay.hide()
+        }
+    }
+
+    MouseArea {
+        id: selectionArea
+        x: Math.min(selectionStart.x, selectionEnd.x)
+        y: Math.min(selectionStart.y, selectionEnd.y)
+        width: Math.abs(selectionStart.x - selectionEnd.x)
+        height: Math.abs(selectionStart.y - selectionEnd.y)
+        enabled: selectionStart.visible
+        function updateSelection() {
+            webViewport.child.sendAsyncMessage("Browser:SelectionMove", {
+                                                change: "start",
+                                                start: {
+                                                    xPos: selectionArea.x + 20,
+                                                    yPos: selectionArea.y + 20
+                                                }
+                                              })
+
+            webViewport.child.sendAsyncMessage("Browser:SelectionMove", {
+                                                change: "end",
+                                                end: {
+                                                    xPos: selectionArea.x + selectionArea.width + 20,
+                                                    yPos: selectionArea.y + selectionArea.height + 20
+                                                }
+                                              })
+        }
+        onClicked: {
+            webViewport.child.sendAsyncMessage("Browser:SelectionCopy", {
+                                                xPos: selectionArea.x + 20,
+                                                yPos: selectionArea.y + 20
+                                              })
+            webViewport.child.sendAsyncMessage("Browser:SelectionClose", {
+                                                clearSelection: true
+                                              })
+            selectionStart.visible = false
+            selectionEnd.visible = false
+        }
+    }
+
+    Rectangle {
+        id: selectionStart
+        visible: false
+        color: "transparent"
+        width: 40
+        height: 40
+        radius: 20
+        border.width: 1
+        border.color: "red"
+        smooth: true
+        MouseArea {
+            anchors.fill: parent
+            onPositionChanged: {
+                var mapped = mapToItem(mainScope, mouseX, mouseY)
+                selectionStart.x = mapped.x - 20
+                selectionStart.y = mapped.y - 80
+                if (selectionStart.x < 0)
+                    selectionStart.x = 0
+                if (selectionStart.y < 0)
+                    selectionStart.y = 0
+                selectionArea.updateSelection()
+            }
+        }
+    }
+
+    Rectangle {
+        id: selectionEnd
+        visible: false
+        color: "transparent"
+        width: 40
+        height: 40
+        radius: 20
+        border.width: 1
+        border.color: "green"
+        smooth: true
+        MouseArea {
+            anchors.fill: parent
+            onPositionChanged: {
+                var mapped = mapToItem(mainScope, mouseX, mouseY)
+                selectionEnd.x = mapped.x - 20
+                selectionEnd.y = mapped.y - 80
+                if (selectionEnd.x < 0)
+                    selectionEnd.x = 0
+                if (selectionEnd.y < 0)
+                    selectionEnd.y = 0
+                selectionArea.updateSelection()
             }
         }
     }
@@ -538,8 +618,14 @@ FocusScope {
         radius: 5
         color: "white"
         width: 55
-        height: 100
+        height: startPage.visible ? 100 : overlayRightMenu.height
         visible: navigation.visible || startPage.visible
+        function handleMouse(ptX, ptY) {
+            var mapped = mapFromItem(mainScope, ptX, ptY)
+            if ((mapped.x > 0 && mapped.x < width) && (mapped.y > 0 && mapped.y < height)) {
+                overlayRightMenu.toggle()
+            }
+        }
         Image {
             anchors.centerIn: parent
             width: 40
@@ -592,7 +678,6 @@ FocusScope {
         width: parent.width
         height: parent.height
         x: parent.width
-        viewport: webViewport
     }
 
     Bookmarks {

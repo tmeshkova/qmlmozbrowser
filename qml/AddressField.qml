@@ -6,7 +6,6 @@ Item {
 
     property alias text: addressLine.text
     property alias inputFocus: addressLine.inputFocus
-    property variant viewport
     property bool showRecent: false
     signal accepted()
     signal recentTriggered()
@@ -43,14 +42,14 @@ Item {
     }
 
     Connections {
-        target: viewport.child
+        target: webViewport.child
 
         onUrlChanged: {
-            addressLine.text = viewport.child.url;
+            addressLine.text = webViewport.child.url;
             addressLine.cursorPosition = 0;
         }
         onTitleChanged: {
-            pageTitle.text = viewport.child.title;
+            pageTitle.text = webViewport.child.title;
         }
     }
 
@@ -89,7 +88,7 @@ Item {
         anchors.left: root.left
         anchors.right: root.right
         anchors.margins: 10
-        loadProgress: viewport.child.loadProgress
+        loadProgress: webViewport.child.loadProgress
         inputMethodHints: Qt.ImhNoPredictiveText || Qt.ImhNoAutoUppercase
         selectAllOnFocus: true
         onAccepted: {
