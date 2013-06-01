@@ -5,7 +5,6 @@ Rectangle {
     id : root
     visible: true
     color: "white"
-    property variant viewport
     signal bookmarksChanged()
 
     Component.onCompleted: {
