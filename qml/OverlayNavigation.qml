@@ -5,7 +5,6 @@ Item {
     id: root
 
     property bool contextInfoAvialable: false
-    property variant viewport
 
     visible: false
     width: 300
@@ -52,11 +51,11 @@ Item {
         height: 100
 
         iconSource: "../icons/backward.png"
-        enabled: viewport.child.canGoBack
+        enabled: webViewport.child.canGoBack
 
         onClicked: {
             root.selected()
-            viewport.child.goBack()
+            webViewport.child.goBack()
         }
     }
 
@@ -71,11 +70,11 @@ Item {
         height: 100
 
         iconSource: "../icons/forward.png"
-        enabled: viewport.child.canGoForward
+        enabled: webViewport.child.canGoForward
 
         onClicked: {
             root.selected()
-            viewport.child.goForward()
+            webViewport.child.goForward()
         }
     }
 
@@ -89,14 +88,14 @@ Item {
         width: 100
         height: 100
 
-        iconSource: viewport.child.loading ? "../icons/stop.png" : "../icons/refresh.png"
+        iconSource: webViewport.child.loading ? "../icons/stop.png" : "../icons/refresh.png"
 
         onClicked: {
             root.selected()
-            if (viewport.child.loading) {
-                viewport.child.stop()
+            if (webViewport.child.loading) {
+                webViewport.child.stop()
             } else {
-                viewport.child.reload()
+                webViewport.child.reload()
             }
         }
     }
@@ -112,6 +111,7 @@ Item {
         height: 100
 
         iconSource: "../icons/menu.png"
+        //enabled: root.contextInfoAvialable
 
         onClicked: {
             root.contextMenuRequested()

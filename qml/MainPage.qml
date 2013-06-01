@@ -215,7 +215,7 @@ FocusScope {
                 pageTitleChanged(webViewport.child.title)
             }
             onRecvAsyncMessage: {
-                print("onRecvAsyncMessage:" + message + ", data:" + data)
+                //print("onRecvAsyncMessage:" + message + ", data:" + data)
                 switch (message) {
                     case "embed:filepicker": {
                         filePicker.show(data.mode, QmlHelperTools.getStorageLocation(0), data.title, data.name, data.winid)
@@ -305,8 +305,12 @@ FocusScope {
             onReleased: {
                 webViewport.child.recvMouseRelease(mouseX, mouseY)
                 if (overlay.visible) {
-                    rightTab.handleMouse(mouseX, mouseY, true)
+                    addressLine.handleMouse(mouseX, mouseY)
+                    rightTab.handleMouse(mouseX, mouseY)
                     navigation.handleMouse(mouseX, mouseY, true)
+                }
+                if (addressLine.inputFocus) {
+                    addressLine.unfocusAddressBar()
                 }
             }
             onPositionChanged: {
@@ -314,7 +318,6 @@ FocusScope {
                     webViewport.child.recvMouseMove(mouseX, mouseY)
                 }
                 else {
-                    rightTab.handleMouse(mouseX, mouseY, false)
                     navigation.handleMouse(mouseX, mouseY, false)
                 }
             }
@@ -470,7 +473,6 @@ FocusScope {
             id: navigation
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
-            viewport: webViewport
             contextInfoAvialable: contextMenu.contextLinkHref.length > 0 || contextMenu.contextImageSrc.length > 0
 
             onContextMenuRequested: {
@@ -486,14 +488,25 @@ FocusScope {
 
     AddressField {
         id: addressLine
-        viewport: webViewport
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        visible: webViewport.child.loading || overlay.visible
+        visible: webViewport.child.loading || overlay.visible || inputFocus
+
+        function handleMouse(ptX, ptY) {
+            var mapped = mapFromItem(mainScope, ptX, ptY)
+            if ((mapped.x > 0 && mapped.x < width) && (mapped.y > 0 && mapped.y < height)) {
+                overlay.hide()
+                addressLine.inputFocus = true
+            }
+        }
 
         onRecentTriggered: {
             navigation.visible = !showRecent
+        }
+
+        onAccepted: {
+            overlay.hide()
         }
     }
 
@@ -603,9 +616,9 @@ FocusScope {
         color: "white"
         width: 55
         visible: navigation.visible || startPage.visible
-        function handleMouse(ptX, ptY, released) {
+        function handleMouse(ptX, ptY) {
             var mapped = mapFromItem(mainScope, ptX, ptY)
-            if (released && (mapped.x > 0 && mapped.x < width) && (mapped.y > 0 && mapped.y < height)) {
+            if ((mapped.x > 0 && mapped.x < width) && (mapped.y > 0 && mapped.y < height)) {
                 overlayRightMenu.toggle()
             }
         }
@@ -661,7 +674,6 @@ FocusScope {
         width: parent.width
         height: parent.height
         x: parent.width
-        viewport: webViewport
     }
 
     Bookmarks {
