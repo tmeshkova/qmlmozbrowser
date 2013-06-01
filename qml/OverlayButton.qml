@@ -11,6 +11,7 @@ Item {
     property alias iconSource: icon.source
     property alias text: label.text
     property int fixedHeight: 0
+    property bool forceHighlight: false
 
     Rectangle {
         id: background
@@ -21,8 +22,8 @@ Item {
         border.color: "black"
         border.width: 1
         smooth: true
-        color: root.enabled ? (mouseArea.pressed ? "cyan" : "white") : "transparent"
-        opacity: root.enabled ? (mouseArea.pressed ? 0.5 : 0.8) : 0.3
+        color: root.enabled ? ((mouseArea.pressed || root.forceHighlight) ? "cyan" : "white") : "transparent"
+        opacity: root.enabled ? ((mouseArea.pressed || root.forceHighlight) ? 0.5 : 0.8) : 0.3
     }
 
     Image {

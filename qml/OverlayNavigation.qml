@@ -14,6 +14,33 @@ Item {
     signal contextMenuRequested()
     signal selected()
 
+    function clearHighlight() {
+        goBack.forceHighlight = false
+        goForward.forceHighlight = false
+        stopRefresh.forceHighlight = false
+        contextMenu.forceHighlight = false
+    }
+
+    function handleMouse(ptX, ptY, released) {
+        var mapped = mapFromItem(mainScope, ptX, ptY)
+        var item = root.childAt(mapped.x, mapped.y)
+        if (item) {
+            if (!released) {
+                item.forceHighlight = true
+            }
+            else {
+                item.clicked()
+                clearHighlight()
+            }
+        }
+        else {
+            clearHighlight()
+            if (released && overlayRightMenu.anchors.rightMargin != 0) {
+                root.selected()
+            }
+        }
+    }
+
     OverlayButton {
         id: goBack
 
@@ -65,7 +92,7 @@ Item {
         iconSource: viewport.child.loading ? "../icons/stop.png" : "../icons/refresh.png"
 
         onClicked: {
-            //root.selected()
+            root.selected()
             if (viewport.child.loading) {
                 viewport.child.stop()
             } else {
@@ -85,7 +112,6 @@ Item {
         height: 100
 
         iconSource: "../icons/menu.png"
-        enabled: root.contextInfoAvialable
 
         onClicked: {
             root.contextMenuRequested()
