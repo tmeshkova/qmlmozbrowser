@@ -301,16 +301,19 @@ FocusScope {
             anchors.fill: parent
             onPressed: {
                 webViewport.child.recvMousePress(mouseX, mouseY)
+                if (addressLine.inputFocus) {
+                    addressLine.unfocusAddressBar()
+                }
+                if (addressLine.forceVisible) {
+                    addressLine.forceVisible = false
+                }
             }
             onReleased: {
                 webViewport.child.recvMouseRelease(mouseX, mouseY)
                 if (overlay.visible) {
-                    addressLine.handleMouse(mouseX, mouseY)
                     rightTab.handleMouse(mouseX, mouseY)
                     navigation.handleMouse(mouseX, mouseY, true)
-                }
-                if (addressLine.inputFocus) {
-                    addressLine.unfocusAddressBar()
+                    addressLine.handleMouse(mouseX, mouseY)
                 }
             }
             onPositionChanged: {
@@ -422,7 +425,9 @@ FocusScope {
             anchors.fill: parent
             preventStealing: true
             onClicked: {
-                addressLine.unfocusAddressBar()
+                if (addressLine.forceVisible) {
+                    addressLine.forceVisible = false
+                }
                 overlayRightMenu.hide()
                 overlay.hide()
             }
@@ -491,13 +496,16 @@ FocusScope {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        visible: webViewport.child.loading || overlay.visible || inputFocus
+        property bool forceVisible: false
+        visible: webViewport.child.loading || overlay.visible || addressLine.forceVisible || addressLine.inputFocus
 
         function handleMouse(ptX, ptY) {
             var mapped = mapFromItem(mainScope, ptX, ptY)
+            console.log("addressLine.mapped x:" + mapped.x + " y:" + mapped.y)
             if ((mapped.x > 0 && mapped.x < width) && (mapped.y > 0 && mapped.y < height)) {
+                console.log("addressLine activate")
                 overlay.hide()
-                addressLine.inputFocus = true
+                addressLine.forceVisible = true
             }
         }
 
@@ -506,6 +514,7 @@ FocusScope {
         }
 
         onAccepted: {
+            addressLine.forceVisible = false
             overlay.hide()
         }
     }
@@ -607,7 +616,6 @@ FocusScope {
         id: rightTab
         anchors.top: parent.top
         anchors.topMargin: overlay.visible ? addressLine.height : startPage.topArea
-        anchors.bottom: parent.bottom
         anchors.right: overlayRightMenu.left
         anchors.rightMargin: -5
         border.width: 1
@@ -615,6 +623,7 @@ FocusScope {
         radius: 5
         color: "white"
         width: 55
+        height: startPage.visible ? 100 : overlayRightMenu.height
         visible: navigation.visible || startPage.visible
         function handleMouse(ptX, ptY) {
             var mapped = mapFromItem(mainScope, ptX, ptY)
