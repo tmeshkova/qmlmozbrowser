@@ -301,12 +301,8 @@ FocusScope {
             anchors.fill: parent
             onPressed: {
                 webViewport.child.recvMousePress(mouseX, mouseY)
-                if (addressLine.inputFocus) {
-                    addressLine.unfocusAddressBar()
-                }
-                if (addressLine.forceVisible) {
-                    addressLine.forceVisible = false
-                }
+                addressLine.unfocusAddressBar()
+                addressLine.forceVisible = false
             }
             onReleased: {
                 webViewport.child.recvMouseRelease(mouseX, mouseY)
@@ -425,9 +421,8 @@ FocusScope {
             anchors.fill: parent
             preventStealing: true
             onClicked: {
-                if (addressLine.forceVisible) {
-                    addressLine.forceVisible = false
-                }
+                addressLine.forceVisible = false
+                addressLine.unfocusAddressBar()
                 overlayRightMenu.hide()
                 overlay.hide()
             }
