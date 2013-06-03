@@ -496,9 +496,7 @@ FocusScope {
 
         function handleMouse(ptX, ptY) {
             var mapped = mapFromItem(mainScope, ptX, ptY)
-            console.log("addressLine.mapped x:" + mapped.x + " y:" + mapped.y)
             if ((mapped.x > 0 && mapped.x < width) && (mapped.y > 0 && mapped.y < height)) {
-                console.log("addressLine activate")
                 overlay.hide()
                 addressLine.forceVisible = true
             }
@@ -692,7 +690,6 @@ FocusScope {
         anchors.fill: parent
         onSelected: {
             filePicker.visible = false
-            console.log("FilePicker selected: " + path + " accepted: " + accepted)
             webViewport.child.sendAsyncMessage("filepickerresponse", {
                                                          winid: winid,
                                                          accepted: accepted,

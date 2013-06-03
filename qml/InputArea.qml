@@ -35,7 +35,7 @@ Item {
         else {
             inputLine.closeSoftwareInputPanel()
             inputLine.focus = false
-            root.parent.forceActiveFocus()
+            webViewport.forceActiveFocus()
         }
     }
 
