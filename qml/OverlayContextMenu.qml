@@ -43,7 +43,7 @@ ListView {
         }
         ListElement {
             name: "Select text on page"
-            //icon: "../icons/context-clipboard-image2.png"
+            icon: "../icons/context-select-text.png"
         }
     }
 
