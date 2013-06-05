@@ -21,6 +21,40 @@ MozWindowCreator::MozWindowCreator(const QString& aQmlstring, const bool& aGlwid
 quint32
 MozWindowCreator::newWindowRequested(const QString& url, const unsigned& aParentID, QNewWindowResponse* response)
 {
+    QUrl newUrl = QUrl(QString("http://") + url);
+    QString newHost = newUrl.host();
+    if (newHost.startsWith(QString("www."))) {
+        newHost = newHost.right(newHost.length() - 5);
+    }
+    QString newPath = newUrl.path();
+    if (newPath.endsWith(QString("/"))) {
+        newPath = newPath.left(newPath.length() - 1);
+    }
+    for (int i=0; i<mWindowStack.size(); i++) {
+        QDeclarativeView* view = mWindowStack.at(i);
+        QObject* item = view->rootObject()->findChild<QObject*>("mainScope");
+        QDeclarativeMozView* mozview = item->findChild<QDeclarativeMozView*>("webViewport");
+        if (mozview) {
+            QGraphicsMozView* gmozview = qobject_cast<QGraphicsMozView*>(mozview->getChild());
+            QUrl pageUrl = gmozview->url();
+            QString pageHost = pageUrl.host();
+            if (pageHost.startsWith(QString("www."))) {
+                pageHost = pageHost.right(newHost.length() - 5);
+            }
+            QString pagePath = pageUrl.path();
+            if (pagePath.endsWith(QString("/"))) {
+                pagePath = pagePath.left(pagePath.length() - 1);
+            }
+            if (pageHost == newHost && pagePath == newPath) {
+                if (mIsFullScreen)
+                    view->showFullScreen();
+                else
+                    view->show();
+                return 0;
+            }
+        }
+    }
+
     quint32 uniqueID = 0;
     QDeclarativeView* view = CreateNewWindow(url, &uniqueID, aParentID);
     mWindowStack.append(view);
