@@ -306,7 +306,7 @@ FocusScope {
             }
             onReleased: {
                 webViewport.child.recvMouseRelease(mouseX, mouseY)
-                if (overlay.visible) {
+                if (overlay.visible && !overlay.useOldBehaviour) {
                     rightTab.handleMouse(mouseX, mouseY)
                     navigation.handleMouse(mouseX, mouseY, true)
                     addressLine.handleMouse(mouseX, mouseY)
@@ -316,7 +316,7 @@ FocusScope {
                 if (!overlay.visible) {
                     webViewport.child.recvMouseMove(mouseX, mouseY)
                 }
-                else {
+                else if (!overlay.useOldBehaviour) {
                     navigation.handleMouse(mouseX, mouseY, false)
                 }
             }
@@ -402,6 +402,7 @@ FocusScope {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
+        property bool useOldBehaviour: false
         visible: false
 
         function show(posY) {
@@ -616,7 +617,7 @@ FocusScope {
         radius: 5
         color: "white"
         width: 55
-        height: startPage.visible ? 100 : overlayRightMenu.height
+        height: (startPage.visible || overlay.useOldBehaviour) ? 100 : overlayRightMenu.height
         visible: navigation.visible || startPage.visible
         function handleMouse(ptX, ptY) {
             var mapped = mapFromItem(mainScope, ptX, ptY)
