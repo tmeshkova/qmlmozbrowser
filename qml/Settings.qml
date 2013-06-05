@@ -6,6 +6,49 @@ Rectangle {
     visible: true
     color: "white"
 
+    Component.onCompleted: {
+        print("Settings ready!")
+        var db = openDatabaseSync("qmlbrowser","0.1","historydb", 100000)
+        db.transaction(
+            function(tx) {
+                tx.executeSql('CREATE TABLE IF NOT EXISTS settings (name TEXT, value TEXT)')
+            }
+        );
+        var items = null
+        db.transaction(
+            function(tx) {
+                var result = tx.executeSql('select * from settings')
+                items = result.rows
+            }
+        );
+        if (items.length < 1) {
+            console.log("Settings empty!")
+            db.transaction(
+                function(tx) {
+                    var name = "one_touch_ui"
+                    var value = "disabled"
+                    var result = tx.executeSql('INSERT INTO settings VALUES (?,?);',[name,value])
+                    if (result.rowsAffected < 1) {
+                        console.log("Error inserting settings!")
+                    }
+                }
+            );
+        }
+        else {
+            for (var i=0; i < items.length; i++) {
+                var item = items.item(i)
+                console.log("[SETTINGS] " + item.name + ": " + item.value)
+                switch (item.name) {
+                    case "one_touch_ui": {
+                        oneTouchUI.checked = (item.value == "enabled")
+                        overlay.useOldBehaviour = oneTouchUI.checked
+                        break
+                    }
+                }
+            }
+        }
+    }
+
     function show() {
         animShow.running = true
         MozContext.sendObserve("embedui:prefs", { msg: "getPrefList", prefs: [ "general.useragent.override",
@@ -324,6 +367,26 @@ Rectangle {
                     if (inputFocus) {
                         flick.flickToItem(longTapDelay)
                     }
+                }
+            }
+
+            Checkbox {
+                id: oneTouchUI
+                width: parent.width
+                text: "Use One-touch overlay UI behaviour"
+                onClicked: {
+                    overlay.useOldBehaviour = checked
+                    var name = "one_touch_ui"
+                    var value = checked ? "enabled" : "disabled"
+                    var db = openDatabaseSync("qmlbrowser","0.1","historydb", 100000)
+                    db.transaction(
+                        function(tx) {
+                            var result = tx.executeSql('update settings set value=(?) where name=(?);',[value, name])
+                            if (result.rowsAffected < 1) {
+                                console.log("Error inserting value!")
+                            }
+                        }
+                    );
                 }
             }
         }
