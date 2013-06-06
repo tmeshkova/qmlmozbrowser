@@ -88,11 +88,13 @@ FocusScope {
                 "embed:prefs",
                 "embed:allprefs",
                 "clipboard:setdata",
-                "embed:logger"
+                "embed:logger",
+                "embed:search"
             ]);
             MozContext.sendObserve("embedui:logger", { enabled: true })
-            // Need to expose flexible API and allow to choose different engines
             MozContext.sendObserve("embedui:search", {msg:"loadxml", uri:"chrome://embedlite/content/bing.xml", confirm: false})
+            MozContext.sendObserve("embedui:search", {msg:"loadxml", uri:"chrome://embedlite/content/google.xml", confirm: false})
+            MozContext.sendObserve("embedui:search", {msg:"loadxml", uri:"chrome://embedlite/content/yahoo.xml", confirm: false})
         }
         onRecvObserve: {
             if (message == "clipboard:setdata") {

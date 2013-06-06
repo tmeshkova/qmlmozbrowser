@@ -58,6 +58,7 @@ Rectangle {
                                                                                "gfx.azpc.horizontal_scroll_lock_ratio",
                                                                                "gfx.azpc.touch_start_tolerance",
                                                                                "ui.click_hold_context_menus.delay"]})
+        MozContext.sendObserve("embedui:search", { msg: "getlist"})
     }
 
     function hide() {
@@ -69,50 +70,82 @@ Rectangle {
     Connections {
         target: MozContext
         onRecvObserve: {
-            if (message == "embed:prefs") {
-                for (var i=0; i<data.length; i++) {
-                    console.log(data[i].name + ": " + data[i].value)
-                    switch (data[i].name) {
-                        case "general.useragent.override": {
-                            uaString.text = data[i].value;
-                            uaString.cursorPosition = 0;
-                            customUA.checked = true
-                            break;
-                        }
-                        case "browser.zoom.reflowOnZoom": {
-                            zoomReflow.checked = data[i].value;
-                            break;
-                        }
-                        case "browser.zoom.reflowMobilePages": {
-                            mobileReflow.checked = data[i].value;
-                            break;
-                        }
-                        case "keyword.URL": {
-                            searchKeyword.text = data[i].value;
-                            searchKeyword.cursorPosition = 0;
-                            break;
-                        }
-                        case "gfx.azpc.vertical_scroll_lock_ratio": {
-                            verticalScrollLockRatio.text = data[i].value.replace("f", "");
-                            verticalScrollLockRatio.cursorPosition = 0;
-                            break;
-                        }
-                        case "gfx.azpc.horizontal_scroll_lock_ratio": {
-                            horizontalScrollLockRatio.text = data[i].value.replace("f", "");
-                            horizontalScrollLockRatio.cursorPosition = 0;
-                            break;
-                        }
-                        case "gfx.azpc.touch_start_tolerance": {
-                            longTapCancelDistance.text = parseFloat(data[i].value.replace("f", "")) * 72;
-                            longTapCancelDistance.cursorPosition = 0;
-                            break;
-                        }
-                        case "ui.click_hold_context_menus.delay": {
-                            longTapDelay.text = data[i].value;
-                            longTapDelay.cursorPosition = 0;
-                            break;
+            console.log("QML onRecvObserve " + message + " data: " + data)
+            switch (message) {
+                case "embed:prefs": {
+                    for (var i=0; i<data.length; i++) {
+                        console.log(data[i].name + ": " + data[i].value)
+                        switch (data[i].name) {
+                            case "general.useragent.override": {
+                                uaString.text = data[i].value;
+                                uaString.cursorPosition = 0;
+                                customUA.checked = true
+                                break;
+                            }
+                            case "browser.zoom.reflowOnZoom": {
+                                zoomReflow.checked = data[i].value;
+                                break;
+                            }
+                            case "browser.zoom.reflowMobilePages": {
+                                mobileReflow.checked = data[i].value;
+                                break;
+                            }
+                            case "keyword.URL": {
+                                searchKeyword.text = data[i].value;
+                                searchKeyword.cursorPosition = 0;
+                                break;
+                            }
+                            case "gfx.azpc.vertical_scroll_lock_ratio": {
+                                verticalScrollLockRatio.text = data[i].value.replace("f", "");
+                                verticalScrollLockRatio.cursorPosition = 0;
+                                break;
+                            }
+                            case "gfx.azpc.horizontal_scroll_lock_ratio": {
+                                horizontalScrollLockRatio.text = data[i].value.replace("f", "");
+                                horizontalScrollLockRatio.cursorPosition = 0;
+                                break;
+                            }
+                            case "gfx.azpc.touch_start_tolerance": {
+                                longTapCancelDistance.text = parseFloat(data[i].value.replace("f", "")) * 72;
+                                longTapCancelDistance.cursorPosition = 0;
+                                break;
+                            }
+                            case "ui.click_hold_context_menus.delay": {
+                                longTapDelay.text = data[i].value;
+                                longTapDelay.cursorPosition = 0;
+                                break;
+                            }
                         }
                     }
+                    break
+                }
+                case "embed:search": {
+                    switch (data.msg) {
+                        case "init": {
+                            if (data.defaultEngine == null) {
+                                MozContext.sendObserve("embedui:search", {msg:"setcurrent", name:"Google"})
+                                MozContext.sendObserve("embedui:search", {msg:"setdefault", name:"Google"})
+                                selectSearchEngine.text = "Google"
+                            }
+                            else {
+                                selectSearchEngine.text = data.defaultEngine
+                            }
+                            break
+                        }
+                        case "pluginslist":
+                        {
+                            searchEnginesModel.clear()
+                            for (var i=0; i<data.list.length; i++) {
+                                var plugin = data.list[i]
+                                if (plugin.isDefault) {
+                                    selectSearchEngine.text = plugin.name
+                                }
+                                searchEnginesModel.append({name: plugin.name})
+                            }
+                            break
+                        }
+                    }
+                    break
                 }
             }
         }
@@ -389,6 +422,44 @@ Rectangle {
                     );
                 }
             }
+
+            Text {
+                id: searchEnginesText
+                text: "Search engine"
+                font.pixelSize: 26
+            }
+
+            OverlayButton {
+                id: selectSearchEngine
+                width: parent.width
+                height: 40
+                function done(index) {
+                    if (index != -1) {
+                        text = enginesDialog.model.get(index).name
+                        searchEnginesModel = enginesDialog.model
+                        enginesDialog.done.disconnect(selectSearchEngine.done)
+                        console.log("Selected engine: " + text)
+                        MozContext.sendObserve("embedui:search", {msg:"setcurrent", name:text})
+                        MozContext.sendObserve("embedui:search", {msg:"setdefault", name:text})
+                    }
+                }
+                onClicked: {
+                    enginesDialog.model = searchEnginesModel
+                    enginesDialog.show()
+                    enginesDialog.done.connect(selectSearchEngine.done)
+                }
+            }
         }
+    }
+
+    ListModel {
+        id: searchEnginesModel
+    }
+
+    SelectDialog {
+        id: enginesDialog
+        anchors.fill: parent
+        canAdd: false
+        title: "Select search engine"
     }
 }
