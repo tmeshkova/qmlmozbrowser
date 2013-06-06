@@ -41,7 +41,7 @@ Rectangle {
                 switch (item.name) {
                     case "one_touch_ui": {
                         oneTouchUI.checked = (item.value == "enabled")
-                        overlay.useOldBehaviour = oneTouchUI.checked
+                        overlay.useOldBehaviour = !oneTouchUI.checked
                         break
                     }
                 }
@@ -408,7 +408,7 @@ Rectangle {
                 width: parent.width
                 text: "Use One-touch overlay UI behaviour"
                 onClicked: {
-                    overlay.useOldBehaviour = checked
+                    overlay.useOldBehaviour = !checked
                     var name = "one_touch_ui"
                     var value = checked ? "enabled" : "disabled"
                     var db = openDatabaseSync("qmlbrowser","0.1","historydb", 100000)

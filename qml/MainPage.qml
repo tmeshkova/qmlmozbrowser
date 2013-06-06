@@ -464,10 +464,11 @@ FocusScope {
                                                       })
                     selectionStart.x = contextMenu.lastContextInfo.xPos - 20
                     selectionStart.y = contextMenu.lastContextInfo.yPos - 20
-                    selectionEnd.x = contextMenu.lastContextInfo.xPos - 20
+                    selectionEnd.x = contextMenu.lastContextInfo.xPos + 80
                     selectionEnd.y = contextMenu.lastContextInfo.yPos - 20
                     selectionStart.visible = true
                     selectionEnd.visible = true
+                    selectionArea.updateSelection()
                 }
             }
         }
@@ -550,6 +551,18 @@ FocusScope {
             selectionStart.visible = false
             selectionEnd.visible = false
         }
+    }
+
+    OverlayButton {
+        id: copyText
+        height: 40
+        width: 100
+        anchors.horizontalCenter: selectionArea.horizontalCenter
+        anchors.top: (selectionArea.x + selectionArea.height + 50 < mainScope.height) ? selectionArea.bottom : selectionArea.top
+        anchors.topMargin: 50
+        text: "Copy"
+        visible: selectionStart.visible
+        onClicked: selectionArea.clicked()
     }
 
     Rectangle {
