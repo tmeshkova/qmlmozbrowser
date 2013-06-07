@@ -21,7 +21,13 @@ MozWindowCreator::MozWindowCreator(const QString& aQmlstring, const bool& aGlwid
 quint32
 MozWindowCreator::newWindowRequested(const QString& url, const unsigned& aParentID, QNewWindowResponse* response)
 {
-    QUrl newUrl = QUrl(QString("http://") + url);
+    QUrl newUrl;
+    if (!url.contains(QString("://"))) {
+        newUrl = QUrl(QString("http://") + url);
+    }
+    else {
+        newUrl = QUrl(url);
+    }
     QString newHost = newUrl.host();
     if (newHost.startsWith(QString("www."))) {
         newHost = newHost.right(newHost.length() - 5);
