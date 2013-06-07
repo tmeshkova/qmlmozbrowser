@@ -35,8 +35,8 @@ MozWindowCreator::newWindowRequested(const QString& url, const unsigned& aParent
         QObject* item = view->rootObject()->findChild<QObject*>("mainScope");
         QDeclarativeMozView* mozview = item->findChild<QDeclarativeMozView*>("webViewport");
         if (mozview) {
-            QGraphicsMozView* gmozview = qobject_cast<QGraphicsMozView*>(mozview->getChild());
-            QUrl pageUrl = gmozview->url();
+            QGraphicsMozView* gmozview = mozview->findChild<QGraphicsMozView*>("QGraphicsMozView");
+            QUrl pageUrl = gmozview ? gmozview->url() : QUrl();
             QString pageHost = pageUrl.host();
             if (pageHost.startsWith(QString("www."))) {
                 pageHost = pageHost.right(newHost.length() - 5);
