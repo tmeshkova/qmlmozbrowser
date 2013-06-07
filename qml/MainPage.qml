@@ -182,6 +182,9 @@ FocusScope {
                     navigation.anchors.topMargin = 0
                     startPage.show()
                 }
+                if (webViewport.child.loading && selectionStart.visible) {
+                    selectionArea.hideSelection()
+                }
             }
             onHandleLongTap: {
                 webViewport.child.sendAsyncMessage("embed:ContextMenuCreate", { x: point.x, y: point.y })
@@ -212,6 +215,12 @@ FocusScope {
                 webViewport.movingHorizontally = true
                 webViewport.movingVertically = true
                 scrollTimer.restart()
+                if (selectionStart.visible) {
+                    selectionStart.x = selectionStart.initX + (selectionArea.initScrollOffsetX - offset.x)
+                    selectionEnd.x = selectionEnd.initX + (selectionArea.initScrollOffsetX - offset.x)
+                    selectionStart.y = selectionStart.initY + (selectionArea.initScrollOffsetY - offset.y)
+                    selectionEnd.y = selectionEnd.initY + (selectionArea.initScrollOffsetY - offset.y)
+                }
             }
             onTitleChanged: {
                 pageTitleChanged(webViewport.child.title)
@@ -522,8 +531,16 @@ FocusScope {
         y: Math.min(selectionStart.y, selectionEnd.y)
         width: Math.abs(selectionStart.x - selectionEnd.x)
         height: Math.abs(selectionStart.y - selectionEnd.y)
+        property int initScrollOffsetX: 0
+        property int initScrollOffsetY: 0
         enabled: selectionStart.visible
         function updateSelection() {
+            selectionArea.initScrollOffsetX = webViewport.child.scrollableOffset.x
+            selectionArea.initScrollOffsetY = webViewport.child.scrollableOffset.y
+            selectionStart.initX = selectionStart.x
+            selectionEnd.initX = selectionEnd.x
+            selectionStart.initY = selectionStart.y
+            selectionEnd.initY = selectionEnd.y
             webViewport.child.sendAsyncMessage("Browser:SelectionMove", {
                                                 change: "start",
                                                 start: {
@@ -540,29 +557,48 @@ FocusScope {
                                                 }
                                               })
         }
-        onClicked: {
-            webViewport.child.sendAsyncMessage("Browser:SelectionCopy", {
-                                                xPos: selectionArea.x + 20,
-                                                yPos: selectionArea.y + 20
-                                              })
+        function hideSelection() {
             webViewport.child.sendAsyncMessage("Browser:SelectionClose", {
                                                 clearSelection: true
                                               })
             selectionStart.visible = false
             selectionEnd.visible = false
         }
+        onClicked: {
+            webViewport.child.sendAsyncMessage("Browser:SelectionCopy", {
+                                                xPos: selectionArea.x + 20,
+                                                yPos: selectionArea.y + 20
+                                              })
+            hideSelection()
+        }
     }
 
-    OverlayButton {
-        id: copyText
-        height: 40
-        width: 100
+    Item {
+        id: selectionButtons
         anchors.horizontalCenter: selectionArea.horizontalCenter
-        anchors.top: (selectionArea.x + selectionArea.height + 50 < mainScope.height) ? selectionArea.bottom : selectionArea.top
+        anchors.top: (selectionArea.x + selectionArea.height + 50 < mainScope.height) ? selectionArea.bottom : (selectionArea.y < 0 ? selectionArea.bottom : selectionArea.top)
         anchors.topMargin: 50
-        text: "Copy"
         visible: selectionStart.visible
-        onClicked: selectionArea.clicked()
+        height: 40
+        width: 210
+
+        OverlayButton {
+            id: copyText
+            height: 40
+            width: 100
+            anchors.left: parent.left
+            text: "Copy"
+            onClicked: selectionArea.clicked()
+        }
+
+        OverlayButton {
+            id: selectHide
+            height: 40
+            width: 100
+            anchors.right: parent.right
+            text: "Cancel"
+            onClicked: selectionArea.hideSelection()
+        }
     }
 
     Rectangle {
@@ -575,6 +611,8 @@ FocusScope {
         border.width: 1
         border.color: "red"
         smooth: true
+        property int initX: 0
+        property int initY: 0
         MouseArea {
             anchors.fill: parent
             onPositionChanged: {
@@ -600,6 +638,8 @@ FocusScope {
         border.width: 1
         border.color: "green"
         smooth: true
+        property int initX: 0
+        property int initY: 0
         MouseArea {
             anchors.fill: parent
             onPositionChanged: {
