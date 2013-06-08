@@ -13,12 +13,9 @@ Rectangle {
                 switch (data.msg) {
                     case "dl-list": {
                         downloadsListModel.clear()
-                        console.log("data count: " + data.list.length);
-                        console.log("appending download items");
                         for (var i=0; i<data.list.length; i++) {
-                            console.log("appending: " + data.list[i].id + " from:" + data.list[i].from + " to:" + data.list[i].to)
                             downloadsListModel.append({id: data.list[i].id,
-                                                       from: data.list[i].from, 
+                                                       from: data.list[i].from,
                                                        to: data.list[i].to,
                                                        cur: data.list[i].cur,
                                                        max: data.list[i].max,
@@ -26,7 +23,6 @@ Rectangle {
                                                        percent: data.list[i].percent,
                                                        speed: 0})
                         }
-                        console.log("items appended")
                         break;
                     }
                     default:
@@ -198,7 +194,6 @@ Rectangle {
                                     break;
                                 }
                                 default: {
-                                    console.log(data.msg + " message for id:" + data.id + " state:" + data.state)
                                     downloadsListModel.setProperty(index, "state", data.state)
                                     break;
                                 }
@@ -315,7 +310,6 @@ Rectangle {
                         iconSource: "../icons/download-" + (model.state == 0 ? "pause" : "start") + ".png"
                         visible: (model.state == 0 || model.state == 4)
                         onClicked: {
-                            console.log("pauseResumeButton clicked")
                             MozContext.sendObserve("embedui:download", { msg: (model.state == 0 ? "pauseDownload" : "resumeDownload"), id: id })
                         }
                     }
@@ -329,7 +323,6 @@ Rectangle {
                         iconSource: "../icons/download-stop.png"
                         visible: (model.state == 0 || model.state == 4)
                         onClicked: {
-                            console.log("stopButton clicked")
                             MozContext.sendObserve("embedui:download", { msg: "cancelDownload", id: id })
                         }
                     }
@@ -343,7 +336,6 @@ Rectangle {
                         iconSource: "../icons/download-retry.png"
                         visible: (model.state != 0 && model.state != 4)
                         onClicked: {
-                            console.log("removeButton clicked")
                             MozContext.sendObserve("embedui:download", { msg: "retryDownload", id: id })
                         }
                     }
@@ -357,7 +349,6 @@ Rectangle {
                         iconSource: "../icons/download-remove.png"
                         visible: (model.state != 0 && model.state != 4)
                         onClicked: {
-                            console.log("removeButton clicked")
                             MozContext.sendObserve("embedui:download", { msg: "removeDownload", id: id })
                             downloadsListModel.remove(index)
                         }
@@ -371,7 +362,6 @@ Rectangle {
                         iconSource: "../icons/context-window-url2.png"
                         visible: true
                         onClicked: {
-                            console.log("copyUrlButton clicked")
                             QmlHelperTools.setClipboard(from)
                         }
                     }

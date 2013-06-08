@@ -37,7 +37,6 @@ Rectangle {
         else {
             for (var i=0; i < items.length; i++) {
                 var item = items.item(i)
-                console.log("[SETTINGS] " + item.name + ": " + item.value)
                 switch (item.name) {
                     case "one_touch_ui": {
                         oneTouchUI.checked = (item.value == "enabled")
@@ -70,11 +69,9 @@ Rectangle {
     Connections {
         target: MozContext
         onRecvObserve: {
-            console.log("QML onRecvObserve " + message + " data: " + data)
             switch (message) {
                 case "embed:prefs": {
                     for (var i=0; i<data.length; i++) {
-                        console.log(data[i].name + ": " + data[i].value)
                         switch (data[i].name) {
                             case "general.useragent.override": {
                                 uaString.text = data[i].value;
@@ -272,7 +269,6 @@ Rectangle {
                     width: 40
                     text: ""
                     onClicked: {
-                        console.log("custom ua: " + checked)
                         if (checked) {
                             MozContext.setPref("general.useragent.override", uaString.text)
                         }
@@ -438,7 +434,6 @@ Rectangle {
                         text = enginesDialog.model.get(index).name
                         searchEnginesModel = enginesDialog.model
                         enginesDialog.done.disconnect(selectSearchEngine.done)
-                        console.log("Selected engine: " + text)
                         MozContext.sendObserve("embedui:search", {msg:"setcurrent", name:text})
                         MozContext.sendObserve("embedui:search", {msg:"setdefault", name:text})
                     }

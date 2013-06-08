@@ -43,7 +43,6 @@ Dialog {
         input.text = defaultValue;
         accepted = false;
         visible = true;
-        print("topdialog.width:" + topdialog.width);
     }
     function handle(aAccepted)
     {

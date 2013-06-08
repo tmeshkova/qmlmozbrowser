@@ -226,7 +226,6 @@ FocusScope {
                 pageTitleChanged(webViewport.child.title)
             }
             onRecvAsyncMessage: {
-                //print("onRecvAsyncMessage:" + message + ", data:" + data)
                 switch (message) {
                     case "embed:filepicker": {
                         filePicker.show(data.mode, QmlHelperTools.getStorageLocation(0), data.title, data.name, data.winid)
@@ -287,7 +286,6 @@ FocusScope {
                     }
             }
             onRecvSyncMessage: {
-                print("onRecvSyncMessage:" + message + ", data:" + data)
                 switch (message) {
                 case "embed:testsyncresponse":
                     response.message = {

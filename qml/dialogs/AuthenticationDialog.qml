@@ -43,12 +43,10 @@ Dialog {
         username = defaultValue;
         accepted = false;
         visible = true;
-        print("topdialog.width:" + topdialog.width);
     }
 
     function handle(aAccepted)
     {
-        print("Handle accepted:" + aAccepted);
         accepted = aAccepted;
         topdialog.handled();
         message = ""

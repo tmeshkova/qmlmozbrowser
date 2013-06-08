@@ -281,7 +281,6 @@ Rectangle {
                 height: 50
                 text: "Select group"
                 function callback(index) {
-                    print("group index: " + index)
                     text = dialog.model.get(index).name
                     dialog.done.disconnect(selectGroup.callback)
                 }

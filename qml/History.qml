@@ -19,11 +19,9 @@ Rectangle {
     Connections {
         target: webViewport.child
         onRecvAsyncMessage: {
-            print(data.rel + " " + data.href)
             if (message == "chrome:linkadded" && data.rel == "shortcut icon") {
                 var icon = data.href
                 var url = "" + webViewport.child.url
-                print("adding favicon " + icon + " to " + url)
                 var db = openDatabaseSync("qmlbrowser","0.1","historydb", 100000)
                 db.transaction(
                     function(tx) {
