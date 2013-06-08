@@ -186,6 +186,12 @@ FocusScope {
                     selectionArea.hideSelection()
                 }
             }
+            onHandleSingleTap: {
+                if (selectionStart.visible) {
+                    retval.message = true
+                    selectionArea.hideSelection()
+                }
+            }
             onHandleLongTap: {
                 webViewport.child.sendAsyncMessage("embed:ContextMenuCreate", { x: point.x, y: point.y })
                 navigation.anchors.topMargin = 0
