@@ -22,7 +22,7 @@ quint32
 MozWindowCreator::newWindowRequested(const QString& url, const unsigned& aParentID, QNewWindowResponse* response)
 {
     QUrl newUrl;
-    if (!url.contains(QString("://"))) {
+    if (!url.contains(QString("://")) && !url.startsWith(QString("about:"))) {
         newUrl = QUrl(QString("http://") + url);
     }
     else {
