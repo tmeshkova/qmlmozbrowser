@@ -564,12 +564,15 @@ FocusScope {
             selectionStart.visible = false
             selectionEnd.visible = false
         }
-        onClicked: {
+        function copySelection() {
             webViewport.child.sendAsyncMessage("Browser:SelectionCopy", {
                                                 xPos: selectionArea.x + 20,
                                                 yPos: selectionArea.y + 20
                                               })
             hideSelection()
+        }
+        onClicked: {
+            selectionArea.copySelection()
         }
     }
 
@@ -588,7 +591,7 @@ FocusScope {
             width: 100
             anchors.left: parent.left
             text: "Copy"
-            onClicked: selectionArea.clicked()
+            onClicked: selectionArea.copySelection()
         }
 
         OverlayButton {
