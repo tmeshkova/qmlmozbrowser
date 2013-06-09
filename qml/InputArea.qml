@@ -1,4 +1,3 @@
-import Qt 4.7
 import QtQuick 1.0
 
 Item {
@@ -15,6 +14,7 @@ Item {
     property bool setUrlCall: false
     property bool setBackspace: false
     property bool selectAllOnFocus: false
+    property bool disableUnfocusOnAccept: false
 
     function setUrl(value) {
         if (!setBackspace) {
@@ -110,7 +110,9 @@ Item {
 
             Keys.onReturnPressed:{
                 root.accepted()
-                root.setFocus(false)
+                if (!disableUnfocusOnAccept) {
+                    root.setFocus(false)
+                }
             }
 
             Keys.onPressed: {

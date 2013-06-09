@@ -1,4 +1,3 @@
-import Qt 4.7
 import QtQuick 1.0
 
 ListView {
@@ -10,11 +9,28 @@ ListView {
     property bool selectionInfoAvialable: false
 
     visible: false
-    height: (contextLinkHref.length > 0 ? 240 : 0) + (contextImageSrc.length > 0 ? 240 : 0) + 80
+    height: (contextLinkHref.length > 0 ? 240 : 0) + (contextImageSrc.length > 0 ? 240 : 0) + 160
     clip: true
 
     signal startSelectionRequested()
+    signal startFindOnPageRequested()
     signal selected()
+
+    function getItemHeight(index) {
+        switch (index) {
+            case 0:
+            case 1:
+            case 2: return contextLinkHref.length > 0 ? 80 : 0
+                break
+            case 3:
+            case 4:
+            case 5: return contextImageSrc.length > 0 ? 80 : 0
+                break
+            case 6:
+            case 7: return 80
+                break
+        }
+    }
 
     model: ListModel {
         ListElement {
@@ -42,6 +58,10 @@ ListView {
             icon: "../icons/context-clipboard-image2.png"
         }
         ListElement {
+            name: "Search text on page"
+            icon: ""
+        }
+        ListElement {
             name: "Select text on page"
             icon: "../icons/context-select-text.png"
         }
@@ -50,7 +70,7 @@ ListView {
     delegate: OverlayButton {
         text: model.name
         iconSource: model.icon
-        height: (model.index < 3) ? (contextLinkHref.length > 0 ? 80 : 0) : (model.index == 6 ? 80 : (contextImageSrc.length > 0 ? 80 : 0))
+        height: getItemHeight(model.index)
         width: root.width
         visible: height > 0
         fixedHeight: 30
@@ -69,7 +89,9 @@ ListView {
                     break
                 case 5: QmlHelperTools.setClipboard(contextImageSrc)
                     break
-                case 6: root.startSelectionRequested()
+                case 6: root.startFindOnPageRequested()
+                    break
+                case 7: root.startSelectionRequested()
                     break
             }
         }

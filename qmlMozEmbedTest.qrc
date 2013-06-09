@@ -68,6 +68,8 @@
         <file>qml/StartPage.qml</file>
         <file>qml/SelectDialog.qml</file>
         <file>qml/OverlayRightMenu.qml</file>
+        <file>qml/InfoBanner.qml</file>
+        <file>qml/SearchArea.qml</file>
 
         <file alias="qml/Dialog.qml">qml/dialogs/Dialog.qml</file>
         <file alias="qml/AlertDialog.qml">qml/dialogs/AlertDialog.qml</file>

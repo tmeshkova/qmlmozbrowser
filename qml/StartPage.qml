@@ -1,4 +1,3 @@
-import Qt 4.7
 import QtMozilla 1.0
 import QtQuick 1.1
 

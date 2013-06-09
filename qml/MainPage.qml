@@ -1,4 +1,3 @@
-import Qt 4.7
 import QtMozilla 1.0
 import QtQuick 1.1
 
@@ -130,7 +129,10 @@ FocusScope {
             onTriggered: webViewport.scrollTimeout()
         }
 
-        anchors.fill: parent
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: searchArea.visible ? searchArea.top : parent.bottom
 
         Connections {
             target: QGVWindow
@@ -153,6 +155,7 @@ FocusScope {
                     "embed:permissions",
                     "embed:select",
                     "embed:login",
+                    "embed:find",
                     "chrome:linkadded",
                     "embed:alert",
                     "embed:confirm",
@@ -484,6 +487,10 @@ FocusScope {
                     selectionArea.updateSelection()
                 }
             }
+
+            onStartFindOnPageRequested: {
+                searchArea.visible = true
+            }
         }
 
         OverlayNavigation {
@@ -662,6 +669,14 @@ FocusScope {
         }
     }
 
+    SearchArea {
+        id: searchArea
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        visible: false
+    }
+
     StartPage {
         id: startPage
         width: parent.width
@@ -711,6 +726,14 @@ FocusScope {
         anchors.bottomMargin: 5
         anchors.right: parent.right
         anchors.rightMargin: -111
+    }
+
+    InfoBanner {
+        id: infoBanner
+        anchors.bottom: webViewport.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        visible: false
     }
 
     Settings {
