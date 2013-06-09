@@ -272,7 +272,7 @@ Rectangle {
                             MozContext.setPref("general.useragent.override", uaString.text)
                         }
                         else {
-                            MozContext.setPref("general.useragent.override", "")
+                            MozContext.sendObserve("embedui:clearprefs", { prefs : ["general.useragent.override"] })
                         }
                     }
                 }
