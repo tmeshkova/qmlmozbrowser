@@ -35,6 +35,10 @@
         <file>icons/context-window-url5.png</file>
         <file>icons/context-window-image5.png</file>
         <file>icons/context-select-text.png</file>
+        <file>icons/context-search.png</file>
+        <file>icons/search-next.png</file>
+        <file>icons/search-back.png</file>
+        <file>icons/close.png</file>
 
         <file>qml/main.qml</file>
         <file>qml/main_ref.qml</file>

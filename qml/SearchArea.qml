@@ -25,12 +25,12 @@ Rectangle {
                       }
                       case 1: {
                         //console.log("Page Find:  not found")
-                        infoBanner.show("Not found", "black", "")
+                        infoBanner.show("Not found", "black", "../icons/context-search.png")
                         break;
                       }
                       case 2: {
                         //console.log("Page Find: found, wrapped");
-                        infoBanner.show("Search wrapped", "black", "")
+                        infoBanner.show("Search wrapped", "black", "../icons/context-search.png")
                         break;
                       }
                       case 3: {
@@ -65,7 +65,7 @@ Rectangle {
         anchors.verticalCenter: root.verticalCenter
         anchors.right: doSearchBackwards.left
         anchors.rightMargin: 10
-        text: ">"
+        iconSource: "../icons/search-next.png"
 
         onClicked: {
             root.doSearchAgain(searchText.text, false)
@@ -79,7 +79,7 @@ Rectangle {
         anchors.verticalCenter: root.verticalCenter
         anchors.right: closeSearch.left
         anchors.rightMargin: 10
-        text: "<"
+        iconSource: "../icons/search-back.png"
 
         onClicked: {
             root.doSearchAgain(searchText.text, true)
@@ -93,7 +93,7 @@ Rectangle {
         anchors.verticalCenter: root.verticalCenter
         anchors.right: parent.right
         anchors.rightMargin: 10
-        text: "X"
+        iconSource: "../icons/close.png"
 
         onClicked: {
             root.visible = false

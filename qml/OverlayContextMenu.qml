@@ -59,7 +59,7 @@ ListView {
         }
         ListElement {
             name: "Search text on page"
-            icon: ""
+            icon: "../icons/context-search.png"
         }
         ListElement {
             name: "Select text on page"
