@@ -12,7 +12,7 @@ contains(QT_MAJOR_VERSION, 4) {
   PKGCONFIG += QJson
 } else {
   QT += qml quick widgets
-  QT += opengl declarative
+  QT += opengl
 }
 QT += dbus
 
