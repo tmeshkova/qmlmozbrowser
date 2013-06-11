@@ -65,14 +65,15 @@ QmlHelperTools::getFolderModel(QString path)
     QStringList entryList = dir.entryList(QDir::NoFilter, QDir::DirsFirst | QDir::Name | QDir::IgnoreCase);
     QFileInfoList infoList = dir.entryInfoList(QDir::NoFilter, QDir::DirsFirst | QDir::Name | QDir::IgnoreCase);
     for (int i=0; i<entryList.count(); i++) {
-        if (entryList.at(i) == ".") {
+        QString itemName = entryList.at(i);
+        if (itemName == "." || itemName.isEmpty()) {
             continue;
         }
-        if (dir.isRoot() && entryList.at(i) == "..") {
+        if (dir.isRoot() && itemName == "..") {
             continue;
         }
         QList<QVariant> resultItem;
-        resultItem.append(entryList.at(i));
+        resultItem.append(itemName);
         QFileInfo itemInfo = infoList.at(i);
         if (itemInfo.isDir()) {
             resultItem.append(0);
