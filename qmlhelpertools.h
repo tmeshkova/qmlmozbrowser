@@ -23,13 +23,17 @@ class QmlHelperTools : public QObject
 public:
     QmlHelperTools(QObject* parent = 0);
     virtual ~QmlHelperTools() {}
+    Q_PROPERTY(QString clipboard READ getClipboard WRITE setClipboard NOTIFY dataChanged)
+
+Q_SIGNALS:
+    void dataChanged();
 
 private:
-    QClipboard* clipboard;
+    QClipboard* mClipboard;
+    void setClipboard(QString text);
+    QString getClipboard();
 
 public:
-    Q_INVOKABLE void setClipboard(QString text);
-    Q_INVOKABLE QString getClipboard();
     Q_INVOKABLE QList<QVariant> getFolderModel(QString path);
     Q_INVOKABLE QString getFolderCleanPath(QString path);
     Q_INVOKABLE QString getStorageLocation(int location);

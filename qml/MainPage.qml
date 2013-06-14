@@ -96,8 +96,14 @@ FocusScope {
             MozContext.sendObserve("embedui:search", {msg:"loadxml", uri:"chrome://embedlite/content/yahoo.xml", confirm: false})
         }
         onRecvObserve: {
-            if (message == "clipboard:setdata") {
-                QmlHelperTools.setClipboard(data.data);
+            switch (message) {
+                case "clipboard:setdata" : {
+                    QmlHelperTools.clipboard = data.data;
+                    break
+                }
+                case "clipboard:getdata": {
+                    MozContext.sendObserve("embedui:clipboard", { clipboard: QmlHelperTools.clipboard })
+                }
             }
         }
     }

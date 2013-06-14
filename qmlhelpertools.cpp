@@ -24,13 +24,13 @@ QmlHelperTools::processEvents()
 void
 QmlHelperTools::setClipboard(QString text)
 {
-    clipboard->setText(text);
+    mClipboard->setText(text);
 }
 
 QString
 QmlHelperTools::getClipboard()
 {
-    return clipboard->text();
+    return mClipboard->text();
 }
 
 //QDesktopServices::DesktopLocation   0   Returns the user's desktop directory.
@@ -111,5 +111,6 @@ void QmlHelperTools::setViewPaletteColor(QObject* aView, QColor color)
 QmlHelperTools::QmlHelperTools(QObject* parent)
   : QObject(parent)
 {
-    clipboard = QApplication::clipboard();
+    mClipboard = QApplication::clipboard();
+    connect(mClipboard, SIGNAL(dataChanged()), this, SLOT(dataChanged()));
 }
