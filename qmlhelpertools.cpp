@@ -112,5 +112,5 @@ QmlHelperTools::QmlHelperTools(QObject* parent)
   : QObject(parent)
 {
     mClipboard = QApplication::clipboard();
-    connect(mClipboard, SIGNAL(dataChanged()), this, SLOT(dataChanged()));
+    connect(mClipboard, SIGNAL(dataChanged()), this, SIGNAL(dataChanged()));
 }
