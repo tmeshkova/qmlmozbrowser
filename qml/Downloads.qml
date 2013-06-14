@@ -361,7 +361,7 @@ Rectangle {
                         iconSource: "../icons/context-window-url2.png"
                         visible: true
                         onClicked: {
-                            QmlHelperTools.setClipboard(from)
+                            QmlHelperTools.clipboard = from
                         }
                     }
                 }

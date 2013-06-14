@@ -81,13 +81,13 @@ ListView {
                     break
                 case 1: saveFile(contextLinkHref)
                     break
-                case 2: QmlHelperTools.setClipboard(contextLinkHref)
+                case 2: QmlHelperTools.clipboard = contextLinkHref
                     break
                 case 3: MozContext.newWindow(contextImageSrc, 0)
                     break
                 case 4: saveFile(contextImageSrc)
                     break
-                case 5: QmlHelperTools.setClipboard(contextImageSrc)
+                case 5: QmlHelperTools.clipboard = contextImageSrc
                     break
                 case 6: root.startFindOnPageRequested()
                     break
