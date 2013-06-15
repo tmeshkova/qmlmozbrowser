@@ -19,6 +19,7 @@ BuildRequires:  pkgconfig(Qt5Widgets)
 BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  qtmozembed-qt5-devel
 BuildRequires:  qt5-default
+BuildRequires:  qt5-qttools
 Requires:  embedlite-components-qt5
 
 %description
@@ -29,12 +30,12 @@ Cutefox browser based on Gecko and written in Qt/QML
 
 %build
 DEST_OBJ_DIR=objdir
-%qmake OBJ_DEB_DIR=$DEST_OBJ_DIR
+%qmake5 OBJ_DEB_DIR=$DEST_OBJ_DIR
 make %{?jobs:-j%jobs}
 
 %install
 %{__rm} -rf %{buildroot}
-%qmake_install
+%qmake5 install
 
 %{__mkdir} -p %{buildroot}/usr/share/applications
 %{__mkdir} %{buildroot}/usr/share/cutefox
