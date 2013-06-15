@@ -16,9 +16,12 @@ mkdir -p $TARGET_DIR
 
 FILES_LIST="
 $OBJPREFIX/qmlMozEmbedTest
+$OBJPREFIX/qmlMozEmbedTestQt5
 "
 for str in $FILES_LIST; do
+  if [ -f $str ]; then
     fname="${str##*/}"
     rm -f $TARGET_DIR/$fname;
     ln -s $(pwd)/$str $TARGET_DIR/$fname;
+  fi
 done
