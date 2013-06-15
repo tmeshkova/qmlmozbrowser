@@ -1,5 +1,7 @@
 isEmpty(OBJ_DEB_DIR) {
   OBJ_DEB_DIR=../$$OBJ_BUILD_PATH
+} else {
+  OBJ_DEB_DIR=../$$OBJ_DEB_DIR
 }
 
 isEmpty(DEFAULT_COMPONENT_PATH) {
