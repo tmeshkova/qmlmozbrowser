@@ -150,6 +150,9 @@ MozWindowCreator::CreateNewWindow(const QString& url, quint32 *aUniqueID, quint3
     view->setWindowFlags(Qt::Window | Qt::WindowTitleHint |
                          Qt::WindowMinMaxButtonsHint |
                          Qt::WindowCloseButtonHint);
+    // On Qt5 this need to be enabled by force, otherwise events blocked
+    view->viewport()->setEnabled(true);
+    view->setEnabled(true);
 
     return view;
 }
