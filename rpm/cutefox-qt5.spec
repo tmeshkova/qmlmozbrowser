@@ -18,6 +18,7 @@ BuildRequires:  pkgconfig(Qt5OpenGL)
 BuildRequires:  pkgconfig(Qt5Widgets)
 BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  qtmozembed-qt5-devel
+BuildRequires:  qt5-default
 Requires:  embedlite-components-qt5
 
 %description
