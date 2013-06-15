@@ -48,7 +48,11 @@ QmlHelperTools::getClipboard()
 QString
 QmlHelperTools::getStorageLocation(int location)
 {
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
     return QDesktopServices::storageLocation((QDesktopServices::StandardLocation)location);
+#else
+    return QStandardPaths::standardLocations((QStandardPaths::StandardLocation)location).first();
+#endif
 }
 
 QString
