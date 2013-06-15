@@ -11,12 +11,14 @@ Source0:    %{name}-%{version}.tar.bz2
 Source1:    runcutefox.sh
 Source2:    cutefox-large.png
 Source3:    cutefox.desktop
-BuildRequires:  pkgconfig(QtGui)
-BuildRequires:  pkgconfig(QJson)
-BuildRequires:  pkgconfig(QtOpenGL)
-BuildRequires:  pkgconfig(x11)
-BuildRequires:  pkgconfig(qtembedwidget)
-Requires:  embedlite-components
+BuildRequires:  pkgconfig(Qt5Core)
+BuildRequires:  pkgconfig(Qt5Gui)
+BuildRequires:  pkgconfig(Qt5Network)
+BuildRequires:  pkgconfig(Qt5OpenGL)
+BuildRequires:  pkgconfig(Qt5Widgets)
+BuildRequires:  pkgconfig(Qt5Quick)
+BuildRequires:  qtmozembed-qt5-devel
+Requires:  embedlite-components-qt5
 
 %description
 Cutefox browser based on Gecko and written in Qt/QML

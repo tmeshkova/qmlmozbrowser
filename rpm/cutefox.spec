@@ -15,7 +15,7 @@ BuildRequires:  pkgconfig(QtGui)
 BuildRequires:  pkgconfig(QJson)
 BuildRequires:  pkgconfig(QtOpenGL)
 BuildRequires:  pkgconfig(x11)
-BuildRequires:  pkgconfig(qtembedwidget)
+BuildRequires:  qtmozembed-devel
 Requires:  embedlite-components
 
 %description

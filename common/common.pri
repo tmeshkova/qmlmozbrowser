@@ -29,7 +29,15 @@ contains(CONFIG,qdeclarative-boostable):contains(MEEGO_EDITION,harmattan) {
 INCLUDEPATH += ../common
 
 isEmpty(QTEMBED_LIB) {
-  PKGCONFIG += qtembedwidget x11
+  PKGCONFIG += qtembedwidget
 } else {
-  LIBS+=$$QTEMBED_LIB -lX11
+  LIBS+=$$QTEMBED_LIB
+}
+
+contains(QT_MAJOR_VERSION, 4) {
+  isEmpty(QTEMBED_LIB) {
+    PKGCONFIG += x11
+  } else {
+    LIBS+=-lX11
+  }
 }
