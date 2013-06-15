@@ -17,6 +17,7 @@ BuildRequires:  pkgconfig(Qt5Network)
 BuildRequires:  pkgconfig(Qt5OpenGL)
 BuildRequires:  pkgconfig(Qt5Widgets)
 BuildRequires:  pkgconfig(Qt5Quick)
+BuildRequires:  pkgconfig(Qt5Declarative)
 BuildRequires:  qtmozembed-qt5-devel
 BuildRequires:  qt5-default
 BuildRequires:  qt5-qttools
