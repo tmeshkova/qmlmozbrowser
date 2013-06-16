@@ -33,7 +33,7 @@ make %{?jobs:-j%jobs}
 
 %install
 %{__rm} -rf %{buildroot}
-%qmake5 install
+%qmake5_install
 
 %{__mkdir} -p %{buildroot}/usr/share/applications
 %{__mkdir} %{buildroot}/usr/share/cutefox

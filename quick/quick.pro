@@ -12,3 +12,5 @@ CONFIG -= app_bundle
 
 include(../common/common.pri)
 
+target.path = $$PREFIX/bin
+INSTALLS += target

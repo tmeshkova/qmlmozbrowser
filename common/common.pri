@@ -12,9 +12,6 @@ isEmpty(DEFAULT_COMPONENT_PATH) {
 
 PREFIX = /usr
 
-target.path = $$PREFIX/bin
-INSTALLS += target
-
 contains(CONFIG,qdeclarative-boostable):contains(MEEGO_EDITION,harmattan) {
     DEFINES += HARMATTAN_BOOSTER
 }
