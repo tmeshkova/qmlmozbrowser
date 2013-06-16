@@ -8,9 +8,6 @@ Group:      Applications/Internet
 License:    Mozilla License
 URL:        https://github.com/tmeshkova/qmlmozbrowser
 Source0:    %{name}-%{version}.tar.bz2
-Source1:    runcutefox.sh
-Source2:    cutefox-large.png
-Source3:    cutefox.desktop
 BuildRequires:  pkgconfig(QtGui)
 BuildRequires:  pkgconfig(QJson)
 BuildRequires:  pkgconfig(QtOpenGL)
@@ -35,9 +32,9 @@ make %{?jobs:-j%jobs}
 
 %{__mkdir} -p %{buildroot}/usr/share/applications
 %{__mkdir} %{buildroot}/usr/share/cutefox
-%{__install} -m 644 %{SOURCE2} %{buildroot}%{_datadir}/cutefox
-%{__install} -m 644 %{SOURCE3} %{buildroot}%{_datadir}/applications/
-%{__install} -m 755 %{SOURCE1} %{buildroot}/usr/bin/
+%{__install} -m 644 rpm/cutefox-large.png %{buildroot}%{_datadir}/cutefox
+%{__install} -m 644 rpm/cutefox.desktop %{buildroot}%{_datadir}/applications/
+%{__install} -m 755 rpm/runcutefox.sh %{buildroot}/usr/bin/
 
 %files
 %defattr(-,root,root,-)
