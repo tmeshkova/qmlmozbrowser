@@ -1,6 +1,6 @@
 %define dest_obj_dir objdir
 
-Name:       cutefox
+Name:       cutefox-qt5
 Summary:    Cutefox browser
 Version:    0.2
 Release:    1
