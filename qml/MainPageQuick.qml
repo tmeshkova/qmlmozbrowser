@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtMozilla 1.0
+import Qt5Mozilla 1.0
 
 Item {
     id: mainScope

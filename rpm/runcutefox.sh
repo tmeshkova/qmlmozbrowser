@@ -1,3 +1,3 @@
 #!/bin/sh
 
-qmlMozEmbedTest -fullscreen
+qmlMozEmbedTest -fullscreen -url about:license

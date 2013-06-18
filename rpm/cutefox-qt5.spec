@@ -11,6 +11,9 @@ Source0:    %{name}-%{version}.tar.bz2
 Source1:    runcutefox.sh
 Source2:    cutefox-large.png
 Source3:    cutefox.desktop
+Source4:    runcutefoxqt5.sh
+Source5:    cutefox-qt5-large.png
+Source6:    cutefox-qt5.desktop
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Gui)
 BuildRequires:  pkgconfig(Qt5Network)
@@ -44,6 +47,9 @@ make %{?jobs:-j%jobs}
 %{__install} -m 644 %{SOURCE2} %{buildroot}%{_datadir}/cutefox
 %{__install} -m 644 %{SOURCE3} %{buildroot}%{_datadir}/applications/
 %{__install} -m 755 %{SOURCE1} %{buildroot}/usr/bin/
+%{__install} -m 644 %{SOURCE5} %{buildroot}%{_datadir}/cutefox
+%{__install} -m 644 %{SOURCE6} %{buildroot}%{_datadir}/applications/
+%{__install} -m 755 %{SOURCE4} %{buildroot}/usr/bin/
 
 %files
 %defattr(-,root,root,-)

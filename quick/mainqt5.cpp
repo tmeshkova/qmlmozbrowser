@@ -8,12 +8,12 @@ int main(int argc, char **argv)
 
     QApplication app(argc, argv);
 
-    qmlRegisterType<QuickMozView>("QtMozilla", 1, 0, "QmlMozView");
+    qmlRegisterType<QuickMozView>("Qt5Mozilla", 1, 0, "QmlMozView");
 
     QQuickView view;
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setSource(QUrl("qrc:/qml/MainPageQuick.qml"));
-    view.show();
+    view.showFullScreen();
 
     return app.exec();
 }
