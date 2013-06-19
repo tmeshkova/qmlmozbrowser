@@ -8,8 +8,6 @@ int main(int argc, char **argv)
 
     QApplication app(argc, argv);
 
-    qmlRegisterType<QuickMozView>("Qt5Mozilla", 1, 0, "QmlMozView");
-
     QQuickView view;
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setSource(QUrl("qrc:/qml/MainPageQuick.qml"));
