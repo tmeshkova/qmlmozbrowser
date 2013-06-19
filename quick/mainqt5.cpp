@@ -11,7 +11,8 @@ int main(int argc, char **argv)
     QQuickView view;
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setSource(QUrl("qrc:/qml/MainPageQuick.qml"));
-    view.showFullScreen();
+    view.resize(800, 600);
+    view.show();
 
     return app.exec();
 }
