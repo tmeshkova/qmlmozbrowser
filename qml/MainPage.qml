@@ -143,10 +143,10 @@ FocusScope {
         Connections {
             target: QGVWindow
             onDisplayEntered: {
-                webViewport.child.suspendView();
+                webViewport.child.resumeView();
             }
             onDisplayExited: {
-                webViewport.child.resumeView();
+                webViewport.child.suspendView();
             }
         }
 
