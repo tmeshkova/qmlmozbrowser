@@ -5,7 +5,7 @@ Item {
     id: mainScope
     objectName: "mainScope"
 
-    property alias webview: webView
+    property alias webview: webViewport
 
     signal pageTitleChanged(string title)
     signal newWindow(string url)
@@ -14,7 +14,7 @@ Item {
         id: navigationBar
         color: "#efefef"
         height: 38
-        z: webView.z + 1
+        z: webViewport.z + 1
         anchors {
             top: parent.top
             left: parent.left
@@ -48,12 +48,16 @@ Item {
                     right: parent.right
                     margins: 6
                 }
+                Keys.onReturnPressed:{
+                    webViewport.load(addressLine.text)
+                }
             }
         }
     }
 
     QmlMozView {
-        id: webView
+        id: webViewport
+        objectName: "webViewport"
         clip: false
         visible: true
         focus: true
@@ -63,6 +67,18 @@ Item {
             left: parent.left
             right: parent.right
             bottom: parent.bottom
+        }
+        Connections {
+            target: webViewport
+            onViewInitialized: {
+                print("QmlMozView Initialized");
+                if (startURL.length != 0 && createParentID == 0) {
+                    webViewport.load(startURL)
+                }
+                else if (createParentID == 0) {
+                    webViewport.load("about:blank")
+                }
+            }
         }
     }
 }
