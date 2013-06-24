@@ -16,7 +16,6 @@
 #include <QDesktopServices>
 #include <QColor>
 
-class QGraphicsView;
 class QmlHelperTools : public QObject
 {
     Q_OBJECT

@@ -4,6 +4,7 @@
 #include <QTimer>
 #include "quickmozview.h"
 #include "qmozcontext.h"
+#include "qmozcontext.h"
 
 int main(int argc, char **argv)
 {
@@ -45,9 +46,10 @@ int main(int argc, char **argv)
 
     QQuickView view;
     view.setResizeMode(QQuickView::SizeRootObjectToView);
-    view.setSource(QUrl("qrc:/qml/MainPageQuick.qml"));
     view.rootContext()->setContextProperty("startURL", QVariant(urlstring));
     view.rootContext()->setContextProperty("createParentID", QVariant(0));
+    view.rootContext()->setContextProperty("MozContext", QMozContext::GetInstance());
+    view.setSource(QUrl("qrc:/qml/MainPageQuick.qml"));
     view.resize(800, 600);
     view.show();
 
