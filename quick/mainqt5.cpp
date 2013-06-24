@@ -49,9 +49,13 @@ int main(int argc, char **argv)
     view.rootContext()->setContextProperty("startURL", QVariant(urlstring));
     view.rootContext()->setContextProperty("createParentID", QVariant(0));
     view.rootContext()->setContextProperty("MozContext", QMozContext::GetInstance());
-    view.setSource(QUrl("qrc:/qml/MainPageQuick.qml"));
+    view.setSource(qmlstring.isEmpty() ? QUrl("qrc:/qml/MainPageQuick.qml") : QUrl(qmlstring));
     view.resize(800, 600);
-    view.show();
+    if (isFullscreen)
+        view.showFullScreen();
+    else {
+        view.show();
+    }
 
     QString componentPath(DEFAULT_COMPONENTS_PATH);
     qDebug() << "Load components from:" << componentPath + QString("/components") + QString("/EmbedLiteBinComponents.manifest");
