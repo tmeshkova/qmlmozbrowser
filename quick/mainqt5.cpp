@@ -1,7 +1,8 @@
-#include <QApplication>
+#include <QGuiApplication>
 #include <QtQuick/QQuickView>
 #include <QQmlContext>
 #include <QTimer>
+#include <QScreen>
 #include "quickmozview.h"
 #include "qmozcontext.h"
 #include "qmozcontext.h"
@@ -10,7 +11,7 @@ int main(int argc, char **argv)
 {
     setenv("QML_BAD_GUI_RENDER_LOOP", "1", 1);
 
-    QApplication app(argc, argv);
+    QGuiApplication app(argc, argv);
 
     QString path, urlstring, qmlstring;
     bool isFullscreen = false;
@@ -50,10 +51,13 @@ int main(int argc, char **argv)
     view.rootContext()->setContextProperty("createParentID", QVariant(0));
     view.rootContext()->setContextProperty("MozContext", QMozContext::GetInstance());
     view.setSource(qmlstring.isEmpty() ? QUrl("qrc:/qml/MainPageQuick.qml") : QUrl(qmlstring));
-    view.resize(800, 600);
-    if (isFullscreen)
+    if (isFullscreen) {
+        QRect r = QGuiApplication::primaryScreen()->geometry();
+        view.resize(r.width(), r.height());
         view.showFullScreen();
+    }
     else {
+        view.resize(800, 600);
         view.show();
     }
 
