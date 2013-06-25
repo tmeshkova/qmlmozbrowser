@@ -202,6 +202,7 @@ FocusScope {
                 }
             }
             onHandleLongTap: {
+                // MozContext.sendObserve("embedui:initsync", { username: "Services Password | name", password: "Services Password | password", key: "Services Encryption | key" })
                 webViewport.child.sendAsyncMessage("embed:ContextMenuCreate", { x: point.x, y: point.y })
                 navigation.anchors.topMargin = 0
                 var posY = mapToItem(navigation, point.x, point.y).y - navigation.height/2
