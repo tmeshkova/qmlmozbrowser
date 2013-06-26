@@ -4,8 +4,8 @@ SOURCES += mainqt5.cpp
 
 QT += opengl declarative dbus quick
 
-QML_FILES = ../qml/*.qml
-RESOURCES += ../qmlMozEmbedTest.qrc
+QML_FILES = qml/*.qml
+RESOURCES += qmlMozEmbedTest.qrc
 
 TEMPLATE = app
 CONFIG -= app_bundle

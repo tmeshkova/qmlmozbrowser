@@ -8,8 +8,8 @@ contains(QT_MAJOR_VERSION, 4) {
   PKGCONFIG += QJson
 }
 
-QML_FILES = ../qml/*.qml
-RESOURCES += ../qmlMozEmbedTest.qrc
+QML_FILES = qml/*.qml
+RESOURCES += qmlMozEmbedTest.qrc
 
 TEMPLATE = app
 CONFIG -= app_bundle

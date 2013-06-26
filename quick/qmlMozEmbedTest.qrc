@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/MainPageQuick.qml</file>
+    </qresource>
+</RCC>
