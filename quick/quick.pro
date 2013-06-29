@@ -2,7 +2,10 @@ CONFIG += link_pkgconfig
 TARGET = qmlMozEmbedTestQt5
 SOURCES += mainqt5.cpp
 
-QT += opengl declarative dbus quick
+QT += dbus quick
+!isEmpty(BUILD_QT5QUICK1) {
+  QT += declarative
+}
 
 QML_FILES = qml/*.qml
 RESOURCES += qmlMozEmbedTestQt5.qrc
