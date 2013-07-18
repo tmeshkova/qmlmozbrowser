@@ -4,7 +4,6 @@ Version=1.0
 Type=Application
 Terminal=false
 Name=Cutefox Qt5
-Path=/usr/lib/xulrunner-24.0a1
 Exec=/usr/bin/runcutefoxqt5.sh
 Icon=/usr/share/cutefox/cutefox-large.png
 X-Window-Icon=
