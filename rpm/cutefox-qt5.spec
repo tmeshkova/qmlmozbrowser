@@ -44,9 +44,6 @@ make %{?jobs:-j%jobs}
 
 %{__mkdir} -p %{buildroot}/usr/share/applications
 %{__mkdir} %{buildroot}/usr/share/cutefox
-%{__install} -m 644 %{SOURCE2} %{buildroot}%{_datadir}/cutefox
-%{__install} -m 644 %{SOURCE3} %{buildroot}%{_datadir}/applications/
-%{__install} -m 755 %{SOURCE1} %{buildroot}/usr/bin/
 %{__install} -m 644 %{SOURCE5} %{buildroot}%{_datadir}/cutefox
 %{__install} -m 644 %{SOURCE6} %{buildroot}%{_datadir}/applications/
 %{__install} -m 755 %{SOURCE4} %{buildroot}/usr/bin/
