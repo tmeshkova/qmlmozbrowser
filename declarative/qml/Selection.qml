@@ -7,9 +7,22 @@ Item {
     property int selectedIndex
     property bool selectMulti: false
     property bool syncLock: false
+    property variant windowID
+
+    signal selected(variant data, variant windowID)
 
     function done() {
-        syncLock = false
+        if (syncLock) {
+            syncLock = false
+        } else {
+            root.visible = false
+            if (selectMulti) {
+                root.selected(selectedItems, windowID)
+            }
+            else {
+                root.selected(selectedIndex, windowID)
+            }
+        }
     }
 
     function showSync(data) {
@@ -35,6 +48,21 @@ Item {
         else {
             return selectedIndex
         }
+    }
+
+    function showAsync(data) {
+        windowID = data.windowID
+        selectMulti = data.list.multiple
+        var selectArr = []
+        selectModel.clear()
+        for (var i=0; i<data.list.selected.length; i++) {
+            selectArr.push(data.list.selected[i])
+        }
+        selectedItems = selectArr
+        for (var i=0; i<data.list.listitems.length; i++) {
+            selectModel.append(data.list.listitems[i])
+        }
+        root.visible = true
     }
 
     ListModel {

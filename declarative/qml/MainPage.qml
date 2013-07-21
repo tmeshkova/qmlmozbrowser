@@ -70,6 +70,7 @@ FocusScope {
                 { n: "embedlite.azpc.handle.longtap", v: false},
                 { n: "embedlite.azpc.json.longtap", v: true},
                 { n: "embedlite.azpc.json.viewport", v: true},
+                { n: "embedlite.select.list.async", v: true},
                 { n: "browser.ui.touch.left", v: 32},
                 { n: "browser.ui.touch.right", v: 32},
                 { n: "browser.ui.touch.top", v: 48},
@@ -160,6 +161,7 @@ FocusScope {
                     "embed:filepicker",
                     "embed:permissions",
                     "embed:select",
+                    "embed:selectasync",
                     "embed:login",
                     "embed:find",
                     "chrome:linkadded",
@@ -295,6 +297,10 @@ FocusScope {
                         } else {
                             contextMenu.selectionInfoAvialable = false;
                         }
+                        break;
+                    }
+                    case "embed:selectasync": {
+                        selectCombo.showAsync(data)
                         break;
                     }
                     default:
@@ -794,6 +800,12 @@ FocusScope {
     Selection {
         id: selectCombo
         anchors.fill: parent
+        onSelected: {
+            webViewport.child.sendAsyncMessage("embedui:selectresponse", {
+                                                windowID: windowID,
+                                                returnValue: data
+                                               })
+        }
     }
 
     Keys.onPressed: {
