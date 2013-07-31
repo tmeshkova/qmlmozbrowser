@@ -3,66 +3,38 @@ import QtQuick 1.0
 Item {
     id: root
     visible: false
-    property variant selectedItems
-    property int selectedIndex
     property bool selectMulti: false
-    property bool syncLock: false
-    property variant windowID
 
-    signal selected(variant data, variant windowID)
+    signal selected(variant data)
+    signal canceled()
 
     function done() {
-        if (syncLock) {
-            syncLock = false
-        } else {
-            root.visible = false
-            if (selectMulti) {
-                root.selected(selectedItems, windowID)
-            }
-            else {
-                root.selected(selectedIndex, windowID)
-            }
-        }
-    }
+        var result = []
+        var item
 
-    function showSync(data) {
-        selectMulti = data.multiple
-        var selectArr = []
-        selectModel.clear()
-        for (var i=0; i<data.selected.length; i++) {
-            selectArr.push(data.selected[i])
-        }
-        selectedItems = selectArr
-        for (var i=0; i<data.listitems.length; i++) {
-            selectModel.append(data.listitems[i])
-        }
-        syncLock = true
-        root.visible = true
-        while (syncLock) {
-            QmlHelperTools.processEvents()
+        for (var i = 0; i < selectModel.count; i++) {
+            item = selectModel.get(i)
+            result.push({
+                "selected": item.selected,
+                "index": item.index
+            })
         }
         root.visible = false
-        if (selectMulti) {
-            return selectedItems
-        }
-        else {
-            return selectedIndex
-        }
+        selected(result)
     }
 
-    function showAsync(data) {
-        windowID = data.windowID
-        selectMulti = data.list.multiple
-        var selectArr = []
+    function cancel() {
+        root.visible = false
+        canceled()
+    }
+
+    function show(data) {
+        selectMulti = data.multiple
         selectModel.clear()
-        for (var i=0; i<data.list.selected.length; i++) {
-            selectArr.push(data.list.selected[i])
-        }
-        selectedItems = selectArr
-        for (var i=0; i<data.list.listitems.length; i++) {
-            selectModel.append(data.list.listitems[i])
-        }
         root.visible = true
+        for (var i=0; i < data.options.length; i++) {
+            selectModel.append(data.options[i])
+        }
     }
 
     ListModel {
@@ -73,8 +45,7 @@ Item {
         id: rejectArea
         anchors.fill: parent
         onClicked: {
-            selectedIndex = -1
-            done()
+            cancel()
         }
     }
 
@@ -134,6 +105,15 @@ Item {
             clip: true
             width: parent.width - 20
             height: root.height - 160
+
+            section {
+                property: "group"
+                delegate: Text {
+                    font.pixelSize: 30
+                    text: section
+                }
+            }
+
             model: selectModel
             delegate: Item {
                 height: 60
@@ -141,31 +121,31 @@ Item {
                 Rectangle {
                     anchors.fill: parent
                     anchors.margins: 1
-                    color: mArea.pressed ? "gray" : (selectedItems[index] ? "lightgray" : "transparent")
+                    color: mArea.pressed ? "gray" : (model.selected ? "lightgray" : "transparent")
                 }
                 Text {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.margins: 3
                     anchors.verticalCenter: parent.verticalCenter
-                    font.pixelSize: model.isGroup ? 30 : 20
+                    font.pixelSize: 20
                     text: model.label
                 }
                 MouseArea {
                     id: mArea
                     anchors.fill: parent
+                    enabled: !model.disabled
                     onClicked: {
-                        if (!model.isGroup) {
-                            if (selectMulti) {
-                                var arr = selectedItems
-                                arr[index] = !arr[index]
-                                selectedItems = arr
-                                arr = []
+                        if (selectMulti) {
+                            selectModel.setProperty(index, "selected", !model.selected)
+                        } else {
+                            selectModel.setProperty(index, "selected", true)
+                            for (var i = 0; i < selectModel.count; i++) {
+                                if (i !== index) {
+                                    selectModel.setProperty(i, "selected", false)
+                                }
                             }
-                            else {
-                                selectedIndex = model.id
-                                done()
-                            }
+                            done()
                         }
                     }
                 }
@@ -195,8 +175,7 @@ Item {
                 width: btOk.visible ? (content.width / 2 - 15) : 200
                 text: "Cancel"
                 onClicked: {
-                    selectedIndex = -1
-                    done()
+                    cancel()
                 }
             }
         }
