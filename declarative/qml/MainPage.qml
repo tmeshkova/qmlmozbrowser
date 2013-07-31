@@ -115,6 +115,7 @@ FocusScope {
         objectName: "webViewport"
         visible: true
         focus: true
+        enabled: !selectCombo.visible
         property bool movingHorizontally: false
         property bool movingVertically: true
         property variant visibleArea: QtObject {
@@ -156,7 +157,7 @@ FocusScope {
             onViewInitialized: {
                 print("QmlMozView Initialized");
                 webViewport.child.loadFrameScript("chrome://embedlite/content/embedhelper.js");
-                webViewport.child.loadFrameScript("chrome://embedlite/content/SelectHelper.js");
+                webViewport.child.loadFrameScript("chrome://embedlite/content/SelectAsyncHelper.js");
                 webViewport.child.addMessageListeners([
                     "embed:filepicker",
                     "embed:permissions",
@@ -300,7 +301,7 @@ FocusScope {
                         break;
                     }
                     case "embed:selectasync": {
-                        selectCombo.showAsync(data)
+                        selectCombo.show(data)
                         break;
                     }
                     default:
@@ -801,10 +802,10 @@ FocusScope {
         id: selectCombo
         anchors.fill: parent
         onSelected: {
-            webViewport.child.sendAsyncMessage("embedui:selectresponse", {
-                                                windowID: windowID,
-                                                returnValue: data
-                                               })
+            webViewport.child.sendAsyncMessage("embedui:selectresponse", {"result": data})
+        }
+        onCanceled: {
+            webViewport.child.sendAsyncMessage("embedui:selectresponse", {"result": -1})
         }
     }
 
