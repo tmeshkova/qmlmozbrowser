@@ -10,6 +10,7 @@
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
+    app.setQuitOnLastWindowClosed(true);
 
     QString path, urlstring, qmlstring;
     bool isFullscreen = false;
@@ -70,6 +71,7 @@ int main(int argc, char **argv)
     QMozContext::GetInstance()->addComponentManifest(componentPath + QString("/chrome") + QString("/EmbedLiteOverrides.manifest"));
 
     QTimer::singleShot(0, QMozContext::GetInstance(), SLOT(runEmbedding()));
+    QObject::connect(&app, SIGNAL(lastWindowClosed()), QMozContext::GetInstance(), SLOT(stopEmbedding()));
 
     return app.exec();
 }
