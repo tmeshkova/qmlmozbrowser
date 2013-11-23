@@ -57,7 +57,7 @@ clean:
 	rm -f build-$(DEST_OBJ_DIR)-stamp
 	rm -f configure-$(DEST_OBJ_DIR)-stamp
 	rm -rf $(CURDIR)/$(DEST_OBJ_DIR)
-	$(MAKE) distclean
+	[ ! -f Makefile ] || $(MAKE) distclean
 	dh_clean
 
 install: build
