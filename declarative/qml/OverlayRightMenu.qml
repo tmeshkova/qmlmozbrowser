@@ -84,7 +84,7 @@ Rectangle {
                 iconSource: "../icons/plus.png"
 
                 onClicked: {
-                    MozContext.newWindow("about:blank", 0)
+                    MozContext.createView("about:blank", 0)
                     root.toggle()
                 }
             }

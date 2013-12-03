@@ -19,7 +19,7 @@ MozWindowCreator::MozWindowCreator(const QString& aQmlstring, const bool& aGlwid
 }
 
 quint32
-MozWindowCreator::newWindowRequested(const QString& url, const unsigned& aParentID, QNewWindowResponse* response)
+MozWindowCreator::createView(const QString &url, const quint32 &aParentID)
 {
     QUrl newUrl;
     if (!url.contains(QString("://")) && !url.startsWith(QString("about:"))) {
@@ -68,9 +68,7 @@ MozWindowCreator::newWindowRequested(const QString& url, const unsigned& aParent
         view->showFullScreen();
     else
         view->show();
-    if (response) {
-        response->setNewWindowID(uniqueID);
-    }
+    return uniqueID;
 }
 
 void

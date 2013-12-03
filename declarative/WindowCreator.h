@@ -1,14 +1,12 @@
 #include <QDeclarativeView>
+#include "qmozviewcreator.h"
 
-class QNewWindowResponse;
-class MozWindowCreator : public QObject
+class MozWindowCreator : public QMozViewCreator
 {
-    Q_OBJECT
 public:
     MozWindowCreator(const QString& aQmlstring, const bool& aGlwidget, const bool& aIsFullScreen);
     QDeclarativeView* CreateNewWindow(const QString& url = QString("about:blank"), quint32* aUniqueID = 0, quint32 aParentID = 0);
-public Q_SLOTS:
-    quint32 newWindowRequested(const QString& url, const unsigned& aParentID, QNewWindowResponse* response);
+    virtual quint32 createView(const QString &url, const quint32 &parentId);
     void bringToFront();
 
 public:
