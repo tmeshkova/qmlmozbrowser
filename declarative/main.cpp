@@ -154,8 +154,10 @@ int main(int argc, char *argv[])
 
     if (isFullscreen)
         view->showFullScreen();
-    else
+    else {
+        view->resize(540, 960);
         view->show();
+    }
 
     qDebug() << "Starting Application!!!";
 
