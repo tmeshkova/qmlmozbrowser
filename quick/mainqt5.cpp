@@ -44,6 +44,8 @@ int main(int argc, char **argv)
         }
     }
 
+    QMozContext::GetInstance()->setCompositorInSeparateThread(true);
+
     QQuickView view;
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.rootContext()->setContextProperty("startURL", QVariant(urlstring));
