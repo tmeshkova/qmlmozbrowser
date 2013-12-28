@@ -14,6 +14,7 @@ Item {
         id: navigationBar
         color: "#efefef"
         height: 38
+        visible: true
         z: webViewport.z + 1
         anchors {
             top: parent.top
