@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
  */
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QGLWidget>
 #include <QDebug>
 #include <QStringList>
@@ -56,21 +56,12 @@ Q_DECL_EXPORT
 #endif
 int main(int argc, char *argv[])
 {
-#if defined(Q_WS_X11)
-#if QT_VERSION >= 0x040800
-    QApplication::setAttribute(Qt::AA_X11InitThreads, true);
-#else
-    XInitThreads();
-    QApplication::setAttribute(static_cast<Qt::ApplicationAttribute>(10), true);
-#endif
-#endif
-
-    QApplication *application;
+    QGuiApplication *application;
 #ifdef HARMATTAN_BOOSTER
     application = MDeclarativeCache::qApplication(argc, argv);
 #else
     qWarning() << Q_FUNC_INFO << "Warning! Running without booster. This may be a bit slower.";
-    QApplication stackApp(argc, argv);
+    QGuiApplication stackApp(argc, argv);
     application = &stackApp;
 #endif
 

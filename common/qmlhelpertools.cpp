@@ -4,7 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QUrl>
 #include <QGraphicsView>
 #include "qmlhelpertools.h"
@@ -48,11 +48,7 @@ QmlHelperTools::getClipboard()
 QString
 QmlHelperTools::getStorageLocation(int location)
 {
-#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
-    return QDesktopServices::storageLocation((QDesktopServices::StandardLocation)location);
-#else
     return QStandardPaths::standardLocations((QStandardPaths::StandardLocation)location).first();
-#endif
 }
 
 QString
@@ -115,5 +111,5 @@ void QmlHelperTools::setViewPaletteColor(QObject* aView, QColor color)
 QmlHelperTools::QmlHelperTools(QObject* parent)
   : QObject(parent)
 {
-    mClipboard = QApplication::clipboard();
+    mClipboard = QGuiApplication::clipboard();
 }

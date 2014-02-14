@@ -99,11 +99,7 @@ MozWindowCreator::CreateNewWindow(const QString& url, quint32 *aUniqueID, quint3
 
     QUrl qml;
     if (qmlstring.isEmpty())
-#if defined(__arm__) && !defined(Q_WS_MAEMO_5) && (QT_VERSION <= QT_VERSION_CHECK(5, 0, 0))
-        qml = QUrl("qrc:/qml/main_meego.qml");
-#else
         qml = QUrl("qrc:/qml/main.qml");
-#endif
     else
         qml = QUrl::fromUserInput(qmlstring);
 
