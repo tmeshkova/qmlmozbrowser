@@ -13,6 +13,7 @@
 
 #include <QtDeclarative/QDeclarativeView>
 
+class QGuiApplication;
 class QmlApplicationViewer : public QDeclarativeView
 {
     Q_OBJECT
@@ -24,10 +25,10 @@ public:
         ScreenOrientationAuto
     };
 
-    explicit QmlApplicationViewer(QWidget *parent = 0);
+    explicit QmlApplicationViewer(QWidget* parent = 0);
     virtual ~QmlApplicationViewer();
 
-    static QmlApplicationViewer *create();
+    static QmlApplicationViewer* create();
 
     void setMainQmlFile(const QString &file);
     void addImportPath(const QString &path);
@@ -47,10 +48,10 @@ protected:
     virtual bool event(QEvent*);
 
 private:
-    explicit QmlApplicationViewer(QDeclarativeView *view, QWidget *parent);
+    explicit QmlApplicationViewer(QDeclarativeView* view, QWidget* parent);
     class QmlApplicationViewerPrivate *d;
 };
 
-QApplication *createApplication(int &argc, char **argv);
+QGuiApplication* createApplication(int &argc, char **argv);
 
 #endif // QMLAPPLICATIONVIEWER_H
