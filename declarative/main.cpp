@@ -56,12 +56,12 @@ Q_DECL_EXPORT
 #endif
 int main(int argc, char *argv[])
 {
-    QGuiApplication *application;
+    QApplication *application;
 #ifdef HARMATTAN_BOOSTER
     application = MDeclarativeCache::qApplication(argc, argv);
 #else
     qWarning() << Q_FUNC_INFO << "Warning! Running without booster. This may be a bit slower.";
-    QGuiApplication stackApp(argc, argv);
+    QApplication stackApp(argc, argv);
     application = &stackApp;
 #endif
 
