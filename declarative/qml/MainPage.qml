@@ -219,7 +219,7 @@ FocusScope {
                 // Way to forward context menu to UI
                 webViewport.child.sendAsyncMessage("Gesture:ContextMenuSynth", { x: point.x, y: point.y })
             }
-            onViewAreaChanged: {
+            onScrollableOffsetChanged: {
                 var r = webViewport.child.contentRect
                 var offset = webViewport.child.scrollableOffset
                 var s = webViewport.child.scrollableSize
