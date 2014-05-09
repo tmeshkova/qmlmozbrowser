@@ -7,6 +7,10 @@ QT += dbus quick
   QT += declarative
 }
 
+!isEmpty(SF_TARGET) {
+  DEFINES += SILICA
+}
+
 QML_FILES = qml/*.qml
 RESOURCES += qmlMozEmbedTestQt5.qrc
 

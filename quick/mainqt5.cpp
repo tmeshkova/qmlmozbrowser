@@ -45,11 +45,18 @@ int main(int argc, char **argv)
     }
 
     QQuickView view;
+    view.setDefaultAlphaBuffer(true);
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.rootContext()->setContextProperty("startURL", QVariant(urlstring));
     view.rootContext()->setContextProperty("createParentID", QVariant(0));
     view.rootContext()->setContextProperty("MozContext", QMozContext::GetInstance());
-    view.setSource(qmlstring.isEmpty() ? QUrl("qrc:/qml/MainPageQuick.qml") : QUrl(qmlstring));
+    view.setSource(qmlstring.isEmpty() ?
+#ifdef SILICA
+        QUrl("qrc:/qml/MainPageQuickSf.qml") :
+#else
+        QUrl("qrc:/qml/MainPageQuick.qml") :
+#endif
+        QUrl(qmlstring));
     if (isFullscreen) {
         QRect r = QGuiApplication::primaryScreen()->geometry();
         view.resize(r.width(), r.height());
