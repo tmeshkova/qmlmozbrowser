@@ -9,6 +9,8 @@
 
 int main(int argc, char **argv)
 {
+    setenv("MOZ_LAYERS_PREFER_OFFSCREEN", "1", 1);
+
     QGuiApplication app(argc, argv);
     app.setQuitOnLastWindowClosed(true);
 
